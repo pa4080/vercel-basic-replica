@@ -6,7 +6,9 @@
 	"scripts": {
 		"build": "tsc -b && cp public/favicon.ico dist/",
 		"start": "node dist/index.js",
+		"dev": "nodemon",
 		"test": "echo \"Error: no test specified\" && exit 1",
+		"preinstall": "npx only-allow pnpm",
 		"prepare": "husky",
 		"pre-commit": "pnpm run check-branch-name && lint-staged",
 		"check-branch-name": "chmod 755 githooks/check_branch_name.sh && bash githooks/check_branch_name.sh"
@@ -18,14 +20,19 @@
 		"aws-sdk": "^2.1579.0",
 		"cors": "^2.8.5",
 		"express": "^4.18.3",
+		"only-allow": "^1.2.1",
 		"redis": "^4.6.13",
-		"simple-git": "^3.22.0",
-		"ts-node": "^10.9.2"
+		"simple-git": "^3.22.0"
 	},
 	"lint-staged": {
 		"*.{ts,tsx}": "eslint --fix",
 		"*.css": "stylelint --fix",
 		"*.scss": "stylelint --fix"
+	},
+	"engines": {
+		"node": ">=18.0.0",
+		"pnpm": ">=8.1.0",
+		"npm": "please-use-pnpm"
 	},
 	"devDependencies": {
 		"@commitlint/cli": "^19.2.0",
@@ -45,6 +52,7 @@
 		"eslint-plugin-react": "^7.34.1",
 		"husky": "^9.0.11",
 		"lint-staged": "^15.2.2",
+		"nodemon": "^3.1.0",
 		"postcss": "^8.4.35",
 		"postcss-import": "^16.0.1",
 		"prettier": "^3.2.5",
@@ -54,6 +62,7 @@
 		"stylelint-config-standard": "^36.0.0",
 		"stylelint-order": "^6.0.4",
 		"stylelint-scss": "^6.2.1",
+		"ts-node": "^10.9.2",
 		"typescript": "^5.4.2"
 	}
 }

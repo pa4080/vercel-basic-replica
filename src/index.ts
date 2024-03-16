@@ -1,6 +1,8 @@
 import express from "express";
 import cors from "cors";
 
+import { generateId } from "./utils/random";
+
 const port = 3001;
 const message = `Express listening on port ${port}`;
 
@@ -13,9 +15,9 @@ app.post("/deploy", (req, res) => {
 	const repoUrl = req.body.repoUrl;
 
 	// eslint-disable-next-line no-console
-	console.log("repoUrl", repoUrl);
+	console.log("repoUrl:", repoUrl);
 
-	res.json({});
+	res.json({ id: generateId() });
 });
 
 // eslint-disable-next-line no-console

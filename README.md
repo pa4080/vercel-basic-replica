@@ -35,3 +35,20 @@ pnpm --package=typescript dlx tsc --init
 - See [`src/index.ts`](src/index.ts) for the app logic.
 - [Code along Vercel steps - Upload service](https://projects.100xdevs.com/tracks/ZSQI8YNE0iL6sT1hJpts/vercel-1)
 - [Coding the upload server at YouTube](https://www.youtube.com/watch?v=c8_tafixiAs&t=1507s)
+- [NPM: `simple-git`](https://www.npmjs.com/package/simple-git)
+- [NPM: `nodemon`](https://www.npmjs.com/package/nodemon)
+- [Setup `nodemon` and `ts-node` example](https://khalilstemmler.com/blogs/typescript/node-starter-project/#Cold-reloading)
+
+## Node (TS) CLI hints
+
+Run a TS file:
+
+```bash
+pnpm exec ts-node --skip-project src/utils/random.ts
+```
+
+Run a function from a file:
+
+```bash
+pnpm exec ts-node --skip-project -e 'require("./src/utils/random.ts").generateId()'
+```
