@@ -7,8 +7,13 @@ import { generateId } from "./utils/random";
 import { isValidUrl } from "./utils/urlMatch";
 import { RepoUploadResponse } from "./types";
 
+import { getFileList } from "./utils/getFileListRecursively";
+
+import path from "path";
+
 const port = process.env.UPLOAD_SERVICE_PORT || 3001;
 const startMessage = `Express listening on port ${port}...`;
+const tmpDir = "tmp";
 
 const app = express();
 
@@ -17,12 +22,26 @@ app.use(express.json());
 
 app.post("/deploy", async (req, res) => {
 	const repoUrl = req.body.repoUrl;
+	const targetBranch = req.body.targetBranch;
+
 	const repoId = generateId();
+	const repoTmpDir = path.join(__dirname, tmpDir, repoId);
 	let response: RepoUploadResponse;
 
 	try {
 		isValidUrl(repoUrl);
-		await simpleGit().clone(repoUrl, `./repositories/${repoId}`);
+
+		await simpleGit().clone(repoUrl, repoTmpDir);
+
+		if (targetBranch) {
+			await simpleGit(repoTmpDir).checkout(targetBranch);
+		}
+
+		const fileList = getFileList({ dir: repoTmpDir, ignoreList: [".git", ".vscode"] });
+
+		// eslint-disable-next-line no-console
+		console.log("File list:", fileList);
+
 		response = {
 			id: repoId,
 			statusMessage: "The repository was successfully cloned",
