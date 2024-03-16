@@ -1,0 +1,8 @@
+#!/usr/bin/env sh
+. "$(dirname -- "$0")/_/husky.sh"
+
+# Ref.: https://commitlint.js.org/#/guides-local-setup?id=add-hook
+# npx --no -- commitlint --edit ${1}
+
+# Ref.: https://github.com/pnpm/pnpm/blob/main/.husky/commit-msg
+pnpm commitlint --config=commitlint.config.js --edit ${1}
