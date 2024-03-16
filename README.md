@@ -28,7 +28,10 @@ pnpm --package=typescript dlx tsc --init
 
 - Tweak the [`tsconfig.json`](tsconfig.json) file - create the necessary directories `mkdir -p dist src` .
 - Add few dependencies, for more details see the [package.json](package.json) file.
+- Setup the linting and staging tools.
 
-### Create simple express app
+### Coding the upload server
 
 - See [`src/index.ts`](src/index.ts) for the app logic.
+- [Code along Vercel steps - Upload service](https://projects.100xdevs.com/tracks/ZSQI8YNE0iL6sT1hJpts/vercel-1)
+- [Coding the upload server at YouTube](https://www.youtube.com/watch?v=c8_tafixiAs&t=1507s)
