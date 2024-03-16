@@ -1,3 +1,4 @@
+import "./env";
 import express from "express";
 import cors from "cors";
 import simpleGit from "simple-git";
@@ -6,8 +7,8 @@ import { generateId } from "./utils/random";
 import { isValidUrl } from "./utils/urlMatch";
 import { RepoUploadResponse } from "./types";
 
-const port = 3001;
-const message = `Express listening on port ${port}`;
+const port = process.env.UPLOAD_SERVICE_PORT || 3001;
+const startMessage = `Express listening on port ${port}...`;
 
 const app = express();
 
@@ -44,4 +45,4 @@ app.post("/deploy", async (req, res) => {
 });
 
 // eslint-disable-next-line no-console
-app.listen(port, () => console.log(message));
+app.listen(port, () => console.log(startMessage));

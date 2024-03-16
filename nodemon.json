@@ -1,6 +1,6 @@
 {
-	"watch": ["src"],
+	"watch": ["src", "./.env.override"],
 	"ext": ".ts,.js",
 	"ignore": [],
-	"exec": "pnpm exec ts-node ./src/index.ts"
+	"exec": "pnpm run start:dev"
 }

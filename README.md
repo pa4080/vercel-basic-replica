@@ -39,6 +39,12 @@ pnpm --package=typescript dlx tsc --init
 - [NPM: `nodemon`](https://www.npmjs.com/package/nodemon)
 - [Setup `nodemon` and `ts-node` example](https://khalilstemmler.com/blogs/typescript/node-starter-project/#Cold-reloading)
 
+### Setup ProcessEnv and Zod
+
+- [Validate Environment Variables With Zod article by Catalin Pit](https://catalins.tech/validate-environment-variables-with-zod/)
+- [You're typing process.env wrong at YouTube by Matt Pocock](https://www.youtube.com/watch?v=q1im-hMlKhM)
+- [DON'T USE Environment Variables Without This at YouTube by James Q Quick](https://www.youtube.com/watch?v=dCzNA9nUxuo)
+
 ## Node (TS) CLI hints
 
 Run a TS file:
