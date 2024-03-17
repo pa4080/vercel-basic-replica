@@ -34,10 +34,22 @@ export const uploadFile = async ({
 	// console.log("Upload response", response);
 };
 
-export const uploadRepo = async (fileList: string[], repoId: string) => {
+export const uploadRepo = async ({
+	fileList,
+	repoId,
+	repoTmpDir,
+}: {
+	fileList: string[];
+	repoId: string;
+	repoTmpDir: string;
+}) => {
 	for (const localFsFilePath of fileList) {
-		const regex = new RegExp(`^.*/${repoId}`);
-		const fileName = localFsFilePath.replace(regex, `${uploadDir}/${repoId}`);
+		// const regex = new RegExp(`^.*/${repoId}`);
+		// const fileName = localFsFilePath.replace(regex, `${uploadDir}/${repoId}`);
+
+		// Consider the slice approach is faster than using regex and replace,
+		// string.slice(n) will remove the first n characters from the string
+		const fileName = `${uploadDir}/${repoId}/${localFsFilePath.slice(repoTmpDir.length + 1)}`;
 
 		await uploadFile({ fileName, localFsFilePath });
 	}
