@@ -9,11 +9,13 @@ import { RepoUploadResponse } from "./types";
 
 import { getFileList } from "./utils/getFileListRecursively";
 
+import { uploadFile, uploadRepo } from "./aws";
+
 import path from "path";
 
 const port = process.env.UPLOAD_SERVICE_PORT || 3001;
 const startMessage = `Express listening on port ${port}...`;
-const tmpDir = "tmp";
+const uploadDir = process.env.UPLOAD_DIR_FS;
 
 const app = express();
 
@@ -25,7 +27,7 @@ app.post("/deploy", async (req, res) => {
 	const targetBranch = req.body.targetBranch;
 
 	const repoId = generateId();
-	const repoTmpDir = path.join(__dirname, tmpDir, repoId);
+	const repoTmpDir = path.join(__dirname, uploadDir, repoId);
 	let response: RepoUploadResponse;
 
 	try {
@@ -40,7 +42,8 @@ app.post("/deploy", async (req, res) => {
 		const fileList = getFileList({ dir: repoTmpDir, ignoreList: [".git", ".vscode"] });
 
 		// eslint-disable-next-line no-console
-		console.log("File list:", fileList);
+		// console.log("File list:", fileList);
+		uploadRepo(fileList, repoId);
 
 		response = {
 			id: repoId,
