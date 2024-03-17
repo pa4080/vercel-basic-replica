@@ -87,3 +87,28 @@ pnpm remove aws-sdk
 pnpm i @aws-sdk/client-s3
 pnpm i @aws-sdk/lib-storage
 ```
+
+### Put the repoId inside of a deployment que
+
+We're using Redis as a message queue to handle the uploading process asynchronously.
+For this, a Redis docker container is deployed and the necessary environment variables to connect to it are defined.
+
+To test the connection via `redis-cli` we can use the following command:
+
+```bash
+doppler run --command 'redis-cli -u "$REDIS_URL"'
+doppler run -- sh -c 'redis-cli -u "$REDIS_URL"'
+```
+
+```sql
+KEYS *
+RPOP build-queue
+```
+
+- `RPOP` pop the first item on the right of the list/queue,
+- `LPOP` pop the first item on the left of the list/queue.
+
+References:
+
+- [Redis Queue](https://redis.com/glossary/redis-queue/)
+- [AWS docs: What is Amazon Simple Queue Service?](https://docs.aws.amazon.com/AWSSimpleQueueService/latest/SQSDeveloperGuide/welcome.html) | [Amazon Simple Queue Service](https://aws.amazon.com/sqs/)

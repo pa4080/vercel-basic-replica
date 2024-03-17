@@ -37,7 +37,9 @@ export const uploadFile = async ({
 			Key: fileName,
 		},
 	}).done();
-	// console.log("Upload response", response);
+
+	// eslint-disable-next-line no-console
+	console.log("Upload response", response.Key);
 };
 
 export const uploadRepo = async ({

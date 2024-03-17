@@ -22,6 +22,7 @@ const envSchema = z.object({
 	CLOUDFLARE_R2_BUCKET_REGION: zStringReq(),
 	UPLOAD_DIR_FS: zStringReq(),
 	UPLOAD_DIR_R2: zStringReq(),
+	REDIS_URL: zStringReq(),
 });
 
 const {
@@ -36,6 +37,7 @@ const {
 	CLOUDFLARE_R2_BUCKET_REGION,
 	UPLOAD_DIR_FS,
 	UPLOAD_DIR_R2,
+	REDIS_URL,
 } = process.env;
 
 const parsedResults = envSchema.safeParse({
@@ -50,6 +52,7 @@ const parsedResults = envSchema.safeParse({
 	CLOUDFLARE_R2_BUCKET_REGION,
 	UPLOAD_DIR_FS,
 	UPLOAD_DIR_R2,
+	REDIS_URL,
 });
 
 if (!parsedResults.success) {

@@ -8,8 +8,9 @@ import { isValidUrl } from "./utils/urlMatch";
 import { RepoUploadResponse } from "./types";
 
 import { getFileList } from "./utils/getFileListRecursively";
+import { uploadRepo } from "./aws";
 
-import { uploadFile, uploadRepo } from "./aws";
+import { publisher } from "./redis";
 
 import path from "path";
 
@@ -41,9 +42,9 @@ app.post("/deploy", async (req, res) => {
 
 		const fileList = getFileList({ dir: repoTmpDir, ignoreList: [".git", ".vscode"] });
 
-		// eslint-disable-next-line no-console
-		// console.log("File list:", fileList);
-		uploadRepo({ fileList, repoId, repoTmpDir });
+		await uploadRepo({ fileList, repoId, repoTmpDir });
+
+		publisher.lPush("build-queue", repoId);
 
 		response = {
 			id: repoId,
