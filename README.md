@@ -72,3 +72,18 @@ pnpm exec ts-node --skip-project -e 'require("./src/utils/random.ts").generateId
   - Go to _Manage R2 API Tokens_ and:
     - Create a new API Token - for example name it `vercel-simple-replica-token` with _Permissions_ `Object Read & Write` and specify the bucket - `vercel-simple-replica`.
     - Create the env-vars related to the new token - `CLOUDFLARE_API_TOKEN`, `CLOUDFLARE_API_ACCESS_KEY_ID`, `CLOUDFLARE_API_ACCESS_KEY_SECRET`, `CLOUDFLARE_API_ENDPOINT`.
+
+### Migrate from aws-sdk v2 to v3
+
+- [AWS Docs: Migrate to version 3](https://docs.aws.amazon.com/sdk-for-javascript/v3/developer-guide/migrating.html)
+- [AWS Docs:AWS SDK for JavaScript](https://docs.aws.amazon.com/sdk-for-javascript/v3/developer-guide/getting-started-nodejs.html)
+- [Upgrading Notes (2.x to 3.x) from `aws-sdk-js-v3` at GitHub](https://github.com/aws/aws-sdk-js-v3/blob/main/UPGRADING.md)
+
+```bash
+npx aws-sdk-js-codemod -t v2-to-v3 src/aws.ts
+
+pnpm remove aws-sdk
+
+pnpm i @aws-sdk/client-s3
+pnpm i @aws-sdk/lib-storage
+```

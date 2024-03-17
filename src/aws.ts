@@ -1,12 +1,16 @@
-import { S3 } from "aws-sdk";
+import { Upload } from "@aws-sdk/lib-storage";
+import { S3 } from "@aws-sdk/client-s3";
 
 import fs from "fs";
 
 const uploadDir = process.env.UPLOAD_DIR_R2;
 
 const s3 = new S3({
-	accessKeyId: process.env.CLOUDFLARE_API_ACCESS_KEY_ID,
-	secretAccessKey: process.env.CLOUDFLARE_API_ACCESS_KEY_SECRET,
+	credentials: {
+		accessKeyId: process.env.CLOUDFLARE_API_ACCESS_KEY_ID,
+		secretAccessKey: process.env.CLOUDFLARE_API_ACCESS_KEY_SECRET,
+	},
+	region: process.env.CLOUDFLARE_R2_BUCKET_REGION,
 	endpoint: process.env.CLOUDFLARE_API_ENDPOINT,
 });
 
@@ -24,13 +28,15 @@ export const uploadFile = async ({
 	const fileContent = fs.readFileSync(localFsFilePath);
 
 	// eslint-disable-next-line @typescript-eslint/no-unused-vars
-	const response = await s3
-		.upload({
+	const response = await new Upload({
+		client: s3,
+
+		params: {
 			Body: fileContent,
 			Bucket: process.env.CLOUDFLARE_R2_BUCKET_NAME,
 			Key: fileName,
-		})
-		.promise();
+		},
+	}).done();
 	// console.log("Upload response", response);
 };
 
@@ -44,10 +50,6 @@ export const uploadRepo = async ({
 	repoTmpDir: string;
 }) => {
 	for (const localFsFilePath of fileList) {
-		// const regex = new RegExp(`^.*/${repoId}`);
-		// const fileName = localFsFilePath.replace(regex, `${uploadDir}/${repoId}`);
-
-		// Consider the slice approach is faster than using regex and replace,
 		// string.slice(n) will remove the first n characters from the string
 		const fileName = `${uploadDir}/${repoId}/${localFsFilePath.slice(repoTmpDir.length + 1)}`;
 

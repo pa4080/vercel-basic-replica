@@ -43,7 +43,7 @@ app.post("/deploy", async (req, res) => {
 
 		// eslint-disable-next-line no-console
 		// console.log("File list:", fileList);
-		uploadRepo(fileList, repoId);
+		uploadRepo({ fileList, repoId, repoTmpDir });
 
 		response = {
 			id: repoId,
