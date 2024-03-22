@@ -112,3 +112,10 @@ References:
 
 - [Redis Queue](https://redis.com/glossary/redis-queue/)
 - [AWS docs: What is Amazon Simple Queue Service?](https://docs.aws.amazon.com/AWSSimpleQueueService/latest/SQSDeveloperGuide/welcome.html) | [Amazon Simple Queue Service](https://aws.amazon.com/sqs/)
+
+### Deploy service
+
+- [Code along Vercel steps - Upload service](https://projects.100xdevs.com/tracks/ZSQI8YNE0iL6sT1hJpts/vercel-2)
+- [Coding the upload server at YouTube](https://www.youtube.com/watch?v=c8_tafixiAs&t=4905s)
+
+In contrast to the main tutorial, here all services are within the same TS project.

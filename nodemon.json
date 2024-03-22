@@ -1,5 +1,5 @@
 {
-	"watch": ["src", "./.env.override", "./nodemon.json"],
+	"watch": ["./service-upload/src", "./.env.override", "./nodemon.json"],
 	"ext": ".ts,.js",
 	"ignore": ["**/tmp/**/*"],
 	"exec": "pnpm run start:dev"

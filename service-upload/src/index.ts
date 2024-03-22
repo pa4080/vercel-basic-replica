@@ -1,11 +1,11 @@
-import "./env";
+import "@/env";
 import express from "express";
 import cors from "cors";
 import simpleGit from "simple-git";
 
 import { generateId } from "./utils/random";
 import { isValidUrl } from "./utils/urlMatch";
-import { RepoUploadResponse } from "./types";
+import { RepoUploadResponse } from "../../types";
 
 import { getFileList } from "./utils/getFileListRecursively";
 import { uploadRepo } from "./aws";
