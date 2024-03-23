@@ -9,14 +9,14 @@ import { getFileList } from "@/utils/getFileListRecursively";
 import { generateId } from "@/utils/random";
 import { isValidUrl } from "@/utils/urlMatch";
 
-import { uploadRepo } from "./aws";
-import { publisher } from "./redis";
+import { uploadRepo } from "@/utils/aws";
+import { redisPublisher } from "@/utils/redis";
 
 import fs from "fs";
 import path from "path";
 
 const port = process.env.UPLOAD_SERVICE_PORT || 3001;
-const startMessage = `Express listening on port ${port}...`;
+const startMessage = `🚀 Express listening on port ${port}...`;
 const uploadDir = process.env.UPLOAD_DIR_FS;
 
 const app = express();
@@ -45,7 +45,7 @@ app.post("/deploy", async (req, res) => {
 
 		await uploadRepo({ fileList, repoId, repoTmpDir });
 
-		publisher.lPush("build-queue", repoId); // Add the repo to the build queue
+		redisPublisher.lPush("build-queue", repoId); // Add the repo to the build queue
 
 		await fs.promises.rm(repoTmpDir, { recursive: true, force: true });
 

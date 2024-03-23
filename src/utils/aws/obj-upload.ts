@@ -1,27 +1,19 @@
 import { Upload } from "@aws-sdk/lib-storage";
-import { S3 } from "@aws-sdk/client-s3";
 
 import fs from "fs";
 
-const uploadDir = process.env.UPLOAD_DIR_R2;
-
-const s3 = new S3({
-	credentials: {
-		accessKeyId: process.env.CLOUDFLARE_API_ACCESS_KEY_ID,
-		secretAccessKey: process.env.CLOUDFLARE_API_ACCESS_KEY_SECRET,
-	},
-	region: process.env.CLOUDFLARE_R2_BUCKET_REGION,
-	endpoint: process.env.CLOUDFLARE_API_ENDPOINT,
-});
+import { bucketName, s3client, uploadDirR2 } from ".";
 
 /**
  * @param fileName The name of the file incl. the relative path: tmp/prjId/subPath/file.name
  * @param localFsFilePath The absolute path to the file: /home/user/workDir/tmp/prjId/subPath/file.name
  */
-export const uploadFile = async ({
+export const uploadObject = async ({
+	bucket,
 	fileName,
 	localFsFilePath,
 }: {
+	bucket?: string;
 	fileName: string;
 	localFsFilePath: string;
 }) => {
@@ -29,11 +21,11 @@ export const uploadFile = async ({
 
 	// eslint-disable-next-line @typescript-eslint/no-unused-vars
 	const response = await new Upload({
-		client: s3,
+		client: s3client,
 
 		params: {
 			Body: fileContent,
-			Bucket: process.env.CLOUDFLARE_R2_BUCKET_NAME,
+			Bucket: bucket || bucketName,
 			Key: fileName,
 		},
 	}).done();
@@ -53,8 +45,8 @@ export const uploadRepo = async ({
 }) => {
 	for (const localFsFilePath of fileList) {
 		// string.slice(n) will remove the first n characters from the string
-		const fileName = `${uploadDir}/${repoId}/${localFsFilePath.slice(repoTmpDir.length + 1)}`;
+		const fileName = `${uploadDirR2}/${repoId}/${localFsFilePath.slice(repoTmpDir.length + 1)}`;
 
-		await uploadFile({ fileName, localFsFilePath });
+		await uploadObject({ fileName, localFsFilePath });
 	}
 };
