@@ -1,3 +1,91 @@
 {
-	"cSpell.words": ["Catalin", "codemod", "Harkirat", "LPOP", "preinstall", "RPOP"]
+	"cSpell.words": [
+		"Catalin",
+		"codemod",
+		"codepaths",
+		"Harkirat",
+		"LPOP",
+		"preinstall",
+		"RPOP",
+		"tsbuildinfo",
+		"tscpaths"
+	],
+	"material-icon-theme.folders.associations": {
+		// https://github.com/PKief/vscode-material-icon-theme
+		"service-upload": "core",
+		"service-deploy": "core"
+	},
+	// https://youtu.be/3_-Je5XpbqY?t=688
+	// https://stackoverflow.com/a/76125894/6543935
+	// https://github.com/microsoft/vscode/issues/170589
+	// https://github.com/tailwindlabs/tailwindcss/discussions/5258#discussioncomment-1979394
+	"css.customData": [".vscode/css-container.json", ".vscode/css-tailwind.json"],
+	"svg.preview.background": "transparent",
+	"cssModules.camelCase": true,
+
+	"reactTsScss.autoComplete": true,
+	"reactTsScss.definition": true,
+	"reactTsScss.peekProperties": true,
+	"reactTsScss.cssAutoComplete": true,
+	"reactTsScss.cssDefinitions": true,
+	"reactTsScss.diagnostics": true,
+	"reactTsScss.baseDir": "./",
+	"reactTsScss.cssSyntaxColor": true,
+	"reactTsScss.references": true,
+	"reactTsScss.codelens": true,
+	"reactTsScss.autoImport": true,
+	"reactTsScss.cleanUpDefs": [
+		"*.module.css",
+		"*.module.scss",
+		"*.module.sass",
+		"*.module.less",
+		"*.module.styl"
+	],
+	"files.autoSave": "off",
+	"editor.formatOnPaste": true,
+	"editor.formatOnSave": true,
+	"editor.defaultFormatter": "dbaeumer.vscode-eslint",
+	"editor.guides.bracketPairs": true,
+	"editor.guides.highlightActiveBracketPair": true,
+	"editor.guides.highlightActiveIndentation": true,
+	"editor.guides.bracketPairsHorizontal": "active",
+	"editor.bracketPairColorization.enabled": true,
+
+	"prettier.singleQuote": true,
+	"eslint.format.enable": true,
+	// "eslint.workingDirectories": ["apps/main", "apps/mono-test"],
+
+	"[dotenv]": {
+		"editor.defaultFormatter": "foxundermoon.shell-format"
+	},
+	"[jsonc]": {
+		"editor.defaultFormatter": "esbenp.prettier-vscode"
+	},
+	"[javascript]": {
+		"editor.defaultFormatter": "esbenp.prettier-vscode"
+	},
+	"[typescript][typescriptreact]": {
+		"editor.defaultFormatter": "esbenp.prettier-vscode",
+		"editor.codeActionsOnSave": {
+			// "source.fixAll": "always",
+			// "source.addMissingImports": "always"
+			"source.fixAll.eslint": "always",
+			"source.organizeImports": "always"
+		}
+	},
+	"[html]": {
+		"editor.codeActionsOnSave": {
+			"source.fixAll.eslint": "never"
+		}
+	},
+	"[shellscript]": {
+		"editor.defaultFormatter": "foxundermoon.shell-format"
+	},
+	"[ignore]": {
+		"editor.defaultFormatter": "foxundermoon.shell-format"
+	},
+	"[markdown]": {
+		"editor.defaultFormatter": "DavidAnson.vscode-markdownlint"
+	},
+	"typescript.tsdk": "node_modules/typescript/lib"
 }

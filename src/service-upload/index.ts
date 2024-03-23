@@ -1,17 +1,18 @@
 import "@/env";
-import express from "express";
 import cors from "cors";
+import express from "express";
 import simpleGit from "simple-git";
 
-import { generateId } from "./utils/random";
-import { isValidUrl } from "./utils/urlMatch";
-import { RepoUploadResponse } from "../../types";
+import { RepoUploadResponse } from "@/types";
 
-import { getFileList } from "./utils/getFileListRecursively";
+import { getFileList } from "@/utils/getFileListRecursively";
+import { generateId } from "@/utils/random";
+import { isValidUrl } from "@/utils/urlMatch";
+
 import { uploadRepo } from "./aws";
-
 import { publisher } from "./redis";
 
+import fs from "fs";
 import path from "path";
 
 const port = process.env.UPLOAD_SERVICE_PORT || 3001;
@@ -44,7 +45,9 @@ app.post("/deploy", async (req, res) => {
 
 		await uploadRepo({ fileList, repoId, repoTmpDir });
 
-		publisher.lPush("build-queue", repoId);
+		publisher.lPush("build-queue", repoId); // Add the repo to the build queue
+
+		await fs.promises.rm(repoTmpDir, { recursive: true, force: true });
 
 		response = {
 			id: repoId,

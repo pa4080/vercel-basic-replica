@@ -4,11 +4,12 @@
 	"description": "",
 	"main": "index.js",
 	"scripts": {
-		"env": "dotenv -e .env.override -- doppler run --preserve-env=true --",
-		"build": "pnpm run env tsc -b && cp ./public/favicon.ico ./service-upload/dist/",
-		"start": "pnpm run env node ./service-upload/dist/index.js",
-		"start:dev": "pnpm run env ts-node ./service-upload/src/index.ts",
+		"inject-env": "dotenv -e .env.override -- doppler run --preserve-env=true --",
+		"build": "pnpm inject-env tsc -b && tsc-alias && cp ./public/favicon.ico ./dist/",
+		"start": "pnpm start:upload",
+		"start:upload": "pnpm inject-env node ./dist/service-upload/index.js",
 		"dev": "nodemon",
+		"dev:upload": "pnpm inject-env ts-node ./src/service-upload/index.ts",
 		"test": "echo \"Error: no test specified\" && exit 1",
 		"preinstall": "npx only-allow pnpm",
 		"prepare": "husky",
@@ -68,7 +69,9 @@
 		"stylelint-order": "^6.0.4",
 		"stylelint-scss": "^6.2.1",
 		"ts-node": "^10.9.2",
+		"tsc-alias": "^1.8.8",
 		"tsconfig-paths": "^4.2.0",
+		"tscpaths": "^0.0.9",
 		"typescript": "^5.4.2"
 	}
 }
