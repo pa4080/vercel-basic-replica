@@ -30,10 +30,8 @@ export const deleteObjectList = async ({
 		const { Deleted } = await s3client.send(command);
 
 		if (log) {
-			// eslint-disable-next-line no-console
-			console.log(`\nSuccessfully deleted ${Deleted?.length} object(s):\n`);
-			// eslint-disable-next-line no-console
-			console.log(Deleted?.map((o) => ` • ${o.Key}`).join("\n"));
+			process.stdout.write(`\n🌵  Successfully deleted ${Deleted?.length} object(s):  🌵\n`);
+			Deleted?.map((o) => process.stdout.write(`💀  ${o.Key}\n`));
 		}
 	} catch (err) {
 		console.error(err);
