@@ -16,7 +16,7 @@ import fs from "fs";
 import path from "path";
 
 const port = process.env.UPLOAD_SERVICE_PORT || 3001;
-const startMessage = `🚀 Express listening on port ${port}...`;
+const startMessage = `🚀 Starting upload service on port ${port}...`;
 const uploadDir = process.env.UPLOAD_DIR_FS;
 
 const app = express();

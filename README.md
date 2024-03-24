@@ -102,6 +102,7 @@ doppler run -- sh -c 'redis-cli -u "$REDIS_URL"'
 
 ```sql
 KEYS *
+LPUSH build-queue test-Id-123
 RPOP build-queue
 ```
 

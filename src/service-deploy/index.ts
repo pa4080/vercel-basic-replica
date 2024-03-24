@@ -4,7 +4,7 @@ import { commandOptions, redisPublisher } from "@/utils/redis";
 
 async function main() {
 	// eslint-disable-next-line no-console
-	console.log("🚀 Starting service-deploy...");
+	console.log("🚀 Starting deploy service ...");
 
 	while (true) {
 		const repoId = await redisPublisher.brPop(commandOptions({ isolated: true }), "build-queue", 0);

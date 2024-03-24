@@ -5,6 +5,7 @@
 		"codepaths",
 		"Harkirat",
 		"LPOP",
+		"LPUSH",
 		"preinstall",
 		"RPOP",
 		"tsbuildinfo",
