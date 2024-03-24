@@ -1,6 +1,6 @@
 /**
  * Delete all objects in the bucket from CLI:
- * > doppler run -- pnpm exec ts-node -e 'require("./src/utils/aws/obj-delete.ts").deleteAllObjects({log: true})'
+ * > doppler run -- pnpm exec ts-node -e 'require("./src/utils/aws/obj-delete.ts").getObjectListAndDelete({log: true})'
  *
  * References:
  * > https://github.com/awsdocs/aws-doc-sdk-examples/tree/main/javascriptv3/example_code/s3#code-examples
@@ -10,7 +10,7 @@ import { DeleteObjectsCommand, ObjectIdentifier } from "@aws-sdk/client-s3";
 
 import { bucketName, listObjects, s3client } from ".";
 
-export const deleteObjects = async ({
+export const deleteObjectList = async ({
 	bucket,
 	objects,
 	log = false,
@@ -40,7 +40,7 @@ export const deleteObjects = async ({
 	}
 };
 
-export const deleteAllObjects = async ({
+export const getObjectListAndDelete = async ({
 	prefix,
 	bucket,
 	log = false,
@@ -51,5 +51,5 @@ export const deleteAllObjects = async ({
 }) => {
 	const objects = await listObjects({ bucket, prefix, log: false });
 
-	await deleteObjects({ objects: objects.map((o) => ({ Key: o.Key })), log });
+	await deleteObjectList({ objects: objects.map((o) => ({ Key: o.Key })), log });
 };

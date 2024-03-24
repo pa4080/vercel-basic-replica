@@ -120,3 +120,8 @@ References:
 - [Coding the upload server at YouTube](https://www.youtube.com/watch?v=c8_tafixiAs&t=4905s)
 
 In contrast to the main tutorial, here all services are within the same TS project.
+
+### Some icons
+
+- <https://emojis.wiki/>
+- 💀👽🎩🤖👦💧🩸🚀🚗🔧🔩🔨🔧🪛❌💻🧲🧭🎲💾🔔🔗📥⛲🔒🧰🧊'🖥 '🧬🐾'♨️ '🌵

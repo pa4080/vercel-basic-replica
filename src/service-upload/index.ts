@@ -9,15 +9,14 @@ import { getFileList } from "@/utils/getFileListRecursively";
 import { generateId } from "@/utils/random";
 import { isValidUrl } from "@/utils/urlMatch";
 
-import { uploadRepo } from "@/utils/aws";
+import { baseDir, uploadDirFs, uploadObjectList } from "@/utils/aws";
 import { redisPublisher } from "@/utils/redis";
 
 import fs from "fs";
 import path from "path";
 
 const port = process.env.UPLOAD_SERVICE_PORT || 3001;
-const startMessage = `🚀 Starting upload service on port ${port}...`;
-const uploadDir = process.env.UPLOAD_DIR_FS;
+const startMessage = `🚀  Starting upload service on port ${port}...`;
 
 const app = express();
 
@@ -29,7 +28,7 @@ app.post("/deploy", async (req, res) => {
 	const targetBranch = req.body.targetBranch;
 
 	const repoId = generateId();
-	const repoTmpDir = path.join(__dirname, uploadDir, repoId);
+	const repoTmpDir = path.join(baseDir, uploadDirFs, repoId);
 	let response: RepoUploadResponse;
 
 	try {
@@ -43,7 +42,7 @@ app.post("/deploy", async (req, res) => {
 
 		const fileList = getFileList({ dir: repoTmpDir, ignoreList: [".git", ".vscode"] });
 
-		await uploadRepo({ fileList, repoId, repoTmpDir });
+		await uploadObjectList({ fileList, repoId, repoTmpDir });
 
 		redisPublisher.lPush("build-queue", repoId); // Add the repo to the build queue
 

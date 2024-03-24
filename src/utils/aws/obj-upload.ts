@@ -34,7 +34,7 @@ export const uploadObject = async ({
 	console.log("File uploaded to: ", response);
 };
 
-export const uploadRepo = async ({
+export const uploadObjectList = async ({
 	fileList,
 	repoId,
 	repoTmpDir,
