@@ -16,7 +16,7 @@ import fs from "fs";
 import path from "path";
 
 const port = process.env.UPLOAD_SERVICE_PORT || 3001;
-const startMessage = `🚀  Starting upload service on port ${port}...`;
+const startMessage = `🚀  Starting upload service on port ${port}...\n`;
 
 const app = express();
 
@@ -31,6 +31,8 @@ app.post("/deploy", async (req, res) => {
 	const repoTmpDir = path.join(baseDir, uploadDirFs, repoId);
 	let response: RepoUploadResponse;
 
+	process.stdout.write(`🚩  Uploading, repoId: ${repoId}\n🐙  From: ${repoUrl}\n`);
+
 	try {
 		isValidUrl(repoUrl);
 
@@ -44,16 +46,18 @@ app.post("/deploy", async (req, res) => {
 
 		await uploadObjectList({ fileList, repoId, repoTmpDir });
 
-		redisPublisher.lPush("build-queue", repoId); // Add the repo to the build queue
-
-		await fs.promises.rm(repoTmpDir, { recursive: true, force: true });
-
 		response = {
 			id: repoId,
 			statusMessage: "The repository was successfully cloned",
 			statusCode: 200,
 			url: repoUrl,
 		};
+
+		// eslint-disable-next-line no-console
+		console.log("📨\n", response);
+
+		await fs.promises.rm(repoTmpDir, { recursive: true, force: true });
+		redisPublisher.lPush("build-queue", repoId); // Add the repo to the build-queue
 	} catch (error) {
 		response = {
 			id: null,
@@ -63,11 +67,7 @@ app.post("/deploy", async (req, res) => {
 		};
 	}
 
-	// eslint-disable-next-line no-console
-	console.log(response);
-
 	res.json(response).status(response.statusCode);
 });
 
-// eslint-disable-next-line no-console
-app.listen(port, () => console.log(startMessage));
+app.listen(port, () => process.stdout.write(startMessage));

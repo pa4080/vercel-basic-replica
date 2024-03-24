@@ -12,26 +12,32 @@ export const uploadObject = async ({
 	bucket,
 	fileName,
 	localFsFilePath,
+	log = false,
 }: {
 	bucket?: string;
 	fileName: string;
 	localFsFilePath: string;
+	log?: boolean;
 }) => {
-	const fileContent = fs.readFileSync(localFsFilePath);
+	try {
+		const fileContent = fs.readFileSync(localFsFilePath);
 
-	// eslint-disable-next-line @typescript-eslint/no-unused-vars
-	const response = await new Upload({
-		client: s3client,
+		const response = await new Upload({
+			client: s3client,
 
-		params: {
-			Body: fileContent,
-			Bucket: bucket || bucketName,
-			Key: fileName,
-		},
-	}).done();
+			params: {
+				Body: fileContent,
+				Bucket: bucket || bucketName,
+				Key: fileName,
+			},
+		}).done();
 
-	// eslint-disable-next-line no-console
-	console.log("File uploaded to: ", response);
+		if (log) {
+			process.stdout.write(`🗂️  File uploaded to: ${response.Key}`);
+		}
+	} catch (error) {
+		console.error(error);
+	}
 };
 
 export const uploadObjectList = async ({
@@ -43,10 +49,13 @@ export const uploadObjectList = async ({
 	repoId: string;
 	repoTmpDir: string;
 }) => {
-	for (const localFsFilePath of fileList) {
-		// string.slice(n) will remove the first n characters from the string
-		const fileName = `${uploadDirR2}/${repoId}/${localFsFilePath.slice(repoTmpDir.length + 1)}`;
-
-		await uploadObject({ fileName, localFsFilePath });
-	}
+	await Promise.all(
+		fileList.map(
+			async (localFsFilePath) =>
+				await uploadObject({
+					fileName: `${uploadDirR2}/${repoId}/${localFsFilePath.slice(repoTmpDir.length + 1)}`,
+					localFsFilePath,
+				})
+		)
+	);
 };
