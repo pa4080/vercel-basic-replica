@@ -114,5 +114,5 @@
 		// Do not forget to `npm i -D tsconfig-paths` -- https://github.com/TypeStrong/ts-node/issues/422#issuecomment-1340605288
 		"require": ["tsconfig-paths/register"]
 	},
-	"exclude": ["**/tmp"]
+	"exclude": ["**/tmp", "./app"]
 }

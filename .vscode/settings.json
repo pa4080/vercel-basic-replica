@@ -1,6 +1,7 @@
 {
 	"cSpell.words": [
 		"Catalin",
+		"clsx",
 		"codemod",
 		"codepaths",
 		"Harkirat",
@@ -8,8 +9,10 @@
 		"LPUSH",
 		"preinstall",
 		"RPOP",
+		"Shadcn",
 		"tsbuildinfo",
-		"tscpaths"
+		"tscpaths",
+		"Upstash"
 	],
 	"material-icon-theme.folders.associations": {
 		// https://github.com/PKief/vscode-material-icon-theme

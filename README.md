@@ -5,6 +5,23 @@ This is an TypeScript/Node exercise. The goal of the project is to reproduce the
 1. Upload service,
 2. Deploy service,
 3. Request handler (serve) service.
+4. Frontend app.
+
+## Technologies in use
+
+- TypeScript
+- Node
+- Express
+- Redis | Upstash Redis <https://console.upstash.com>
+- CloudFlare R2, workers, DNS, Tunnels. <https://developers.cloudflare.com>
+- `@aws-sdk` as client for CloudFlare R2.
+- Doppler <https://doppler.com>
+- AuthJS:
+  - <https://authjs.dev/reference/express>
+  - <https://authjs.dev/reference/adapter/upstash-redis>
+- React/Vite
+- Tailwind CSS
+- Shadcn/UI
 
 ## References
 
