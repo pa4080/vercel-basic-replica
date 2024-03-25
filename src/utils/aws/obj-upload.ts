@@ -1,8 +1,10 @@
 import { Upload } from "@aws-sdk/lib-storage";
 
+import { bucketName, uploadDirR2 } from "@/env";
+
 import fs from "fs";
 
-import { bucketName, s3client, uploadDirR2 } from ".";
+import { s3client } from ".";
 
 /**
  * @param fileName The name of the file incl. the relative path: tmp/prjId/subPath/file.name

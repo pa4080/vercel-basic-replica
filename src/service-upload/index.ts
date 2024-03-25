@@ -1,7 +1,8 @@
-import "@/env";
 import cors from "cors";
 import express from "express";
 import simpleGit from "simple-git";
+
+import { baseDir, uploadDirFs } from "@/env";
 
 import { RepoUploadResponse } from "@/types";
 
@@ -9,7 +10,7 @@ import { getFileList } from "@/utils/getFileListRecursively";
 import { generateId } from "@/utils/random";
 import { isValidUrl } from "@/utils/urlMatch";
 
-import { baseDir, uploadDirFs, uploadObjectList } from "@/utils/aws";
+import { uploadObjectList } from "@/utils/aws";
 import { redisPublisher } from "@/utils/redis";
 
 import fs from "fs";
@@ -36,15 +37,21 @@ app.post("/deploy", async (req, res) => {
 	try {
 		isValidUrl(repoUrl);
 
+		process.stdout.write(`🐑  Start clone, repoId: ${repoId}\n`);
+
 		await simpleGit().clone(repoUrl, repoTmpDir);
 
 		if (targetBranch) {
 			await simpleGit(repoTmpDir).checkout(targetBranch);
 		}
 
+		process.stdout.write(`📤  Upload started, repoId: ${repoId}\n`);
+
 		const fileList = getFileList({ dir: repoTmpDir, ignoreList: [".git", ".vscode"] });
 
 		await uploadObjectList({ fileList, repoId, repoTmpDir });
+
+		process.stdout.write(`📤  Upload finished, repoId: ${repoId}\n`);
 
 		response = {
 			id: repoId,

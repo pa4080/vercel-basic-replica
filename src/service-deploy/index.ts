@@ -15,9 +15,7 @@ async function main() {
 
 		process.stdout.write(`🚩  Deploying, repoId: ${repoToDeploy?.element}\n`);
 
-		await getObjectListAndDownload({
-			repoId: repoToDeploy?.element,
-		});
+		await getObjectListAndDownload({ repoId: repoToDeploy?.element });
 
 		process.stdout.write(`✨  Deploying finished, repoId: ${repoToDeploy?.element}\n`);
 	}

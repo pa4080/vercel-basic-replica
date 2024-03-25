@@ -68,3 +68,8 @@ declare global {
 		interface ProcessEnv extends z.infer<typeof envSchema> {}
 	}
 }
+
+export const uploadDirFs = process.env.UPLOAD_DIR_FS!;
+export const uploadDirR2 = process.env.UPLOAD_DIR_R2!;
+export const bucketName = process.env.CLOUDFLARE_R2_BUCKET_NAME!;
+export const baseDir = process.env.NODE_ENV.includes("dev") ? "dist" : __dirname;

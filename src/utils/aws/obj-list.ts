@@ -1,6 +1,8 @@
 import { ListObjectsV2Command, _Object } from "@aws-sdk/client-s3";
 
-import { bucketName, s3client, uploadDirR2 } from ".";
+import { bucketName, uploadDirR2 } from "@/env";
+
+import { s3client } from ".";
 /**
  * Run from CLI:
  * > doppler run -- pnpm exec ts-node -e 'require("./src/utils/aws/obj-list.ts").listObjects({log: true})'

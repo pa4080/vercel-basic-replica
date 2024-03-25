@@ -1,7 +1,3 @@
-import { GetObjectCommand, _Object } from "@aws-sdk/client-s3";
-
-import fs from "fs";
-
 /**
  * Download an objects in the bucket from CLI:
  * > doppler run -- pnpm exec ts-node -e 'require("./src/utils/aws/obj-download.ts").getObjectListAndDownload({log: true, prefix: "uploads/a2b2d72a81fed831527e/README.md", repoId: "a2b2d72a81fed831527e"})'
@@ -11,9 +7,14 @@ import fs from "fs";
  * > https://github.com/awsdocs/aws-doc-sdk-examples/blob/main/javascriptv3/example_code/s3/actions/delete-objects.js
  */
 
+import { GetObjectCommand, _Object } from "@aws-sdk/client-s3";
+
+import { baseDir, bucketName, uploadDirFs, uploadDirR2 } from "@/env";
+
+import fs from "fs";
 import path from "path";
 
-import { baseDir, bucketName, listObjects, s3client, uploadDirFs, uploadDirR2 } from ".";
+import { listObjects, s3client } from ".";
 
 export const downloadObject = async ({
 	object,
@@ -81,16 +82,16 @@ export const getObjectListAndDownload = async ({
 		return;
 	}
 
-	process.stdout.write(`🗃️   Obtaining the file list, repoId:${repoId}\n`);
+	process.stdout.write(`🗃️   Obtaining the file list, repoId: ${repoId}\n`);
 
 	const actualPrefix = prefix || `${uploadDirR2}/${repoId}`;
 	const objectList = await listObjects({ bucket, prefix: actualPrefix, log });
 
-	process.stdout.write(`📥  Download started, repoId:${repoId}\n`);
+	process.stdout.write(`📥  Download started, repoId: ${repoId}\n`);
 
 	await Promise.all(
 		objectList.map(async (object) => await downloadObject({ object, repoId, log }))
 	);
 
-	process.stdout.write(`📥  Download finished, repoId:${repoId}\n`);
+	process.stdout.write(`📥  Download finished, repoId: ${repoId}\n`);
 };

@@ -8,7 +8,9 @@
  */
 import { DeleteObjectsCommand, ObjectIdentifier } from "@aws-sdk/client-s3";
 
-import { bucketName, listObjects, s3client } from ".";
+import { bucketName } from "@/env";
+
+import { listObjects, s3client } from ".";
 
 export const deleteObjectList = async ({
 	bucket,
