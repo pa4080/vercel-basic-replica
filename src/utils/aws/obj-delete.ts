@@ -1,6 +1,7 @@
 /**
  * Delete all objects in the bucket from CLI:
  * > doppler run -- pnpm exec ts-node -e 'require("./src/utils/aws/obj-delete.ts").getObjectListAndDelete({log: true})'
+ * > doppler run -- pnpm exec ts-node -e 'require("./src/utils/aws/obj-delete.ts").getObjectListAndDelete({log: true, prefix: process.env.UPLOAD_DIR_R2_BUILD})'
  *
  * References:
  * > https://github.com/awsdocs/aws-doc-sdk-examples/tree/main/javascriptv3/example_code/s3#code-examples

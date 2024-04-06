@@ -12,16 +12,17 @@ export const findRepoBuildDir = async ({ repoId }: { repoId: string | undefined 
 
 	let repoBuildDir: string | undefined = undefined;
 
+	// Find the build directory of the repository
 	for (const possibleBuildDir of possibleBuildDirs) {
-		const tmpDir = path.join(baseDir, uploadDirFs, repoId, possibleBuildDir);
+		const tmpBuildDir = path.join(baseDir, uploadDirFs, repoId, possibleBuildDir);
 
 		if (
-			await fs.promises.stat(tmpDir).then(
+			await fs.promises.stat(tmpBuildDir).then(
 				() => true,
 				() => false
 			)
 		) {
-			repoBuildDir = tmpDir;
+			repoBuildDir = tmpBuildDir;
 
 			break;
 		}
