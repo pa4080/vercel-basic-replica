@@ -3,6 +3,7 @@ import { getObjectListAndDownload } from "@/utils/aws";
 import { commandOptions, redisSubscriber } from "@/utils/redis";
 
 import { projectBuild } from "./projectBuild";
+import { projectUploadDist } from "./projectUploadDist";
 
 async function main() {
 	process.stdout.write("🚀  Starting deploy service ...\n");
@@ -30,6 +31,7 @@ async function main() {
 
 		await getObjectListAndDownload({ repoId });
 		await projectBuild({ repoId });
+		await projectUploadDist({ repoId });
 
 		process.stdout.write(`✨  Deploying finished, repoId: ${repoId}\n`);
 	}

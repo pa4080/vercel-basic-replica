@@ -46,16 +46,20 @@ export const uploadObjectList = async ({
 	fileList,
 	repoId,
 	repoTmpDir,
+	uploadDir,
 }: {
 	fileList: string[];
 	repoId: string;
 	repoTmpDir: string;
+	uploadDir?: string;
 }) => {
+	const uploadDirInUse = uploadDir || uploadDirR2;
+
 	try {
 		await Promise.all(
 			fileList.map((localFsFilePath) =>
 				uploadObject({
-					fileName: `${uploadDirR2}/${repoId}/${localFsFilePath.slice(repoTmpDir.length + 1)}`,
+					fileName: `${uploadDirInUse}/${repoId}/${localFsFilePath.slice(repoTmpDir.length + 1)}`,
 					localFsFilePath,
 				})
 			)
