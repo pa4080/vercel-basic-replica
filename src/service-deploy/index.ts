@@ -1,23 +1,37 @@
 import "@/env";
 import { getObjectListAndDownload } from "@/utils/aws";
+import { commandOptions, redisSubscriber } from "@/utils/redis";
 
-import { commandOptions, redisPublisher } from "@/utils/redis";
+import { buildProject } from "./buildProject";
 
 async function main() {
 	process.stdout.write("🚀  Starting deploy service ...\n");
 
 	while (true) {
-		const repoToDeploy = await redisPublisher.brPop(
+		const repoToDeploy = await redisSubscriber.brPop(
 			commandOptions({ isolated: true }),
 			"build-queue",
 			0
 		);
 
-		process.stdout.write(`🚩  Deploying, repoId: ${repoToDeploy?.element}\n`);
+		if (!repoToDeploy) {
+			continue;
+		}
 
-		await getObjectListAndDownload({ repoId: repoToDeploy?.element });
+		const repoId = repoToDeploy?.element;
 
-		process.stdout.write(`✨  Deploying finished, repoId: ${repoToDeploy?.element}\n`);
+		if (repoId.match(/warm-up/)) {
+			process.stdout.write(`🔔  Warm up: ${repoId}...\n`);
+
+			continue;
+		}
+
+		process.stdout.write(`🚩  Deploying, repoId: ${repoId}\n`);
+
+		await getObjectListAndDownload({ repoId });
+		await buildProject({ repoId });
+
+		process.stdout.write(`✨  Deploying finished, repoId: ${repoId}\n`);
 	}
 }
 

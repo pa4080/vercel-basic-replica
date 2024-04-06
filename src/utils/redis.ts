@@ -1,9 +1,41 @@
-import { commandOptions, createClient } from "redis";
+import { RedisClientType, commandOptions, createClient } from "redis";
 
-const publisher = createClient({
-	url: process.env.REDIS_URL,
-});
+const url = process.env.REDIS_URL_REMOTE || process.env.REDIS_URL;
 
-publisher.connect();
+// const publisher = createClient({
+// 	url,
+// });
 
-export { commandOptions, publisher as redisPublisher };
+// publisher.on("error", (error) => {
+// 	console.error(`Redis client error:`, error);
+// });
+
+// const subscriber = createClient({
+// 	url,
+// });
+
+// subscriber.on("error", (error) => {
+// 	console.error(`Redis client error:`, error);
+// });
+
+let publisher: RedisClientType;
+
+(async () => {
+	publisher = createClient({ url });
+	publisher.on("error", (error) => {
+		console.error(`Redis client error:`, error);
+	});
+	await publisher.connect();
+})();
+
+let subscriber: RedisClientType;
+
+(async () => {
+	subscriber = createClient({ url });
+	subscriber.on("error", (error) => {
+		console.error(`Redis client error:`, error);
+	});
+	await subscriber.connect();
+})();
+
+export { commandOptions, publisher as redisPublisher, subscriber as redisSubscriber };

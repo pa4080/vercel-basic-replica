@@ -51,5 +51,14 @@ export const getObjectListAndDelete = async ({
 }) => {
 	const objects = await listObjects({ bucket, prefix, log: false });
 
-	await deleteObjectList({ objects: objects.map((o) => ({ Key: o.Key })), log });
+	const slicedObjects = [];
+
+	for (let i = 0; i < objects.length; i += 999) {
+		slicedObjects.push(objects.slice(i, i + 999));
+	}
+
+	for (const batch of slicedObjects) {
+		// The length of the array for delete must be between 1 and 1000
+		await deleteObjectList({ objects: batch.map((o) => ({ Key: o.Key })), log });
+	}
 };

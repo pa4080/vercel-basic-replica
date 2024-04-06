@@ -23,6 +23,8 @@ const envSchema = z.object({
 	UPLOAD_DIR_FS: zStringReq(),
 	UPLOAD_DIR_R2: zStringReq(),
 	REDIS_URL: zStringReq(),
+	REDIS_URL_LOCAL: zStringReq(),
+	REDIS_URL_REMOTE: zStringReq(),
 });
 
 const {
@@ -38,6 +40,8 @@ const {
 	UPLOAD_DIR_FS,
 	UPLOAD_DIR_R2,
 	REDIS_URL,
+	REDIS_URL_LOCAL,
+	REDIS_URL_REMOTE,
 } = process.env;
 
 const parsedResults = envSchema.safeParse({
@@ -53,6 +57,8 @@ const parsedResults = envSchema.safeParse({
 	UPLOAD_DIR_FS,
 	UPLOAD_DIR_R2,
 	REDIS_URL,
+	REDIS_URL_LOCAL,
+	REDIS_URL_REMOTE,
 });
 
 if (!parsedResults.success) {

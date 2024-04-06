@@ -18,7 +18,7 @@ export const listObjects = async (
 	const command = new ListObjectsV2Command({
 		Bucket: bucket || bucketName,
 		Prefix: prefix || uploadDirR2,
-		MaxKeys: 1000,
+		MaxKeys: 500,
 	});
 
 	try {

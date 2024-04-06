@@ -64,7 +64,7 @@ app.post("/deploy", async (req, res) => {
 		console.log("📨\n", response);
 
 		await fs.promises.rm(repoTmpDir, { recursive: true, force: true });
-		redisPublisher.lPush("build-queue", repoId); // Add the repo to the build-queue
+		await redisPublisher.lPush("build-queue", repoId); // Add the repo to the build-queue
 	} catch (error) {
 		response = {
 			id: null,
@@ -77,4 +77,8 @@ app.post("/deploy", async (req, res) => {
 	res.json(response).status(response.statusCode);
 });
 
-app.listen(port, () => process.stdout.write(startMessage));
+app.listen(port, async () => {
+	process.stdout.write(startMessage);
+
+	await redisPublisher.lPush("build-queue", "warm-up"); // Add the repo to the build-queue
+});
