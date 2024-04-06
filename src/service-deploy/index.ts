@@ -2,7 +2,7 @@ import "@/env";
 import { getObjectListAndDownload } from "@/utils/aws";
 import { commandOptions, redisSubscriber } from "@/utils/redis";
 
-import { buildProject } from "./buildProject";
+import { projectBuild } from "./projectBuild";
 
 async function main() {
 	process.stdout.write("🚀  Starting deploy service ...\n");
@@ -29,7 +29,7 @@ async function main() {
 		process.stdout.write(`🚩  Deploying, repoId: ${repoId}\n`);
 
 		await getObjectListAndDownload({ repoId });
-		await buildProject({ repoId });
+		await projectBuild({ repoId });
 
 		process.stdout.write(`✨  Deploying finished, repoId: ${repoId}\n`);
 	}

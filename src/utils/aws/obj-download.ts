@@ -82,16 +82,18 @@ export const getObjectListAndDownload = async ({
 		return;
 	}
 
-	process.stdout.write(`🗃️   Obtaining the file list, repoId: ${repoId}\n`);
+	try {
+		process.stdout.write(`🗃️   Obtaining the file list, repoId: ${repoId}\n`);
 
-	const actualPrefix = prefix || `${uploadDirR2}/${repoId}`;
-	const objectList = await listObjects({ bucket, prefix: actualPrefix, log });
+		const actualPrefix = prefix || `${uploadDirR2}/${repoId}`;
+		const objectList = await listObjects({ bucket, prefix: actualPrefix, log });
 
-	process.stdout.write(`📥  Download started, repoId: ${repoId}\n`);
+		process.stdout.write(`📥  Download started, repoId: ${repoId}\n`);
 
-	await Promise.all(
-		objectList.map(async (object) => await downloadObject({ object, repoId, log }))
-	);
+		await Promise.all(objectList.map((object) => downloadObject({ object, repoId, log })));
 
-	process.stdout.write(`📥  Download finished, repoId: ${repoId}\n`);
+		process.stdout.write(`📥  Download finished, repoId: ${repoId}\n`);
+	} catch (err) {
+		console.error("🔥  Download objects error: ", err);
+	}
 };

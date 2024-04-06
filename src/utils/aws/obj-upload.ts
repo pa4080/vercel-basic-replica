@@ -51,13 +51,16 @@ export const uploadObjectList = async ({
 	repoId: string;
 	repoTmpDir: string;
 }) => {
-	await Promise.all(
-		fileList.map(
-			async (localFsFilePath) =>
-				await uploadObject({
+	try {
+		await Promise.all(
+			fileList.map((localFsFilePath) =>
+				uploadObject({
 					fileName: `${uploadDirR2}/${repoId}/${localFsFilePath.slice(repoTmpDir.length + 1)}`,
 					localFsFilePath,
 				})
-		)
-	);
+			)
+		);
+	} catch (err) {
+		console.error("🔥  Upload objects error: ", err);
+	}
 };

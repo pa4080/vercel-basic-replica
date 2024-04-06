@@ -11,7 +11,7 @@ const zStringReq = (msg?: string) =>
 		.min(1, { message: msg ?? "Required!" });
 
 const envSchema = z.object({
-	NODE_ENV: z.enum(["dev", "stg", "prod"]),
+	NODE_ENV: z.enum(["development", "stage", "production"]),
 	UPLOAD_SERVICE_PORT: zStringReq(),
 	CLOUDFLARE_ACCOUNT_ID: zStringReq(),
 	CLOUDFLARE_API_TOKEN: zStringReq(),
@@ -22,6 +22,7 @@ const envSchema = z.object({
 	CLOUDFLARE_R2_BUCKET_REGION: zStringReq(),
 	UPLOAD_DIR_FS: zStringReq(),
 	UPLOAD_DIR_R2: zStringReq(),
+	UPLOAD_DIR_R2_DIST: zStringReq(),
 	REDIS_URL: zStringReq(),
 	REDIS_URL_LOCAL: zStringReq(),
 	REDIS_URL_REMOTE: zStringReq(),
@@ -39,6 +40,7 @@ const {
 	CLOUDFLARE_R2_BUCKET_REGION,
 	UPLOAD_DIR_FS,
 	UPLOAD_DIR_R2,
+	UPLOAD_DIR_R2_DIST,
 	REDIS_URL,
 	REDIS_URL_LOCAL,
 	REDIS_URL_REMOTE,
@@ -56,6 +58,7 @@ const parsedResults = envSchema.safeParse({
 	CLOUDFLARE_R2_BUCKET_REGION,
 	UPLOAD_DIR_FS,
 	UPLOAD_DIR_R2,
+	UPLOAD_DIR_R2_DIST,
 	REDIS_URL,
 	REDIS_URL_LOCAL,
 	REDIS_URL_REMOTE,
@@ -77,5 +80,6 @@ declare global {
 
 export const uploadDirFs = process.env.UPLOAD_DIR_FS!;
 export const uploadDirR2 = process.env.UPLOAD_DIR_R2!;
+export const uploadDirR2Dist = process.env.UPLOAD_DIR_R2_DIST!;
 export const bucketName = process.env.CLOUDFLARE_R2_BUCKET_NAME!;
-export const baseDir = process.env.NODE_ENV.includes("dev") ? "dist" : __dirname;
+export const baseDir = process.env.NODE_ENV.match(/dev|development/) ? "dist" : __dirname;
