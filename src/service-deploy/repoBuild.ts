@@ -1,4 +1,4 @@
-import getRepoTmpDir from "@/utils/getRepoTmpDir";
+import { getRepoTmpDir } from "@/utils/getDirectory";
 
 import { exec } from "child_process";
 

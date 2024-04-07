@@ -4,16 +4,14 @@ import simpleGit from "simple-git";
 
 import { RepoUploadResponse } from "@/types";
 
+import { baseDir, uploadDirR2Build } from "@/env";
+import { getObject, uploadObjectList } from "@/utils/aws";
+import { getRepoTmpDir } from "@/utils/getDirectory";
 import { getFileList } from "@/utils/getFileListRecursively";
 import { generateId } from "@/utils/random";
 import { isValidUrl } from "@/utils/urlMatch";
 
-import { getObject, uploadObjectList } from "@/utils/aws";
-import { redisPublisher } from "@/utils/redis";
-
-import getRepoTmpDir from "@/utils/getRepoTmpDir";
-
-import { baseDir, uploadDirR2Build } from "@/env";
+import { redisPublisher, redisSubscriber } from "./redis";
 
 import fs from "fs";
 import path from "path";
@@ -25,18 +23,21 @@ const app = express();
 
 app.use(cors());
 app.use(express.json());
-// app.use(
-// 	// If we use "frontend" instead of "public" we can sever the
-// 	// frontend without any additional conditions as below
-// 	express.static(path.join(baseDir, "public"), {
-// 		index: false,
-// 		setHeaders: (res, path) => {
-// 			if (path === "/favicon.ico") {
-// 				res.setHeader("Content-Type", "image/x-icon");
-// 			}
-// 		},
-// 	})
-// );
+/**
+ * 	If we use "frontend" instead of "public" we can sever the
+ * 	frontend without any additional conditions as below.
+ *
+ * app.use(
+ * 	express.static(path.join(baseDir, "public"), {
+ * 		index: false,
+ * 		setHeaders: (res, path) => {
+ * 			if (path === "/favicon.ico") {
+ * 				res.setHeader("Content-Type", "image/x-icon");
+ * 			}
+ * 		},
+ * 	})
+ * );
+ */
 
 app.post("/deploy", async (req, res) => {
 	const repoUrl = req.body.repoUrl;
@@ -51,14 +52,16 @@ app.post("/deploy", async (req, res) => {
 	try {
 		isValidUrl(repoUrl);
 
-		process.stdout.write(`🐑  Start clone, repoId: ${repoId}\n`);
+		process.stdout.write(`🐑  Start cloning, repoId: ${repoId}\n`);
 
+		await redisPublisher.hSet("status", repoId, "cloning"); // Update the status of the repo
 		await simpleGit().clone(repoUrl, repoTmpDir);
 
 		if (targetBranch) {
 			await simpleGit(repoTmpDir).checkout(targetBranch);
 		}
 
+		await redisPublisher.hSet("status", repoId, "uploading"); // Update the status of the repo
 		process.stdout.write(`📤  Start upload, repoId: ${repoId}\n`);
 
 		const fileList = getFileList({ dir: repoTmpDir, ignoreList: [".git", ".vscode"] });
@@ -78,11 +81,13 @@ app.post("/deploy", async (req, res) => {
 		console.log("📨\n", response);
 
 		await fs.promises.rm(repoTmpDir, { recursive: true, force: true });
+
 		await redisPublisher.lPush("build-queue", repoId); // Add the repo to the build-queue
+		await redisPublisher.hSet("status", repoId, "uploaded"); // Update the status of the repo
 	} catch (error) {
 		response = {
 			id: null,
-			statusMessage: (error as Error).message ?? "Invalid URL",
+			statusMessage: (error as Error).message ?? "Invalid Repo URL",
 			statusCode: 500,
 			url: repoUrl,
 		};
@@ -100,29 +105,34 @@ app.post("/deploy", async (req, res) => {
 app.get("/*", async (req, res) => {
 	const host = req.hostname;
 	const subDomain = host.split(".")[0];
+	const uri = req.path;
+
+	if (uri === "/status") {
+		const id = req.query.id;
+
+		if (!id) {
+			return res.status(404).send("Not found");
+		}
+
+		const status = await redisSubscriber.hGet("status", id as string);
+
+		if (!status) {
+			return res.status(404).send(`Something went wrong, id: ${id}`);
+		}
+
+		return res.json({ id, status });
+	}
 
 	if (subDomain.match(/^vercel-basic-replica/)) {
 		const docRoot = path.join(baseDir, "frontend");
-		const filePath = req.path === "/" ? "index.html" : req.path.slice(1);
+		const filePath = uri === "/" ? "index.html" : uri.slice(1);
 
 		return res.sendFile(filePath, { root: docRoot });
 	}
 
 	if (subDomain.match(/^deploy/)) {
 		const repoId = subDomain.split("-")[1];
-		const filePath = req.path === "/" ? "index.html" : req.path.slice(1);
-
-		/**
-		 * // Serve from the local FS
-		 *
-		 * const docRoot = path.join(baseDir, "tmp", repoId, "dist");
-		 * try {
-		 * 	await fs.promises.access(path.join(docRoot, filePath));
-		 * 	return res.sendFile(filePath, { root: docRoot });
-		 * } catch (error) {
-		 * 	return res.sendFile("index.html", { root: docRoot });
-		 * }
-		 */
+		const filePath = uri === "/" ? "index.html" : uri.slice(1);
 
 		return (async function returnObject(filePath: string) {
 			const responseObject = await getObject({

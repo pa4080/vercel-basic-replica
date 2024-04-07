@@ -36,6 +36,8 @@ export const getObject = async ({
 
 		return responseObject;
 	} catch (err) {
-		console.error(err);
+		console.error(objectKey, "::", (err as Error).message);
+
+		return null;
 	}
 };

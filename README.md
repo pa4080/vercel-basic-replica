@@ -128,7 +128,7 @@ RPOP build-queue
 
 References:
 
-- [Redis Queue](https://redis.com/glossary/redis-queue/)
+- [Redis Queue](https://redis.com/glossary/redis-queue/) > [BullMQ at GitHub](https://github.com/taskforcesh/bullmq?tab=readme-ov-file) | [**BullMQ Docs**](https://docs.bullmq.io/readme-1)
 - [AWS docs: What is Amazon Simple Queue Service?](https://docs.aws.amazon.com/AWSSimpleQueueService/latest/SQSDeveloperGuide/welcome.html) | [Amazon Simple Queue Service](https://aws.amazon.com/sqs/)
 
 ### Deploy service

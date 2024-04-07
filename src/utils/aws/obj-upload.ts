@@ -1,5 +1,4 @@
 import { Upload } from "@aws-sdk/lib-storage";
-
 import mime from "mime-types";
 
 import { bucketName, uploadDirR2 } from "@/env";
