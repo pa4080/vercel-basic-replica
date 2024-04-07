@@ -27,6 +27,9 @@ const envSchema = z.object({
 	REDIS_URL_LOCAL: zStringReq(),
 	REDIS_URL_REMOTE: zStringReq(),
 	NOT_HANDLED_REQ_REDIRECT_URL: zStringReq(),
+	MONGODB_URL: zStringReq(),
+	MONGODB_DB_NAME: zStringReq(),
+	MONGODB_COLLECTION_PROJECTS: zStringReq(),
 });
 
 const {
@@ -46,6 +49,9 @@ const {
 	REDIS_URL_LOCAL,
 	REDIS_URL_REMOTE,
 	NOT_HANDLED_REQ_REDIRECT_URL,
+	MONGODB_URL,
+	MONGODB_DB_NAME,
+	MONGODB_COLLECTION_PROJECTS,
 } = process.env;
 
 const parsedResults = envSchema.safeParse({
@@ -65,6 +71,9 @@ const parsedResults = envSchema.safeParse({
 	REDIS_URL_LOCAL,
 	REDIS_URL_REMOTE,
 	NOT_HANDLED_REQ_REDIRECT_URL,
+	MONGODB_URL,
+	MONGODB_DB_NAME,
+	MONGODB_COLLECTION_PROJECTS,
 });
 
 if (!parsedResults.success) {
@@ -81,9 +90,12 @@ declare global {
 	}
 }
 
-export const uploadDirFs = process.env.UPLOAD_DIR_FS!;
-export const uploadDirR2 = process.env.UPLOAD_DIR_R2!;
-export const uploadDirR2Build = process.env.UPLOAD_DIR_R2_BUILD!;
-export const bucketName = process.env.CLOUDFLARE_R2_BUCKET_NAME!;
+export const uploadDirFs = process.env.UPLOAD_DIR_FS;
+export const uploadDirR2 = process.env.UPLOAD_DIR_R2;
+export const uploadDirR2Build = process.env.UPLOAD_DIR_R2_BUILD;
+export const bucketName = process.env.CLOUDFLARE_R2_BUCKET_NAME;
 export const baseDir = process.env.NODE_ENV.match(/dev|development/) ? "dist" : __dirname;
 export const possibleBuildDirs = ["dist", "build", "out", "builds", "output"];
+export const mongoUrl = process.env.MONGODB_URL;
+export const mongoDbName = process.env.MONGODB_DB_NAME;
+export const mongoCollectionProjects = process.env.MONGODB_COLLECTION_PROJECTS;
