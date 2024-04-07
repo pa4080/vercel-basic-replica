@@ -8,12 +8,15 @@ import { getFileList } from "@/utils/getFileListRecursively";
 import { generateId } from "@/utils/random";
 import { isValidUrl } from "@/utils/urlMatch";
 
-import { uploadObjectList } from "@/utils/aws";
+import { getObject, uploadObjectList } from "@/utils/aws";
 import { redisPublisher } from "@/utils/redis";
 
 import getRepoTmpDir from "@/utils/getRepoTmpDir";
 
+import { baseDir, uploadDirR2Build } from "@/env";
+
 import fs from "fs";
+import path from "path";
 
 const port = process.env.UPLOAD_SERVICE_PORT || 3001;
 const startMessage = `🚀  Starting upload service on port ${port}...\n`;
@@ -22,6 +25,18 @@ const app = express();
 
 app.use(cors());
 app.use(express.json());
+// app.use(
+// 	// If we use "frontend" instead of "public" we can sever the
+// 	// frontend without any additional conditions as below
+// 	express.static(path.join(baseDir, "public"), {
+// 		index: false,
+// 		setHeaders: (res, path) => {
+// 			if (path === "/favicon.ico") {
+// 				res.setHeader("Content-Type", "image/x-icon");
+// 			}
+// 		},
+// 	})
+// );
 
 app.post("/deploy", async (req, res) => {
 	const repoUrl = req.body.repoUrl;
@@ -74,6 +89,65 @@ app.post("/deploy", async (req, res) => {
 	}
 
 	res.json(response).status(response.statusCode);
+});
+
+/**
+ * We will handle *.example.com; the base domain example.com is not redirected to the app.
+ *
+ * https://vercel-basic-replica.example.com - will serve the frontend
+ * https://deploy-idOfTheRepo.example.com - will serve the deployments
+ */
+app.get("/*", async (req, res) => {
+	const host = req.hostname;
+	const subDomain = host.split(".")[0];
+
+	if (subDomain.match(/^vercel-basic-replica/)) {
+		const docRoot = path.join(baseDir, "frontend");
+		const filePath = req.path === "/" ? "index.html" : req.path.slice(1);
+
+		return res.sendFile(filePath, { root: docRoot });
+	}
+
+	if (subDomain.match(/^deploy/)) {
+		const repoId = subDomain.split("-")[1];
+		const filePath = req.path === "/" ? "index.html" : req.path.slice(1);
+
+		// const docRoot = path.join(baseDir, "tmp", repoId, "dist");
+
+		// try {
+		// 	await fs.promises.access(path.join(docRoot, filePath));
+
+		// 	return res.sendFile(filePath, { root: docRoot });
+		// } catch (error) {
+		// 	return res.sendFile("index.html", { root: docRoot });
+		// }
+
+		return (async function returnObject(filePath: string) {
+			const responseObject = await getObject({
+				objectKey: `${uploadDirR2Build}/${repoId}/${filePath}`,
+			});
+
+			if (!responseObject || !responseObject.Body) {
+				// Handle all routes to index.html for React apps, otherwise
+				// return res.status(404).send("Not found");
+				return returnObject("index.html");
+			}
+
+			res.set("Content-Type", responseObject.ContentType);
+
+			if (responseObject.ContentType?.match(/(image|font|video|audio|media)/)) {
+				res.set("Cache-Control", "public, max-age=31536000");
+			}
+
+			res.write(await responseObject.Body?.transformToByteArray(), "utf8");
+			res.end();
+			// The following cause troubles wit binary files:
+			// res.send(await responseObject.Body?.transformToString("utf8"));
+			// res.end();
+		})(filePath);
+	}
+
+	return res.redirect(307, process.env.NOT_HANDLED_REQ_REDIRECT_URL);
 });
 
 app.listen(port, async () => {

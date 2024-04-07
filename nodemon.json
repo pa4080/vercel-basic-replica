@@ -2,5 +2,5 @@
 	"watch": ["src", "./.env.override", "./nodemon.json"],
 	"ext": ".ts,.js",
 	"ignore": ["**/tmp/**/*"],
-	"exec": "pnpm dev:concurrently"
+	"exec": "pnpm dev:concurrently-all"
 }

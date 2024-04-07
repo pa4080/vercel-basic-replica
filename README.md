@@ -142,3 +142,9 @@ In contrast to the main tutorial, here all services are within the same TS proje
 
 - <https://emojis.wiki/>
 - 💀👽🎩🤖👦💧🩸🚀🚗🔧🔩🔨🔧🪛❌💻🧲🧭🎲💾🔔🔗📥⛲🔒🧰🧊'🖥 '🧬🐾'♨️ '🌵
+
+### Build the request handler
+
+- [Code along Vercel steps - Upload service](https://projects.100xdevs.com/tracks/ZSQI8YNE0iL6sT1hJpts/vercel-3)
+- [Build the request handler at YouTube](https://youtu.be/c8_tafixiAs?si=DbNfFxzdd646XHE2&t=7212s)
+- [Step-by-Step Guide: Uploading and Downloading Binary Files to AWS S3 v3 using serverless JavaScript](https://dev.to/restdbjones/step-by-step-guide-uploading-and-downloading-binary-files-to-aws-s3-v3-using-nodejs-and-codehooksio-4olh)

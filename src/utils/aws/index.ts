@@ -13,5 +13,6 @@ export const s3client = new S3(config) || new S3Client(config);
 
 export * from "./obj-delete";
 export * from "./obj-download";
+export * from "./obj-get";
 export * from "./obj-list";
 export * from "./obj-upload";

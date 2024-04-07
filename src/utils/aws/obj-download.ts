@@ -49,7 +49,7 @@ export const downloadObject = async ({
 
 		const writeStream = fs.createWriteStream(fileTmpPath).on("error", (err) => console.error(err));
 
-		writeStream.write(await responseObject.Body?.transformToByteArray());
+		writeStream.write(await responseObject.Body?.transformToByteArray(), "utf8");
 
 		if (log) {
 			process.stdout.write(`🗂️  Saved object: ${fileTmpPath}\n`);

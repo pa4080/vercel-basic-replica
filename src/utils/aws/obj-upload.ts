@@ -1,5 +1,7 @@
 import { Upload } from "@aws-sdk/lib-storage";
 
+import mime from "mime-types";
+
 import { bucketName, uploadDirR2 } from "@/env";
 
 import fs from "fs";
@@ -23,6 +25,7 @@ export const uploadObject = async ({
 }) => {
 	try {
 		const fileContent = fs.readFileSync(localFsFilePath);
+		const contentType = mime.lookup(localFsFilePath) || "application/octet-stream";
 
 		const response = await new Upload({
 			client: s3client,
@@ -31,6 +34,7 @@ export const uploadObject = async ({
 				Body: fileContent,
 				Bucket: bucket || bucketName,
 				Key: fileName,
+				ContentType: contentType,
 			},
 		}).done();
 

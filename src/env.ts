@@ -26,6 +26,7 @@ const envSchema = z.object({
 	REDIS_URL: zStringReq(),
 	REDIS_URL_LOCAL: zStringReq(),
 	REDIS_URL_REMOTE: zStringReq(),
+	NOT_HANDLED_REQ_REDIRECT_URL: zStringReq(),
 });
 
 const {
@@ -44,6 +45,7 @@ const {
 	REDIS_URL,
 	REDIS_URL_LOCAL,
 	REDIS_URL_REMOTE,
+	NOT_HANDLED_REQ_REDIRECT_URL,
 } = process.env;
 
 const parsedResults = envSchema.safeParse({
@@ -62,6 +64,7 @@ const parsedResults = envSchema.safeParse({
 	REDIS_URL,
 	REDIS_URL_LOCAL,
 	REDIS_URL_REMOTE,
+	NOT_HANDLED_REQ_REDIRECT_URL,
 });
 
 if (!parsedResults.success) {
