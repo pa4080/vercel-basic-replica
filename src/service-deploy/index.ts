@@ -1,8 +1,12 @@
-import { getObjectListAndDownload } from "@/utils/aws";
+import { uploadDirR2 } from "@/env";
+import { getObjectListAndDelete, getObjectListAndDownload } from "@/utils/aws";
+import getRepoTmpDir from "@/utils/getRepoTmpDir";
 import { commandOptions, redisSubscriber } from "@/utils/redis";
 
 import { repoBuild } from "./repoBuild";
 import { repoBuildUpload } from "./repoBuildUpload";
+
+import fs from "fs";
 
 async function main() {
 	process.stdout.write("🚀  Starting deploy service ...\n");
@@ -34,8 +38,8 @@ async function main() {
 			await repoBuildUpload({ repoId }); // Upload objects to R2/S3
 
 			// Clean up
-			// await fs.promises.rm(getRepoTmpDir(repoId), { recursive: true, force: true });
-			// getObjectListAndDelete({ prefix: `${uploadDirR2}/${repoId}` });
+			await fs.promises.rm(getRepoTmpDir(repoId), { recursive: true, force: true });
+			await getObjectListAndDelete({ prefix: `${uploadDirR2}/${repoId}` });
 
 			process.stdout.write(`✨  Deploying finished, repoId: ${repoId}\n`);
 		} catch (error) {

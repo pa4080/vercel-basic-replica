@@ -112,15 +112,17 @@ app.get("/*", async (req, res) => {
 		const repoId = subDomain.split("-")[1];
 		const filePath = req.path === "/" ? "index.html" : req.path.slice(1);
 
-		// const docRoot = path.join(baseDir, "tmp", repoId, "dist");
-
-		// try {
-		// 	await fs.promises.access(path.join(docRoot, filePath));
-
-		// 	return res.sendFile(filePath, { root: docRoot });
-		// } catch (error) {
-		// 	return res.sendFile("index.html", { root: docRoot });
-		// }
+		/**
+		 * // Serve from the local FS
+		 *
+		 * const docRoot = path.join(baseDir, "tmp", repoId, "dist");
+		 * try {
+		 * 	await fs.promises.access(path.join(docRoot, filePath));
+		 * 	return res.sendFile(filePath, { root: docRoot });
+		 * } catch (error) {
+		 * 	return res.sendFile("index.html", { root: docRoot });
+		 * }
+		 */
 
 		return (async function returnObject(filePath: string) {
 			const responseObject = await getObject({
