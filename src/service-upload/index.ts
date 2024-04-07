@@ -4,7 +4,7 @@ import simpleGit from "simple-git";
 
 import { RepoUploadResponse } from "@/types";
 
-import { baseDir, uploadDirR2Build } from "@/env";
+import { appDeployUri, appSubDeploy, appSubdomain, baseDir, uploadDirR2Build } from "@/env";
 import { getObject, uploadObjectList } from "@/utils/aws";
 import { getRepoTmpDir } from "@/utils/getDirectory";
 import { getFileList } from "@/utils/getFileListRecursively";
@@ -25,16 +25,18 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
-app.post("/deploy", async (req, res) => {
-	const repoUrl = new URL(req.body.repoUrl);
-	const targetBranch = req.body.targetBranch;
-	const prjName = req.body.prjName;
+app.post(`/${appDeployUri}`, async (req, res) => {
+	const repoUrl: string = req.body.repoUrl;
+	const targetBranch: string = req.body.targetBranch;
+	const framework: string = req.body.framework;
+	const projectName: string = req.body.projectName;
 
 	const repo = await mongoRepoIdentify({
-		name: prjName || repoUrl.pathname.slice(1),
 		status: "identifying",
-		url: repoUrl.href,
-		branch: targetBranch,
+		projectName,
+		repoUrl,
+		targetBranch,
+		framework,
 	});
 
 	if (!repo) {
@@ -48,15 +50,15 @@ app.post("/deploy", async (req, res) => {
 	process.stdout.write(`🚩  Handle, repoId: ${repoId}\n🐙  From: ${repoUrl}\n`);
 
 	try {
-		isValidUrl(repoUrl.href);
+		isValidUrl(repoUrl);
 
 		process.stdout.write(`🐑  Start cloning, repoId: ${repoId}\n`);
 
 		// await redisPublisher.hSet("status", repoId, "cloning"); // Update the status of the repo
 		await mongoRepoUpdateStatus(repoId, "cloning");
-		await simpleGit().clone(repoUrl.href, repoTmpDir);
+		await simpleGit().clone(repoUrl, repoTmpDir);
 
-		if (targetBranch) {
+		if (targetBranch && !targetBranch.match(/(default|)/)) {
 			await simpleGit(repoTmpDir).checkout(targetBranch);
 		}
 
@@ -74,7 +76,7 @@ app.post("/deploy", async (req, res) => {
 			id: repoId,
 			statusMessage: "The repository was successfully cloned",
 			statusCode: 200,
-			url: repoUrl.href,
+			url: repoUrl,
 		};
 
 		// eslint-disable-next-line no-console
@@ -89,7 +91,7 @@ app.post("/deploy", async (req, res) => {
 			id: null,
 			statusMessage: (error as Error).message ?? "Invalid Repo URL",
 			statusCode: 500,
-			url: repoUrl.href,
+			url: repoUrl,
 		};
 		await mongoRepoUpdateStatus(repoId, "error");
 	}
@@ -125,14 +127,14 @@ app.get("/*", async (req, res) => {
 		return res.json(project);
 	}
 
-	if (subDomain.match(/^vercel-basic-replica/)) {
+	if (subDomain.match(new RegExp(`^${appSubdomain}`))) {
 		const docRoot = path.join(baseDir, "frontend");
 		const filePath = uri === "/" ? "index.html" : uri.slice(1);
 
 		return res.sendFile(filePath, { root: docRoot });
 	}
 
-	if (subDomain.match(/^deploy/)) {
+	if (subDomain.match(new RegExp(`^${appSubDeploy}`))) {
 		const repoId = subDomain.split("-")[1];
 		const filePath = uri === "/" ? "index.html" : uri.slice(1);
 

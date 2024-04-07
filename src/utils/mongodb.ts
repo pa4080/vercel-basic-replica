@@ -14,9 +14,10 @@ export interface RepoDocument {
 		| "deploying" // not used
 		| "deployed"
 		| "error";
-	name: string;
-	url: string;
-	branch: string;
+	projectName: string;
+	repoUrl: string;
+	targetBranch: string;
+	framework: string;
 }
 
 // Create a MongoClient with a MongoClientOptions object to set the Stable API version

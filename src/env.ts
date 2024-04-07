@@ -1,6 +1,7 @@
 /**
  * The ENV_VARS are managed via Doppler at https://dashboard.doppler.com/
- * https://github.com/colinhacks/zod/issues/63
+ *
+ * > https://github.com/colinhacks/zod/issues/63
  */
 import { z } from "zod";
 
@@ -30,6 +31,10 @@ const envSchema = z.object({
 	MONGODB_URL: zStringReq(),
 	MONGODB_DB_NAME: zStringReq(),
 	MONGODB_COLLECTION_PROJECTS: zStringReq(),
+	VITE_APP_BASE_DOMAIN: zStringReq(),
+	VITE_APP_SUBDOMAIN: zStringReq(),
+	VITE_APP_SUBDOMAIN_DEPLOY: zStringReq(),
+	VITE_APP_DEPLOY_URI: zStringReq(),
 });
 
 const {
@@ -52,6 +57,10 @@ const {
 	MONGODB_URL,
 	MONGODB_DB_NAME,
 	MONGODB_COLLECTION_PROJECTS,
+	VITE_APP_BASE_DOMAIN,
+	VITE_APP_SUBDOMAIN,
+	VITE_APP_SUBDOMAIN_DEPLOY,
+	VITE_APP_DEPLOY_URI,
 } = process.env;
 
 const parsedResults = envSchema.safeParse({
@@ -74,6 +83,10 @@ const parsedResults = envSchema.safeParse({
 	MONGODB_URL,
 	MONGODB_DB_NAME,
 	MONGODB_COLLECTION_PROJECTS,
+	VITE_APP_BASE_DOMAIN,
+	VITE_APP_SUBDOMAIN,
+	VITE_APP_SUBDOMAIN_DEPLOY,
+	VITE_APP_DEPLOY_URI,
 });
 
 if (!parsedResults.success) {
@@ -99,3 +112,7 @@ export const possibleBuildDirs = ["dist", "build", "out", "builds", "output"];
 export const mongoUrl = process.env.MONGODB_URL;
 export const mongoDbName = process.env.MONGODB_DB_NAME;
 export const mongoCollectionProjects = process.env.MONGODB_COLLECTION_PROJECTS;
+export const appBaseDomain = process.env.VITE_APP_BASE_DOMAIN;
+export const appSubdomain = process.env.VITE_APP_SUBDOMAIN;
+export const appSubDeploy = process.env.VITE_APP_SUBDOMAIN_DEPLOY;
+export const appDeployUri = process.env.VITE_APP_DEPLOY_URI;

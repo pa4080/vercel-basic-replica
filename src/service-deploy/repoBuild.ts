@@ -12,7 +12,7 @@ export const repoBuild = async ({ repoId }: { repoId: string | undefined }) => {
 	return new Promise((resolve) => {
 		const child = exec(`cd ${getRepoTmpDir(repoId)} && npm i && npm run build`);
 
-		process.stdout.write(`🏗️  Build, repoId: ${repoId}\n`);
+		process.stdout.write(`🏗️   Build, repoId: ${repoId}\n`);
 		child.stdout?.on("data", (data) => {
 			process.stdout.write(data);
 		});
