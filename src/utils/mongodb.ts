@@ -1,24 +1,7 @@
 import { MongoClient, ObjectId, ServerApiVersion } from "mongodb";
 
 import { mongoCollectionProjects, mongoDbName, mongoUrl } from "@/env";
-
-export interface RepoDocument {
-	_id?: ObjectId | undefined;
-	status:
-		| "identifying"
-		| "cloning"
-		| "uploading"
-		| "uploaded"
-		| "building"
-		| "built" // not used
-		| "deploying" // not used
-		| "deployed"
-		| "error";
-	projectName: string;
-	repoUrl: string;
-	targetBranch: string;
-	framework: string;
-}
+import { RepoDocument } from "@/types";
 
 // Create a MongoClient with a MongoClientOptions object to set the Stable API version
 const client = new MongoClient(mongoUrl, {
@@ -73,6 +56,26 @@ export const mongoRepoGetById = async (id: string) => {
 					_id: result._id.toString(),
 				}
 			: null;
+
+		return resultJson;
+	} catch (error) {
+		console.error((error as Error).message);
+	} finally {
+		await client.close();
+	}
+};
+
+export const mongoRepoGetAll = async () => {
+	try {
+		await client.connect();
+		const db = client.db(mongoDbName);
+		const collection = db.collection(mongoCollectionProjects);
+		const result = await collection.find({}).toArray();
+
+		const resultJson = result.map((doc) => ({
+			...doc,
+			_id: doc._id.toString(),
+		}));
 
 		return resultJson;
 	} catch (error) {

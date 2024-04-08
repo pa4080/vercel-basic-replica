@@ -34,11 +34,10 @@ async function main() {
 			}
 
 			process.stdout.write(`🚩  Deploying, repoId: ${repoId}\n`);
-			// await redisPublisher.hSet("status", repoId, "building"); // Update the status of the repo
-			await mongoRepoUpdateStatus(repoId, "building");
-
+			await mongoRepoUpdateStatus(repoId, "building"); // Update the status of the repo
 			await getObjectListAndDownload({ repoId }); // Download objects from R2/S3
 			await repoBuild({ repoId }); // Build the project
+			await mongoRepoUpdateStatus(repoId, "deploying"); // Update the status of the repo
 			await repoBuildUpload({ repoId }); // Upload objects to R2/S3
 
 			// Clean up

@@ -20,7 +20,8 @@ import {
 } from "@/components/ui/select";
 import React from "react";
 
-import { appBaseDomain, appDeployUri, appSubdomain } from "@/env";
+import { appBaseURL, appDeployUri } from "@/env";
+import { cn } from "@/lib/cn-utils";
 import * as z from "zod";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "./ui/form";
 
@@ -33,7 +34,12 @@ export const ProjectAddSchema = z.object({
 
 export type ProjectAddSchema = z.infer<typeof ProjectAddSchema>;
 
-const ProjectAdd: React.FC = () => {
+interface Props {
+	className?: string;
+	closeCb: () => void;
+}
+
+const ProjectAdd: React.FC<Props> = ({ className, closeCb }) => {
 	const form = useForm<ProjectAddSchema>({
 		resolver: zodResolver(ProjectAddSchema),
 		defaultValues: {
@@ -45,14 +51,9 @@ const ProjectAdd: React.FC = () => {
 	});
 
 	const onSubmit = async (data: ProjectAddSchema) => {
-		console.log(data);
+		const URL = `${appBaseURL}/${appDeployUri}`;
 
-		const URL = `https://${appSubdomain}.${appBaseDomain}/${appDeployUri}`;
-		console.log(URL);
-		console.log("https://vercel-basic-replica.metalevel.cloud/deploy");
-		console.log(`/${appDeployUri}`);
-
-		const res = await fetch(URL, {
+		await fetch(URL, {
 			method: "POST",
 			body: JSON.stringify(data),
 			headers: {
@@ -62,8 +63,6 @@ const ProjectAdd: React.FC = () => {
 				Connection: "keep-alive",
 			},
 		});
-
-		console.log(res);
 	};
 
 	// Auto generate slug on the base of the title, if it is not set
@@ -79,7 +78,7 @@ const ProjectAdd: React.FC = () => {
 	return (
 		<Form {...form}>
 			<form onSubmit={form.handleSubmit(onSubmit)}>
-				<Card className="w-[350px]">
+				<Card className={cn("w-full", className)}>
 					<CardHeader className="pb-3">
 						<CardTitle>Create a project</CardTitle>
 						<CardDescription>Deploy your new project in one-click.</CardDescription>
@@ -165,9 +164,19 @@ const ProjectAdd: React.FC = () => {
 							)}
 						/>
 					</CardContent>
-					<CardFooter className="flex justify-between">
-						<Button variant="outline">Cancel</Button>
-						<Button type="submit">Deploy</Button>
+					<CardFooter className="flex justify-between gap-5">
+						<Button
+							variant="outline"
+							onClick={(e) => {
+								e.preventDefault();
+								closeCb && closeCb();
+							}}
+						>
+							Close
+						</Button>
+						<Button type="submit" className="w-full">
+							Deploy
+						</Button>
 					</CardFooter>
 				</Card>
 			</form>

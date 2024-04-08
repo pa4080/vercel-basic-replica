@@ -4,13 +4,26 @@ import simpleGit from "simple-git";
 
 import { RepoUploadResponse } from "@/types";
 
-import { appDeployUri, appSubDeploy, appSubdomain, baseDir, uploadDirR2Build } from "@/env";
+import {
+	appDeployUri,
+	appSubDeploy,
+	appSubdomain,
+	appUriProject,
+	appUriProjects,
+	baseDir,
+	uploadDirR2Build,
+} from "@/env";
 import { getObject, uploadObjectList } from "@/utils/aws";
 import { getRepoTmpDir } from "@/utils/getDirectory";
 import { getFileList } from "@/utils/getFileListRecursively";
 import { isValidUrl } from "@/utils/urlMatch";
 
-import { mongoRepoGetById, mongoRepoIdentify, mongoRepoUpdateStatus } from "@/utils/mongodb";
+import {
+	mongoRepoGetAll,
+	mongoRepoGetById,
+	mongoRepoIdentify,
+	mongoRepoUpdateStatus,
+} from "@/utils/mongodb";
 
 import { redisPublisher } from "./redis";
 
@@ -33,6 +46,7 @@ app.post(`/${appDeployUri}`, async (req, res) => {
 
 	const repo = await mongoRepoIdentify({
 		status: "identifying",
+		date: new Date(),
 		projectName,
 		repoUrl,
 		targetBranch,
@@ -110,31 +124,42 @@ app.get("/*", async (req, res) => {
 	const subDomain = host.split(".")[0];
 	const uri = req.path;
 
-	if (uri.match(/^\/(status|project)/)) {
-		const id = req.query.id;
+	if (uri.match(`/${appUriProjects}`)) {
+		const projects = await mongoRepoGetAll();
+
+		if (!projects) {
+			return res
+				.status(404)
+				.json({ message: `Something went wrong, cannot get the projects.`, ok: false });
+		}
+
+		return res.status(200).json({ data: projects, ok: true });
+	}
+
+	if (uri.match(`/${appUriProject}`)) {
+		const id = req.query.id || uri.split("/")[2];
 
 		if (!id) {
 			return res.status(404).send("Not found");
 		}
 
-		// const status = await redisSubscriber.hGet("status", id as string);
 		const project = await mongoRepoGetById(id as string);
 
 		if (!project) {
-			return res.status(404).send(`Something went wrong, id: ${id}`);
+			return res.status(404).send({ message: `Something went wrong, id: ${id}`, ok: false });
 		}
 
-		return res.json(project);
+		return res.status(200).json({ data: project, ok: true });
 	}
 
-	if (subDomain.match(new RegExp(`^${appSubdomain}`))) {
+	if (subDomain.match(appSubdomain)) {
 		const docRoot = path.join(baseDir, "frontend");
 		const filePath = uri === "/" ? "index.html" : uri.slice(1);
 
 		return res.sendFile(filePath, { root: docRoot });
 	}
 
-	if (subDomain.match(new RegExp(`^${appSubDeploy}`))) {
+	if (subDomain.match(appSubDeploy)) {
 		const repoId = subDomain.split("-")[1];
 		const filePath = uri === "/" ? "index.html" : uri.slice(1);
 

@@ -23,11 +23,12 @@
 		/* Project configuration */
 		"baseUrl": ".",
 		"paths": {
-			"@/*": ["./src/*"]
+			"@/*": ["./src/*"],
+			"@project/*": ["../src/*"]
 		},
 		/* The actual 'outDir' is set in 'vite.config.ts' */
 		"outDir": "../dist/frontend"
 	},
-	"include": ["src"],
+	"include": ["src", "../src/types.ts"],
 	"references": [{ "path": "./tsconfig.node.json" }]
 }
