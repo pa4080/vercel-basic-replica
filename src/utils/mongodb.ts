@@ -4,16 +4,18 @@ import { mongoCollectionProjects, mongoDbName, mongoUrl } from "@/env";
 import { RepoDocument } from "@/types";
 
 // Create a MongoClient with a MongoClientOptions object to set the Stable API version
-const client = new MongoClient(mongoUrl, {
+const clientSettings = {
 	serverApi: {
 		version: ServerApiVersion.v1,
 		strict: true,
 		deprecationErrors: true,
 	},
 	tls: true,
-});
+};
 
 export const mongoRepoIdentify = async (repoData: RepoDocument) => {
+	const client = new MongoClient(mongoUrl, clientSettings);
+
 	try {
 		await client.connect();
 		const db = client.db(mongoDbName);
@@ -29,6 +31,8 @@ export const mongoRepoIdentify = async (repoData: RepoDocument) => {
 };
 
 export const mongoRepoUpdateStatus = async (id: string, status: RepoDocument["status"]) => {
+	const client = new MongoClient(mongoUrl, clientSettings);
+
 	try {
 		await client.connect();
 		const db = client.db(mongoDbName);
@@ -44,6 +48,8 @@ export const mongoRepoUpdateStatus = async (id: string, status: RepoDocument["st
 };
 
 export const mongoRepoGetById = async (id: string) => {
+	const client = new MongoClient(mongoUrl, clientSettings);
+
 	try {
 		await client.connect();
 		const db = client.db(mongoDbName);
@@ -66,6 +72,8 @@ export const mongoRepoGetById = async (id: string) => {
 };
 
 export const mongoRepoGetAll = async () => {
+	const client = new MongoClient(mongoUrl, clientSettings);
+
 	try {
 		await client.connect();
 		const db = client.db(mongoDbName);
@@ -89,6 +97,8 @@ export const mongoRepoGetAll = async () => {
  * CLI: doppler run -- pnpm exec ts-node -e 'require("./src/utils/mongodb.ts").run().catch()'
  */
 export async function run() {
+	const client = new MongoClient(mongoUrl, clientSettings);
+
 	try {
 		// Connect the client to the server	(optional starting in v4.7)
 		await client.connect();

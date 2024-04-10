@@ -1,27 +1,38 @@
 {
-	// "root": true,
+	"root": true,
+	"plugins": ["react-refresh", "react", "@typescript-eslint", "import"],
 	"extends": [
-		// "plugin:react/recommended",
-		"plugin:@typescript-eslint/recommended",
-		"plugin:prettier/recommended",
+		"eslint:recommended",
+		"plugin:react/recommended",
 		"plugin:import/recommended",
+		"plugin:import/errors",
+		"plugin:import/warnings",
+
+		"plugin:@typescript-eslint/recommended",
+		"plugin:react-hooks/recommended",
+		"plugin:prettier/recommended",
+
 		"plugin:import/typescript"
-		// "next/core-web-vitals",
 	],
 	"env": {
-		"es6": true,
 		"browser": true,
-		"node": true
+		"es2020": true
 	},
+	"parser": "@typescript-eslint/parser",
 	"parserOptions": {
-		"ecmaVersion": 6,
+		"ecmaVersion": 2020,
 		"sourceType": "module",
+		// "project": "./tsconfig.json",
+		// "project": true,
+		// "tsconfigRootDir": "./",
 		"ecmaFeatures": {
 			"jsx": true
+		},
+		"paths": {
+			"@/*": ["./src/*"],
+			"@project/*": ["../src/*"]
 		}
 	},
-	// "plugins": ["import", "react", "@typescript-eslint"],
-	"plugins": ["import", "@typescript-eslint"],
 	"rules": {
 		"eqeqeq": ["error", "always", { "null": "ignore" }],
 		"template-curly-spacing": "error",
@@ -37,7 +48,7 @@
 		"@typescript-eslint/ban-types": "off",
 		"@typescript-eslint/explicit-module-boundary-types": "off",
 		"@typescript-eslint/no-explicit-any": "error",
-		"import/no-unresolved": "error",
+		"import/no-unresolved": "off", // this is disabled because of bug with "root": true; TypeScript will handle this check
 		"import/no-named-as-default-member": "off",
 		"import/first": "warn",
 		"import/newline-after-import": ["warn", { "count": 1 }],
@@ -114,18 +125,18 @@
 				"prev": ["*"],
 				"next": ["return"]
 			}
-		]
-		// "react/jsx-sort-props": [
-		// 	"warn",
-		// 	{
-		// 		"ignoreCase": false,
-		// 		"callbacksLast": true,
-		// 		"shorthandFirst": true,
-		// 		"reservedFirst": true
-		// 	}
-		// ],
-		// "react/react-in-jsx-scope": "off",
-		// "react/no-unknown-property": ["error", { "ignore": ["jsx"] }]
+		],
+		"react/jsx-sort-props": [
+			"warn",
+			{
+				"ignoreCase": false,
+				"callbacksLast": true,
+				"shorthandFirst": true,
+				"reservedFirst": true
+			}
+		],
+		"react/react-in-jsx-scope": "off",
+		"react/no-unknown-property": ["error", { "ignore": ["jsx"] }]
 	},
 	"ignorePatterns": [
 		"node_modules/",
@@ -137,18 +148,18 @@
 		"src/generated/",
 		"**/*.d.ts",
 		".next/",
-		".vercel/",
-		"dist/"
+		".vercel/"
 	],
 	"settings": {
-		// "react": {
-		// 	"version": "detect"
-		// },
-		"import/parsers": {
-			"@typescript-eslint/parser": [".ts", ".tsx"]
+		"react": {
+			"version": "detect"
 		},
+		// "import/parsers": {
+		// 	"@typescript-eslint/parser": [".ts", ".tsx"]
+		// },
 		"import/resolver": {
 			"typescript": {}
-		}
+		},
+		"import/extensions": [".ts", ".tsx"]
 	}
 }

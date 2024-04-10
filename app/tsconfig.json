@@ -29,6 +29,6 @@
 		/* The actual 'outDir' is set in 'vite.config.ts' */
 		"outDir": "../dist/frontend"
 	},
-	"include": ["src", "../src/types.ts"],
+	"include": ["**/*.ts", "**/*.tsx", "./src/*", "../src/types.ts", "node_modules"],
 	"references": [{ "path": "./tsconfig.node.json" }]
 }

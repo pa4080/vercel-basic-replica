@@ -1,4 +1,6 @@
+import { RepoDocument } from "@project/types";
 import { File, MoreHorizontal, Package2, PlusCircle } from "lucide-react";
+import { useEffect, useState } from "react";
 
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -26,17 +28,20 @@ import {
 	TableRow,
 } from "@/components/ui/table";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { RepoDocument } from "@project/types";
-import { useEffect, useState } from "react";
+
 import ProjectAddDialog from "./components/ProjectAddDialog";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "./components/ui/tooltip";
-import { appBaseURL, appUriProjects } from "./env";
+import { appBaseURL, appUriProject } from "./env";
 
 export default function App() {
 	const [projects, setProjects] = useState<RepoDocument>();
 
 	useEffect(() => {
-		const URL = `${appBaseURL}/${appUriProjects}`;
+		const URL = `${appBaseURL}/${appUriProject}`;
+		// const URL = `//openvscode-3001.metalevel.tech/${appUriProject}`;
+
+		// eslint-disable-next-line no-console
+		console.log(URL);
 
 		fetch(URL, {
 			method: "GET",
@@ -52,6 +57,7 @@ export default function App() {
 	}, []);
 
 	useEffect(() => {
+		// eslint-disable-next-line no-console
 		console.log(projects);
 	}, [projects]);
 
@@ -85,12 +91,12 @@ export default function App() {
 								<TabsTrigger value="astro">Astro</TabsTrigger>
 							</TabsList>
 							<div className="ml-auto flex items-center gap-2">
-								<Button size="sm" variant="outline" className="h-8 gap-1">
+								<Button className="h-8 gap-1" size="sm" variant="outline">
 									<File className="h-3.5 w-3.5" />
 									<span className="sr-only sm:not-sr-only sm:whitespace-nowrap">Export</span>
 								</Button>
 								<ProjectAddDialog>
-									<Button size="sm" asChild>
+									<Button asChild size="sm">
 										<div className="h-8 gap-1 cursor-pointer">
 											<PlusCircle className="h-3.5 w-3.5" />
 											<span className="sr-only sm:not-sr-only sm:whitespace-nowrap">

@@ -1,5 +1,9 @@
 import { zodResolver } from "@hookform/resolvers/zod";
+import React from "react";
 import { useForm } from "react-hook-form";
+import * as z from "zod";
+
+import { appBaseURL, appUriProject } from "@/env";
 
 import { Button } from "@/components/ui/button";
 import {
@@ -18,11 +22,8 @@ import {
 	SelectTrigger,
 	SelectValue,
 } from "@/components/ui/select";
-import React from "react";
-
-import { appBaseURL, appDeployUri } from "@/env";
 import { cn } from "@/lib/cn-utils";
-import * as z from "zod";
+
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "./ui/form";
 
 export const ProjectAddSchema = z.object({
@@ -30,6 +31,7 @@ export const ProjectAddSchema = z.object({
 	projectName: z.string(),
 	framework: z.union([z.literal("react"), z.literal("astro")]),
 	targetBranch: z.string(),
+	outDir: z.string(),
 });
 
 export type ProjectAddSchema = z.infer<typeof ProjectAddSchema>;
@@ -47,13 +49,14 @@ const ProjectAdd: React.FC<Props> = ({ className, closeCb }) => {
 			projectName: "",
 			framework: "react",
 			targetBranch: "default",
+			outDir: "default",
 		},
 	});
 
 	const onSubmit = async (data: ProjectAddSchema) => {
-		const URL = `${appBaseURL}/${appDeployUri}`;
+		const URL = `${appBaseURL}/${appUriProject}`;
 
-		await fetch(URL, {
+		const response = await fetch(URL, {
 			method: "POST",
 			body: JSON.stringify(data),
 			headers: {
@@ -63,6 +66,11 @@ const ProjectAdd: React.FC<Props> = ({ className, closeCb }) => {
 				Connection: "keep-alive",
 			},
 		});
+
+		// eslint-disable-next-line no-console
+		console.log(response);
+
+		closeCb && closeCb();
 	};
 
 	// Auto generate slug on the base of the title, if it is not set
@@ -123,6 +131,30 @@ const ProjectAdd: React.FC<Props> = ({ className, closeCb }) => {
 
 						<FormField
 							control={form.control}
+							name="framework"
+							render={({ field }) => (
+								<FormItem>
+									<FormLabel>Framework</FormLabel>
+									<Select defaultValue={field.value} onValueChange={field.onChange}>
+										<FormControl>
+											<SelectTrigger>
+												<SelectValue placeholder="Select a verified email to display" />
+											</SelectTrigger>
+										</FormControl>
+
+										<SelectContent>
+											<SelectItem value="react">React</SelectItem>
+											<SelectItem value="astro">Astro</SelectItem>
+										</SelectContent>
+									</Select>
+
+									<FormMessage />
+								</FormItem>
+							)}
+						/>
+
+						<FormField
+							control={form.control}
 							name="targetBranch"
 							render={({ field }) => (
 								<FormItem>
@@ -142,28 +174,24 @@ const ProjectAdd: React.FC<Props> = ({ className, closeCb }) => {
 
 						<FormField
 							control={form.control}
-							name="framework"
+							name="outDir"
 							render={({ field }) => (
 								<FormItem>
-									<FormLabel>Framework</FormLabel>
-									<Select onValueChange={field.onChange} defaultValue={field.value}>
-										<FormControl>
-											<SelectTrigger>
-												<SelectValue placeholder="Select a verified email to display" />
-											</SelectTrigger>
-										</FormControl>
-
-										<SelectContent>
-											<SelectItem value="react">React</SelectItem>
-											<SelectItem value="astro">Astro</SelectItem>
-										</SelectContent>
-									</Select>
-
+									<FormLabel>Build output directory</FormLabel>
+									<FormControl>
+										<Input
+											placeholder={`Leave it blank or use "default" for autodetect`}
+											{...field}
+											onBlur={autoGeneratePrjName}
+											onFocus={autoGeneratePrjName}
+										/>
+									</FormControl>
 									<FormMessage />
 								</FormItem>
 							)}
 						/>
 					</CardContent>
+
 					<CardFooter className="flex justify-between gap-5">
 						<Button
 							variant="outline"
@@ -174,7 +202,7 @@ const ProjectAdd: React.FC<Props> = ({ className, closeCb }) => {
 						>
 							Close
 						</Button>
-						<Button type="submit" className="w-full">
+						<Button className="w-full" type="submit">
 							Deploy
 						</Button>
 					</CardFooter>
