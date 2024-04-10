@@ -55,6 +55,7 @@
 		"import/prefer-default-export": "off",
 		"import/group-exports": "off",
 		"import/no-named-as-default": "off",
+		"react/prop-types": "off",
 		"import/order": [
 			"warn",
 			{
