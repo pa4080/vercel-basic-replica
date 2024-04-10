@@ -17,8 +17,7 @@
 	],
 	"material-icon-theme.folders.associations": {
 		// https://github.com/PKief/vscode-material-icon-theme
-		"service-upload": "core",
-		"service-deploy": "core"
+		"worker": "core"
 	},
 	// https://youtu.be/3_-Je5XpbqY?t=688
 	// https://stackoverflow.com/a/76125894/6543935

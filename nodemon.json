@@ -1,6 +1,6 @@
 {
 	"watch": ["src", "./.env.override", "./nodemon.json"],
 	"ext": ".ts,.js",
-	"ignore": ["**/tmp/**/*"],
-	"exec": "pnpm dev:concurrently-all"
+	"ignore": ["**/tmp/**/*", "**/dist/**/*", "**/node_modules/**/*", "**/frontend/**/*"],
+	"exec": "pnpm dev:concurrently"
 }
