@@ -1,6 +1,6 @@
 import express from "express";
 
-import { appSubdomain, appSubdomainPrefixDeployedProjects, baseDir, uploadDirR2Build } from "@/env";
+import { appDeploySubdomainPrefix, appSubdomain, baseDir, uploadDirR2Build } from "@/env";
 import { getObject } from "@/utils/aws";
 import { getCachedRepo } from "@/utils/cacheUtils";
 
@@ -17,7 +17,7 @@ export default async function contentGet(req: express.Request, res: express.Resp
 	/**
 	 * Serve React app (our frontend)
 	 */
-	if (subDomain.match(appSubdomain)) {
+	if (subDomain.match(`${appSubdomain}`)) {
 		const docRoot = path.join(baseDir, "frontend");
 		const filePath = uri === "/" ? "index.html" : uri.slice(1);
 
@@ -27,7 +27,7 @@ export default async function contentGet(req: express.Request, res: express.Resp
 	/**
 	 * Serve deployed projects
 	 */
-	if (subDomain.match(appSubdomainPrefixDeployedProjects)) {
+	if (subDomain.match(`${appDeploySubdomainPrefix}`)) {
 		const repoId = subDomain.split("-")[1];
 		const filePath = uri === "/" ? "index.html" : uri.slice(1);
 
@@ -40,6 +40,8 @@ export default async function contentGet(req: express.Request, res: express.Resp
 			return res.status(404).json({ message: `Something went wrong, id: ${repoId}`, ok: false });
 		}
 
+		let attempts = 0;
+
 		// Provide the requested file if it exists or redirect to index.html
 		return (async function returnObject(filePath: string) {
 			const responseObject = await getObject({
@@ -47,7 +49,15 @@ export default async function contentGet(req: express.Request, res: express.Resp
 			});
 
 			if (!responseObject || !responseObject.Body) {
-				return returnObject("index.html");
+				if (attempts < 3) {
+					attempts++;
+
+					return returnObject("index.html");
+				} else {
+					return res
+						.status(404)
+						.json({ message: `Something went wrong, id: ${repoId}`, ok: false });
+				}
 			}
 
 			res.set("Content-Type", responseObject.ContentType);

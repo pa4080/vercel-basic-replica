@@ -1,36 +1,60 @@
 import express from "express";
 
-import { mongoRepoGetAll, mongoRepoGetById } from "@/utils/mongodb";
+import { ProjectApiResponse } from "@/types";
+import { mongoProjectGetAll, mongoProjectGetById } from "@/utils/mongodb";
 
 /**
  * Get all projects or a single project
  */
 export default async function projectGet(req: express.Request, res: express.Response) {
 	const id = req.query.id || req.params.id;
+	let response: ProjectApiResponse;
 
 	/**
 	 * Get all projects if no Id is provided
 	 */
 	if (!id) {
-		const projects = await mongoRepoGetAll();
+		const projects = await mongoProjectGetAll();
 
-		if (!projects) {
-			return res
-				.status(404)
-				.json({ message: "Something went wrong, cannot get the projects.", ok: false });
+		if (projects) {
+			response = {
+				data: projects,
+				ok: true,
+				statusCode: 200,
+				statusMessage: "OK",
+			};
+		} else {
+			response = {
+				data: null,
+				ok: false,
+				statusCode: 404,
+				statusMessage: "Error. Cannot get the projects.",
+			};
 		}
 
-		return res.status(200).json({ data: projects, ok: true });
+		return res.status(response.statusCode).json(response);
 	}
 
 	/**
 	 * Get a single project
 	 */
-	const project = await mongoRepoGetById(id as string);
+	const project = await mongoProjectGetById(id as string);
 
-	if (!project) {
-		return res.status(404).json({ message: `Something went wrong, id: ${id}`, ok: false });
+	if (project) {
+		response = {
+			data: project,
+			ok: true,
+			statusCode: 200,
+			statusMessage: `Project found, id: ${id}`,
+		};
+	} else {
+		response = {
+			data: null,
+			ok: false,
+			statusCode: 404,
+			statusMessage: `Something went wrong, id: ${id}`,
+		};
 	}
 
-	return res.status(200).json({ data: project, ok: true });
+	return res.status(response.statusCode).json(response);
 }

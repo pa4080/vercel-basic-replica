@@ -3,7 +3,7 @@ import React from "react";
 import { useForm } from "react-hook-form";
 import * as z from "zod";
 
-import { appBaseURL, appUriProject } from "@/env";
+import { ProjectData } from "@project/types";
 
 import { Button } from "@/components/ui/button";
 import {
@@ -31,17 +31,19 @@ export const ProjectAddSchema = z.object({
 	projectName: z.string(),
 	framework: z.union([z.literal("react"), z.literal("astro")]),
 	targetBranch: z.string(),
-	outDir: z.string(),
+	buildOutDir: z.string(),
 });
 
 export type ProjectAddSchema = z.infer<typeof ProjectAddSchema>;
 
 interface Props {
 	className?: string;
-	closeCb: () => void;
+	dialogClose: () => void;
+	apiUrl: string;
+	setProjects: React.Dispatch<React.SetStateAction<ProjectData[]>>;
 }
 
-const ProjectAdd: React.FC<Props> = ({ className, closeCb }) => {
+const ProjectForm: React.FC<Props> = ({ className, dialogClose, apiUrl, setProjects }) => {
 	const form = useForm<ProjectAddSchema>({
 		resolver: zodResolver(ProjectAddSchema),
 		defaultValues: {
@@ -49,14 +51,12 @@ const ProjectAdd: React.FC<Props> = ({ className, closeCb }) => {
 			projectName: "",
 			framework: "react",
 			targetBranch: "default",
-			outDir: "default",
+			buildOutDir: "default",
 		},
 	});
 
 	const onSubmit = async (data: ProjectAddSchema) => {
-		const URL = `${appBaseURL}/${appUriProject}`;
-
-		const response = await fetch(URL, {
+		await fetch(apiUrl, {
 			method: "POST",
 			body: JSON.stringify(data),
 			headers: {
@@ -65,12 +65,11 @@ const ProjectAdd: React.FC<Props> = ({ className, closeCb }) => {
 				Accept: "*/*",
 				Connection: "keep-alive",
 			},
-		});
-
-		// eslint-disable-next-line no-console
-		console.log(response);
-
-		closeCb && closeCb();
+		})
+			.then((res) => res.json())
+			.then(({ data }) => setProjects && setProjects((prev) => [...prev, data]))
+			.catch((err) => console.error(err))
+			.finally(() => dialogClose && dialogClose());
 	};
 
 	// Auto generate slug on the base of the title, if it is not set
@@ -174,7 +173,7 @@ const ProjectAdd: React.FC<Props> = ({ className, closeCb }) => {
 
 						<FormField
 							control={form.control}
-							name="outDir"
+							name="buildOutDir"
 							render={({ field }) => (
 								<FormItem>
 									<FormLabel>Build output directory</FormLabel>
@@ -197,7 +196,7 @@ const ProjectAdd: React.FC<Props> = ({ className, closeCb }) => {
 							variant="outline"
 							onClick={(e) => {
 								e.preventDefault();
-								closeCb && closeCb();
+								dialogClose && dialogClose();
 							}}
 						>
 							Close
@@ -212,4 +211,4 @@ const ProjectAdd: React.FC<Props> = ({ className, closeCb }) => {
 	);
 };
 
-export default ProjectAdd;
+export default ProjectForm;

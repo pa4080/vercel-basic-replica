@@ -33,7 +33,7 @@ const envSchema = z.object({
 	MONGODB_COLLECTION_PROJECTS: zStringReq(),
 	VITE_APP_BASE_DOMAIN: zStringReq(),
 	VITE_APP_SUBDOMAIN: zStringReq(),
-	VITE_APP_SUBDOMAIN_DEPLOY: zStringReq(),
+	VITE_APP_SUBDOMAIN_PROJECT: zStringReq(),
 	VITE_APP_URI_PROJECT: zStringReq(),
 });
 
@@ -59,7 +59,7 @@ const {
 	MONGODB_COLLECTION_PROJECTS,
 	VITE_APP_BASE_DOMAIN,
 	VITE_APP_SUBDOMAIN,
-	VITE_APP_SUBDOMAIN_DEPLOY,
+	VITE_APP_SUBDOMAIN_PROJECT,
 	VITE_APP_URI_PROJECT,
 } = process.env;
 
@@ -85,7 +85,7 @@ const parsedResults = envSchema.safeParse({
 	MONGODB_COLLECTION_PROJECTS,
 	VITE_APP_BASE_DOMAIN,
 	VITE_APP_SUBDOMAIN,
-	VITE_APP_SUBDOMAIN_DEPLOY,
+	VITE_APP_SUBDOMAIN_PROJECT,
 	VITE_APP_URI_PROJECT,
 });
 
@@ -114,5 +114,5 @@ export const mongoDbName = process.env.MONGODB_DB_NAME;
 export const mongoCollectionProjects = process.env.MONGODB_COLLECTION_PROJECTS;
 export const appBaseDomain = process.env.VITE_APP_BASE_DOMAIN;
 export const appSubdomain = process.env.VITE_APP_SUBDOMAIN;
-export const appSubdomainPrefixDeployedProjects = process.env.VITE_APP_SUBDOMAIN_DEPLOY;
+export const appDeploySubdomainPrefix = process.env.VITE_APP_SUBDOMAIN_PROJECT;
 export const appUriProject = process.env.VITE_APP_URI_PROJECT;

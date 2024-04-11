@@ -1,7 +1,9 @@
 import { MongoClient, ObjectId, ServerApiVersion } from "mongodb";
 
 import { mongoCollectionProjects, mongoDbName, mongoUrl } from "@/env";
-import { RepoDocument } from "@/types";
+import { ProjectDocument } from "@/types";
+
+import { projectDocumentToData } from "./projectDocToRepoData";
 
 // Create a MongoClient with a MongoClientOptions object to set the Stable API version
 const clientSettings = {
@@ -13,7 +15,14 @@ const clientSettings = {
 	tls: true,
 };
 
-export const mongoRepoIdentify = async (repoData: RepoDocument) => {
+/**
+ * console.log(result);
+ * {
+ * 	acknowledged: true,
+ * 	insertedId: new ObjectId('6616a9f66cdb002011b1b299')
+ * }
+ */
+export const mongoProjectInsert = async (repoData: Omit<ProjectDocument, "_id">) => {
 	const client = new MongoClient(mongoUrl, clientSettings);
 
 	try {
@@ -30,7 +39,7 @@ export const mongoRepoIdentify = async (repoData: RepoDocument) => {
 	}
 };
 
-export const mongoRepoUpdateStatus = async (id: string, status: RepoDocument["status"]) => {
+export const mongoProjectUpdateStatus = async (id: string, status: ProjectDocument["status"]) => {
 	const client = new MongoClient(mongoUrl, clientSettings);
 
 	try {
@@ -47,23 +56,21 @@ export const mongoRepoUpdateStatus = async (id: string, status: RepoDocument["st
 	}
 };
 
-export const mongoRepoGetById = async (id: string) => {
+export const mongoProjectGetById = async (objectId: string | ObjectId) => {
+	const _id = objectId instanceof ObjectId ? objectId : new ObjectId(objectId);
 	const client = new MongoClient(mongoUrl, clientSettings);
 
 	try {
 		await client.connect();
 		const db = client.db(mongoDbName);
 		const collection = db.collection(mongoCollectionProjects);
-		const result = await collection.findOne({ _id: new ObjectId(id) });
+		const result = (await collection.findOne({ _id })) as ProjectDocument;
 
-		const resultJson = result
-			? {
-					...result,
-					_id: result._id.toString(),
-				}
-			: null;
+		if (!result) {
+			throw new Error(`Project not found, id: ${_id.toString()}`);
+		}
 
-		return resultJson;
+		return projectDocumentToData(result);
 	} catch (error) {
 		console.error((error as Error).message);
 	} finally {
@@ -71,21 +78,34 @@ export const mongoRepoGetById = async (id: string) => {
 	}
 };
 
-export const mongoRepoGetAll = async () => {
+export const mongoProjectGetAll = async () => {
 	const client = new MongoClient(mongoUrl, clientSettings);
 
 	try {
 		await client.connect();
 		const db = client.db(mongoDbName);
 		const collection = db.collection(mongoCollectionProjects);
-		const result = await collection.find({}).toArray();
+		const result = (await collection.find({}).toArray()) as ProjectDocument[];
 
-		const resultJson = result.map((doc) => ({
-			...doc,
-			_id: doc._id.toString(),
-		}));
+		return result.map((doc) => projectDocumentToData(doc));
+	} catch (error) {
+		console.error((error as Error).message);
+	} finally {
+		await client.close();
+	}
+};
 
-		return resultJson;
+export const mongoProjectDeleteById = async (objectId: string | ObjectId) => {
+	const _id = objectId instanceof ObjectId ? objectId : new ObjectId(objectId);
+	const client = new MongoClient(mongoUrl, clientSettings);
+
+	try {
+		await client.connect();
+		const db = client.db(mongoDbName);
+		const collection = db.collection(mongoCollectionProjects);
+		const result = await collection.deleteOne({ _id });
+
+		return result.deletedCount;
 	} catch (error) {
 		console.error((error as Error).message);
 	} finally {

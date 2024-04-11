@@ -4,6 +4,7 @@ import express from "express";
 import { appUriProject } from "@/env";
 
 import contentGet from "./endpoints/contentGet";
+import projectDelete from "./endpoints/projectDelete";
 import projectGet from "./endpoints/projectGet";
 import projectPost from "./endpoints/projectPost";
 import { redisPublisher } from "./redis";
@@ -20,6 +21,9 @@ app.post(`/${appUriProject}`, projectPost);
 // Get all projects or a single project
 app.get(`/${appUriProject}`, projectGet);
 app.get(`/${appUriProject}/:id`, projectGet);
+
+// Delete a single project
+app.delete(`/${appUriProject}/:id`, projectDelete);
 
 // Serve React app (our frontend), or a deployed projects
 app.get("/*", contentGet);
