@@ -27,8 +27,9 @@ export default async function contentGet(req: express.Request, res: express.Resp
 	/**
 	 * Serve deployed projects
 	 */
-	if (subDomain.match(`${appDeploySubdomainPrefix}`)) {
+	if (subDomain.match(new RegExp(`^${appDeploySubdomainPrefix}`))) {
 		const repoId = subDomain.split("-")[1];
+
 		const filePath = uri === "/" ? "index.html" : uri.slice(1);
 
 		/**
@@ -63,12 +64,14 @@ export default async function contentGet(req: express.Request, res: express.Resp
 			res.set("Content-Type", responseObject.ContentType);
 
 			if (responseObject.ContentType?.match(/(image|font|video|audio|media)/)) {
-				res.set("Cache-Control", "public, max-age=31536000");
+				// res.set("Cache-Control", "public, max-age=31536000");
+				res.set("Cache-Control", "public, max-age=1");
+
+				return res.write(await responseObject.Body?.transformToByteArray(), "utf8");
 			}
 
-			return res.write(await responseObject.Body?.transformToByteArray(), "utf8");
 			// The following cause troubles wit binary files:
-			// res.send(await responseObject.Body?.transformToString("utf8"));
+			return res.send(await responseObject.Body?.transformToString("utf8"));
 			// res.end();
 		})(filePath);
 	}

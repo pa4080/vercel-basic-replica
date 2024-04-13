@@ -56,6 +56,23 @@ export const mongoProjectUpdateStatus = async (id: string, status: ProjectDocume
 	}
 };
 
+export const mongoProjectUpdate = async (id: string, update: Partial<ProjectDocument>) => {
+	const client = new MongoClient(mongoUrl, clientSettings);
+
+	try {
+		await client.connect();
+		const db = client.db(mongoDbName);
+		const collection = db.collection(mongoCollectionProjects);
+		const result = await collection.updateOne({ _id: new ObjectId(id) }, { $set: update });
+
+		return result.modifiedCount;
+	} catch (error) {
+		console.error((error as Error).message);
+	} finally {
+		await client.close();
+	}
+};
+
 export const mongoProjectGetById = async (objectId: string | ObjectId) => {
 	const _id = objectId instanceof ObjectId ? objectId : new ObjectId(objectId);
 	const client = new MongoClient(mongoUrl, clientSettings);

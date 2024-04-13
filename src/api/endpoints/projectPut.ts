@@ -1,14 +1,18 @@
 import express from "express";
 
 import { FrameworkType, ProjectApiResponse } from "@/types";
-import { mongoProjectGetById, mongoProjectInsert } from "@/utils/mongodb";
+import { mongoProjectGetById, mongoProjectUpdate } from "@/utils/mongodb";
 import { isValidGitHttpsUrl } from "@/utils/urlMatch";
 
 import { simpleGitCloneRepo } from "@/utils/simpleGitCloneRepo";
 
+import { uploadDirR2, uploadDirR2Build } from "@/env";
+import { getObjectListAndDelete } from "@/utils/aws";
+
 import { redisPublisher } from "../redis";
 
-export default async function projectPost(req: express.Request, res: express.Response) {
+export default async function projectPut(req: express.Request, res: express.Response) {
+	const projectId = req.query.id || req.params.id;
 	const repoUrl: string = req.body.repoUrl;
 	const targetBranch: string = req.body.targetBranch;
 	const framework: FrameworkType = req.body.framework;
@@ -19,7 +23,14 @@ export default async function projectPost(req: express.Request, res: express.Res
 	try {
 		isValidGitHttpsUrl(repoUrl);
 
-		const projectId = await mongoProjectInsert({
+		if (!projectId) {
+			throw new Error("Something went wrong, the project could not be created.");
+		}
+
+		await getObjectListAndDelete({ prefix: `${uploadDirR2}/${projectId}` });
+		await getObjectListAndDelete({ prefix: `${uploadDirR2Build}/${projectId}` });
+
+		const update_ok = await mongoProjectUpdate(projectId as string, {
 			status: "identifying",
 			date: new Date(),
 			projectName,
@@ -29,14 +40,10 @@ export default async function projectPost(req: express.Request, res: express.Res
 			buildOutDir,
 		});
 
-		if (!projectId) {
-			throw new Error("Something went wrong, the project could not be created.");
-		}
+		const project = await mongoProjectGetById(projectId as string);
 
-		const project = await mongoProjectGetById(projectId);
-
-		if (!project) {
-			throw new Error(`Something went wrong while getting a project, id: ${projectId.toString()}`);
+		if (!update_ok || !project) {
+			throw new Error(`Something went wrong while getting a project, id: ${projectId}`);
 		}
 
 		simpleGitCloneRepo({ project, redisPublisher });

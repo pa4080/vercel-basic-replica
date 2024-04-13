@@ -7,13 +7,13 @@ import { mongoProjectGetAll, mongoProjectGetById } from "@/utils/mongodb";
  * Get all projects or a single project
  */
 export default async function projectGet(req: express.Request, res: express.Response) {
-	const id = req.query.id || req.params.id;
+	const projectId = req.query.id || req.params.id;
 	let response: ProjectApiResponse;
 
 	/**
 	 * Get all projects if no Id is provided
 	 */
-	if (!id) {
+	if (!projectId) {
 		const projects = await mongoProjectGetAll();
 
 		if (projects) {
@@ -38,21 +38,21 @@ export default async function projectGet(req: express.Request, res: express.Resp
 	/**
 	 * Get a single project
 	 */
-	const project = await mongoProjectGetById(id as string);
+	const project = await mongoProjectGetById(projectId as string);
 
 	if (project) {
 		response = {
 			data: project,
 			ok: true,
 			statusCode: 200,
-			statusMessage: `Project found, id: ${id}`,
+			statusMessage: `Project found, id: ${projectId}`,
 		};
 	} else {
 		response = {
 			data: null,
 			ok: false,
 			statusCode: 404,
-			statusMessage: `Something went wrong, id: ${id}`,
+			statusMessage: `Something went wrong, id: ${projectId}`,
 		};
 	}
 

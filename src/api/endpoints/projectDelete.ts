@@ -1,6 +1,8 @@
 import express from "express";
 
+import { uploadDirR2, uploadDirR2Build } from "@/env";
 import { ProjectApiResponse } from "@/types";
+import { getObjectListAndDelete } from "@/utils/aws";
 import { mongoProjectDeleteById } from "@/utils/mongodb";
 
 /**
@@ -10,19 +12,20 @@ export default async function projectDelete(req: express.Request, res: express.R
 	const id = req.query.id || req.params.id;
 	let response: ProjectApiResponse;
 
-	/**
-	 * Get a single project
-	 */
-	const project = await mongoProjectDeleteById(id as string);
+	try {
+		await getObjectListAndDelete({ prefix: `${uploadDirR2}/${id}` });
+		await getObjectListAndDelete({ prefix: `${uploadDirR2Build}/${id}` });
+		await mongoProjectDeleteById(id as string);
 
-	if (project) {
 		response = {
-			data: project,
+			data: null,
 			ok: true,
-			statusCode: 200,
+			statusCode: 204,
 			statusMessage: `Project found, id: ${id}`,
 		};
-	} else {
+	} catch (error) {
+		console.error(error);
+
 		response = {
 			data: null,
 			ok: false,

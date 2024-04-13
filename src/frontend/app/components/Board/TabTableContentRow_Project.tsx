@@ -16,6 +16,7 @@ import { useAppContext } from "@/contexts/AppContext";
 
 import { UrlToAnchor } from "../atoms/UrlToAnchor";
 import DeleteConfirm from "../DeleteConfirm";
+import ProjectAddDialog from "../ProjectAdd";
 
 interface Props {
 	className?: string;
@@ -25,6 +26,9 @@ interface Props {
 const ProjectRow: React.FC<Props> = ({ className, project }) => {
 	const { _id, projectName, status, repoUrl, deployUrl } = project;
 	const { deleteProject } = useAppContext();
+
+	const dropdownMenuItemClassName =
+		"relative flex cursor-default select-none items-center rounded-sm px-2 py-1.5 text-sm outline-none transition-colors focus:bg-accent focus:text-accent-foreground data-[disabled]:pointer-events-none data-[disabled]:opacity-50 hover:bg-slate-100";
 
 	return (
 		<TableRow key={_id} className={className}>
@@ -64,6 +68,10 @@ const ProjectRow: React.FC<Props> = ({ className, project }) => {
 					<DropdownMenuContent align="end" className="w-fit min-w-fit p-1">
 						<DropdownMenuLabel>Actions</DropdownMenuLabel>
 
+						<ProjectAddDialog project={project}>
+							<div className={dropdownMenuItemClassName}>Edit</div>
+						</ProjectAddDialog>
+
 						<DeleteConfirm
 							actionCallback={deleteProject}
 							keyword={_id}
@@ -74,9 +82,7 @@ const ProjectRow: React.FC<Props> = ({ className, project }) => {
 								inputDescription: "This action is irreversible!",
 							}}
 						>
-							<div className="relative flex cursor-default select-none items-center rounded-sm px-2 py-1.5 text-sm outline-none transition-colors focus:bg-accent focus:text-accent-foreground data-[disabled]:pointer-events-none data-[disabled]:opacity-50 hover:bg-slate-100">
-								Delete
-							</div>
+							<div className={dropdownMenuItemClassName}>Delete</div>
 						</DeleteConfirm>
 					</DropdownMenuContent>
 				</DropdownMenu>

@@ -7,6 +7,7 @@ import contentGet from "./endpoints/contentGet";
 import projectDelete from "./endpoints/projectDelete";
 import projectGet from "./endpoints/projectGet";
 import projectPost from "./endpoints/projectPost";
+import projectPut from "./endpoints/projectPut";
 import projectsDeleteAll from "./endpoints/projectsDeleteAll";
 import { redisPublisher } from "./redis";
 
@@ -19,17 +20,22 @@ app.use(express.json());
 // Create a new project
 app.post(`/${appUriProject}`, projectPost);
 
-// Get all projects or a single project
-app.get(`/${appUriProject}`, projectGet);
+// Update a project
+app.put(`/${appUriProject}/:id`, projectPut);
+
+// Get a project
 app.get(`/${appUriProject}/:id`, projectGet);
+
+// Get all projects
+app.get(`/${appUriProject}`, projectGet);
 
 // Delete a single project
 app.delete(`/${appUriProject}/:id`, projectDelete);
 
-// Delete a single project
+// Delete all projects
 app.delete(`/${appUriProjects}`, projectsDeleteAll);
 
-// Serve React app (our frontend), or a deployed projects
+// Serve the React app (our frontend), or a deployed projects
 app.get("/*", contentGet);
 
 // Start the server

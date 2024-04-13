@@ -4,6 +4,7 @@ import { useForm } from "react-hook-form";
 import * as z from "zod";
 
 import { ProjectData } from "@project/types";
+import { gitHttpsUrlRegex } from "@project/utils/urlMatch";
 
 import { Button } from "@/components/ui/button";
 import {
@@ -24,28 +25,31 @@ import {
 } from "@/components/ui/select";
 import { cn } from "@/lib/cn-utils";
 
+import { useAppContext } from "@/contexts/AppContext";
+
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "../ui/form";
 
-export const ProjectAddSchema = z.object({
-	repoUrl: z.string().url(),
+export const ProjectSchema = z.object({
+	repoUrl: z.string().url().regex(gitHttpsUrlRegex),
 	projectName: z.string(),
 	framework: z.union([z.literal("react"), z.literal("astro")]),
 	targetBranch: z.string(),
 	buildOutDir: z.string(),
 });
 
-export type ProjectAddSchema = z.infer<typeof ProjectAddSchema>;
+export type ProjectSchemaType = z.infer<typeof ProjectSchema>;
 
 interface Props {
 	className?: string;
 	dialogClose: () => void;
-	apiUrl: string;
-	setProjects: React.Dispatch<React.SetStateAction<ProjectData[]>>;
+	project?: ProjectData;
 }
 
-const ProjectForm: React.FC<Props> = ({ className, dialogClose, apiUrl, setProjects }) => {
-	const form = useForm<ProjectAddSchema>({
-		resolver: zodResolver(ProjectAddSchema),
+const ProjectForm: React.FC<Props> = ({ className, dialogClose, project }) => {
+	const { createProject, updateProject } = useAppContext();
+
+	const form = useForm<ProjectSchemaType>({
+		resolver: zodResolver(ProjectSchema),
 		defaultValues: {
 			repoUrl: "",
 			projectName: "",
@@ -53,23 +57,17 @@ const ProjectForm: React.FC<Props> = ({ className, dialogClose, apiUrl, setProje
 			targetBranch: "default",
 			buildOutDir: "default",
 		},
+		values: project,
 	});
 
-	const onSubmit = async (data: ProjectAddSchema) => {
-		await fetch(apiUrl, {
-			method: "POST",
-			body: JSON.stringify(data),
-			headers: {
-				"Content-Type": "application/json",
-				"Accept-Encoding": "gzip, deflate, br",
-				Accept: "*/*",
-				Connection: "keep-alive",
-			},
-		})
-			.then((res) => res.json())
-			.then(({ data }) => setProjects && setProjects((prev) => [...prev, data]))
-			.catch((err) => console.error(err))
-			.finally(() => dialogClose && dialogClose());
+	const onSubmit = async (data: ProjectSchemaType) => {
+		if (project) {
+			await updateProject(project._id, data);
+			dialogClose && dialogClose();
+		} else {
+			await createProject(data);
+			dialogClose && dialogClose();
+		}
 	};
 
 	// Auto generate slug on the base of the title, if it is not set
@@ -78,7 +76,10 @@ const ProjectForm: React.FC<Props> = ({ className, dialogClose, apiUrl, setProje
 			form.getValues("repoUrl") &&
 			(!form.getValues("projectName") || form.getValues("projectName") === "")
 		) {
-			form.setValue("projectName", new URL(form.getValues("repoUrl")).pathname.slice(1));
+			form.setValue(
+				"projectName",
+				new URL(form.getValues("repoUrl")).pathname.slice(1).replace(/\.git$/, "")
+			);
 		}
 	};
 

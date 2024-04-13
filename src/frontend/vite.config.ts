@@ -10,6 +10,7 @@ export default defineConfig({
 	resolve: {
 		alias: {
 			"@": path.resolve(__dirname, "./app"),
+			"@project": path.resolve(__dirname, "../"),
 		},
 	},
 	// https://stackoverflow.com/questions/66863200/changing-the-input-and-output-directory-in-vite

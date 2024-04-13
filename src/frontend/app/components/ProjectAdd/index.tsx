@@ -8,11 +8,10 @@ import ProjectForm from "./Form";
 
 interface Props {
 	children: React.ReactNode;
-	apiUrl: string;
-	setProjects: React.Dispatch<React.SetStateAction<ProjectData[]>>;
+	project?: ProjectData;
 }
 
-const ProjectDialog: React.FC<Props> = ({ children, apiUrl, setProjects }) => {
+const ProjectAddDialog: React.FC<Props> = ({ children, project }) => {
 	const [isDialogOpen, setIsDialogOpen] = React.useState(false);
 
 	return (
@@ -23,14 +22,13 @@ const ProjectDialog: React.FC<Props> = ({ children, apiUrl, setProjects }) => {
 				closeOnOverlayClick={false}
 			>
 				<ProjectForm
-					apiUrl={apiUrl}
 					className="bg-transparent border-0 shadow-none -mb-2"
 					dialogClose={() => setIsDialogOpen(false)}
-					setProjects={setProjects}
+					project={project}
 				/>
 			</DialogContent>
 		</Dialog>
 	);
 };
 
-export default ProjectDialog;
+export default ProjectAddDialog;

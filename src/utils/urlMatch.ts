@@ -1,5 +1,7 @@
-export function isValidUrl(url: string) {
-	return new RegExp(
-		"^https?:\\/\\/(www\\.)?[-a-zA-Z0-9@:%._\\+~#=]{1,256}\\.[a-zA-Z0-9()]{1,6}\\b([-a-zA-Z0-9()@:%_\\+.~#?&//=]*)$"
-	).test(url);
+export const gitHttpsUrlRegex = new RegExp(
+	"^https?:\\/\\/(www\\.)?[-a-zA-Z0-9@:%._\\+~#=]{1,256}\\.[a-zA-Z0-9()]{1,6}\\b([-a-zA-Z0-9()@:%_\\+.~#?&//=]*)\\.git$"
+);
+
+export function isValidGitHttpsUrl(url: string) {
+	return gitHttpsUrlRegex.test(url);
 }
