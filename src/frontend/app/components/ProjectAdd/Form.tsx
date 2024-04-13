@@ -33,8 +33,8 @@ export const ProjectSchema = z.object({
 	repoUrl: z.string().url().regex(gitHttpsUrlRegex),
 	projectName: z.string(),
 	framework: z.union([z.literal("react"), z.literal("astro")]),
-	targetBranch: z.string(),
-	buildOutDir: z.string(),
+	targetBranch: z.string().min(1, { message: "Required!" }),
+	buildOutDir: z.string().min(1, { message: "Required!" }),
 });
 
 export type ProjectSchemaType = z.infer<typeof ProjectSchema>;
@@ -47,6 +47,7 @@ interface Props {
 
 const ProjectForm: React.FC<Props> = ({ className, dialogClose, project }) => {
 	const { createProject, updateProject } = useAppContext();
+	const [submit, setSubmit] = React.useState(false);
 
 	const form = useForm<ProjectSchemaType>({
 		resolver: zodResolver(ProjectSchema),
@@ -61,12 +62,20 @@ const ProjectForm: React.FC<Props> = ({ className, dialogClose, project }) => {
 	});
 
 	const onSubmit = async (data: ProjectSchemaType) => {
-		if (project) {
-			await updateProject(project._id, data);
-			dialogClose && dialogClose();
-		} else {
-			await createProject(data);
-			dialogClose && dialogClose();
+		try {
+			setSubmit(true);
+
+			if (project) {
+				await updateProject(project._id, data);
+				dialogClose && dialogClose();
+			} else {
+				await createProject(data);
+				dialogClose && dialogClose();
+			}
+		} catch (error) {
+			console.error(error);
+		} finally {
+			setSubmit(false);
 		}
 	};
 
@@ -161,7 +170,7 @@ const ProjectForm: React.FC<Props> = ({ className, dialogClose, project }) => {
 									<FormLabel>Branch to deploy</FormLabel>
 									<FormControl>
 										<Input
-											placeholder={`Leave it blank or use "default" for the default branch`}
+											placeholder={`Use "default" for the default branch`}
 											{...field}
 											onBlur={autoGeneratePrjName}
 											onFocus={autoGeneratePrjName}
@@ -180,7 +189,7 @@ const ProjectForm: React.FC<Props> = ({ className, dialogClose, project }) => {
 									<FormLabel>Build output directory</FormLabel>
 									<FormControl>
 										<Input
-											placeholder={`Leave it blank or use "default" for autodetect`}
+											placeholder={`Use "default" for autodetect`}
 											{...field}
 											onBlur={autoGeneratePrjName}
 											onFocus={autoGeneratePrjName}
@@ -202,7 +211,11 @@ const ProjectForm: React.FC<Props> = ({ className, dialogClose, project }) => {
 						>
 							Close
 						</Button>
-						<Button className="w-full" type="submit">
+						<Button
+							className="w-full"
+							disabled={form.formState.isSubmitting || submit}
+							type="submit"
+						>
 							{project ? "Update project" : "Deploy project"}
 						</Button>
 					</CardFooter>

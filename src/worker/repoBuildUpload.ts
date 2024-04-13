@@ -2,6 +2,7 @@ import { uploadDirR2Build } from "@/env";
 import { uploadObjectList } from "@/utils/aws";
 import { findRepoBuildDir } from "@/utils/findRepoBuildDir";
 import { getFileList } from "@/utils/getFileListRecursively";
+import { mongoProjectGetById, mongoProjectUpdateStatus } from "@/utils/mongodb";
 
 export const repoBuildUpload = async ({ projectId }: { projectId: string | undefined }) => {
 	try {
@@ -11,9 +12,15 @@ export const repoBuildUpload = async ({ projectId }: { projectId: string | undef
 			throw new Error("🔥  Build project: repoId is required!");
 		}
 
-		const repoBuildDir = await findRepoBuildDir({ repoId: projectId });
+		const project = await mongoProjectGetById(projectId);
+
+		const repoBuildDir =
+			project?.buildOutDir && project?.buildOutDir !== "default"
+				? project?.buildOutDir
+				: await findRepoBuildDir({ projectId });
 
 		if (!repoBuildDir) {
+			mongoProjectUpdateStatus(projectId, "error");
 			throw new Error(`🔥  Build project: build dir not found, repoId: ${projectId}`);
 		}
 

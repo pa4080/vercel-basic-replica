@@ -46,7 +46,7 @@ const ProjectRow: React.FC<Props> = ({ className, project }) => {
 			<TableCell className="font-medium">{projectName}</TableCell>
 			<TableCell>
 				<Badge
-					className={`${status !== "deployed" ? "animate-pulse" : "border-blue-400"} w-24 justify-center`}
+					className={`${status !== "deployed" ? "animate-pulse" : "border-blue-400"} w-28 justify-center`}
 					variant="outline"
 				>
 					{status}

@@ -64,20 +64,13 @@ export default async function contentGet(req: express.Request, res: express.Resp
 
 			res.set("Content-Type", responseObject.ContentType);
 
+			if (responseObject.ContentType?.match(/(font|image|video|media)/)) {
+				res.set("Cache-Control", "public, max-age=31536000");
+			}
+
 			const readStream = responseObject.Body as Readable;
 
 			return readStream.pipe(res);
-
-			// if (responseObject.ContentType?.match(/(font)/)) {
-			// 	// res.set("Cache-Control", "public, max-age=31536000");
-			// 	res.set("Cache-Control", "public, max-age=1");
-
-			// 	return res.write(await responseObject.Body?.transformToByteArray(), "utf8");
-			// }
-
-			// The following cause troubles wit binary files:
-			// return res.send(await responseObject.Body?.transformToString("utf8"));
-			// res.end();
 		})(filePath);
 	}
 

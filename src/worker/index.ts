@@ -1,8 +1,9 @@
 import { uploadDirR2 } from "@/env";
 import { getObjectListAndDelete, getObjectListAndDownload } from "@/utils/aws";
-import { getRepoTmpDir } from "@/utils/getDirectory";
 
 import { mongoProjectUpdateStatus } from "@/utils/mongodb";
+
+import { getRepoTmpDir } from "@/utils/getDirectory";
 
 import { commandOptions, redisSubscriber } from "./redis";
 import { repoBuild } from "./repoBuild";
@@ -37,6 +38,7 @@ async function main() {
 			await mongoProjectUpdateStatus(repoId, "building"); // Update the status of the repo
 			await getObjectListAndDownload({ repoId }); // Download objects from R2/S3
 			await repoBuild({ repoId }); // Build the project
+
 			await mongoProjectUpdateStatus(repoId, "deploying"); // Update the status of the repo
 			await repoBuildUpload({ projectId: repoId }); // Upload objects to R2/S3
 
@@ -45,7 +47,6 @@ async function main() {
 			await getObjectListAndDelete({ prefix: `${uploadDirR2}/${repoId}` });
 
 			process.stdout.write(`✨  Deploying finished, repoId: ${repoId}\n`);
-			// await redisPublisher.hSet("status", repoId, "deployed"); // Update the status of the repo
 			await mongoProjectUpdateStatus(repoId, "deployed");
 		} catch (error) {
 			console.error("🔥  Something went wrong with the deploy service!");
