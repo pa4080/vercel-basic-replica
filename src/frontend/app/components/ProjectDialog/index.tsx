@@ -4,7 +4,7 @@ import { ProjectData } from "@project/types";
 
 import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/dialog";
 
-import ProjectForm from "./ProjectForm";
+import ProjectForm from "./Form";
 
 interface Props {
 	children: React.ReactNode;

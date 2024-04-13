@@ -1,6 +1,14 @@
 import { cn } from "@/lib/cn-utils";
 
-export function UrlToAnchor({ url, className }: { url: string; className?: string }) {
+export function UrlToAnchor({
+	url,
+	label,
+	className,
+}: {
+	url: string;
+	label: string;
+	className?: string;
+}) {
 	return (
 		<a
 			className={cn("text-blue-600 underline-offset-3 hover:underline", className)}
@@ -8,7 +16,7 @@ export function UrlToAnchor({ url, className }: { url: string; className?: strin
 			rel="noreferrer"
 			target="_blank"
 		>
-			{url.replace(/^https?:\/\//, "")}
+			{label.replace(/^https?:\/\//, "")}
 		</a>
 	);
 }

@@ -8,8 +8,8 @@ import { isValidUrl } from "@/utils/urlMatch";
  * Create a new project
  *
  * TODO:
- *  - 1a) Divide the function in to two parts
- *  - 1b) First identify the project, and give a response with the DB object
+ *  x 1a) Divide the function in to two parts
+ *  x 1b) First identify the project, and give a response with the DB object
  *  - 1c) Before the response call the second part un-synchronously
  * 	- 2a) Clone the repo
  *  - 2b) Upload the files
