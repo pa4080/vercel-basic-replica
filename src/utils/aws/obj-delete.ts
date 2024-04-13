@@ -49,7 +49,7 @@ export const getObjectListAndDelete = async ({
 	prefix?: string;
 	bucket?: string;
 	log?: boolean;
-}) => {
+} = {}) => {
 	const objects = await listObjects({ bucket, prefix, log: false });
 
 	const slicedObjects = [];

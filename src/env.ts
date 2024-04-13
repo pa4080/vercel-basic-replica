@@ -35,6 +35,7 @@ const envSchema = z.object({
 	VITE_APP_SUBDOMAIN: zStringReq(),
 	VITE_APP_SUBDOMAIN_PROJECT: zStringReq(),
 	VITE_APP_URI_PROJECT: zStringReq(),
+	VITE_PROJECT_HOME: zStringReq(),
 });
 
 const {
@@ -61,6 +62,7 @@ const {
 	VITE_APP_SUBDOMAIN,
 	VITE_APP_SUBDOMAIN_PROJECT,
 	VITE_APP_URI_PROJECT,
+	VITE_PROJECT_HOME,
 } = process.env;
 
 const parsedResults = envSchema.safeParse({
@@ -87,6 +89,7 @@ const parsedResults = envSchema.safeParse({
 	VITE_APP_SUBDOMAIN,
 	VITE_APP_SUBDOMAIN_PROJECT,
 	VITE_APP_URI_PROJECT,
+	VITE_PROJECT_HOME,
 });
 
 if (!parsedResults.success) {
@@ -116,3 +119,4 @@ export const appBaseDomain = process.env.VITE_APP_BASE_DOMAIN;
 export const appSubdomain = process.env.VITE_APP_SUBDOMAIN;
 export const appDeploySubdomainPrefix = process.env.VITE_APP_SUBDOMAIN_PROJECT;
 export const appUriProject = process.env.VITE_APP_URI_PROJECT;
+export const appUriProjects = `${appUriProject}s`;

@@ -1,7 +1,7 @@
 import { Toaster } from "@/components/ui/sonner";
 
 import Board from "./components/Board";
-import SideNav from "./components/Sideabar";
+import SideNav from "./components/SideNav";
 import { AppContextProvider } from "./contexts/AppContext";
 
 export default function App() {

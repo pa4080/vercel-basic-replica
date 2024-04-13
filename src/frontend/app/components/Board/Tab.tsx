@@ -1,8 +1,9 @@
-import { FrameworkTypeAll, ProjectData } from "@project/types";
+import { FrameworkTypeAll } from "@project/types";
 
 import { useState } from "react";
 
-import { Table } from "@/components/ui/table";
+import { Table, TableBody } from "@/components/ui/table";
+import { appProjectHome } from "@/env-frontend";
 
 import {
 	Card,
@@ -14,16 +15,20 @@ import {
 } from "@/components/ui/card";
 import { TabsContent } from "@/components/ui/tabs";
 
+import { useAppContext } from "@/contexts/AppContext";
+
+import { UrlToAnchor } from "../atoms/UrlToAnchor";
+import ProjectRowSkeleton from "./TabTableContentRow_Skeleton";
 import ProjectList from "./TabTableContent_ProjectList";
 import TabTableHeader from "./TabTableHeader";
 
 interface Props {
 	className?: string;
-	projects: ProjectData[] | undefined;
 	framework: FrameworkTypeAll;
 }
 
-const Tab: React.FC<Props> = ({ projects, className, framework }) => {
+const Tab: React.FC<Props> = ({ className, framework }) => {
+	const { projects } = useAppContext();
 	const [orderDirection, setOrderDirection] = useState<boolean>(true);
 
 	return (
@@ -37,19 +42,28 @@ const Tab: React.FC<Props> = ({ projects, className, framework }) => {
 					<Table>
 						<TabTableHeader orderDirection={orderDirection} setOrderDirection={setOrderDirection} />
 
-						<ProjectList
-							orderDirection={orderDirection}
-							projects={projects?.filter(
-								(project) => framework === "all" || project.framework === framework
-							)}
-						/>
+						{projects && projects.length > 0 ? (
+							<ProjectList
+								orderDirection={orderDirection}
+								projects={projects?.filter(
+									(project) => framework === "all" || project.framework === framework
+								)}
+							/>
+						) : (
+							<TableBody className={className}>
+								{Array.from({ length: 5 }).map((_, i) => (
+									<ProjectRowSkeleton key={i} />
+								))}
+							</TableBody>
+						)}
 					</Table>
 				</CardContent>
 				<CardFooter>
-					<div className="text-xs text-muted-foreground">Project homepage: www...</div>
+					<div className="text-xs text-muted-foreground">
+						Project homepage: <UrlToAnchor label={appProjectHome} url={appProjectHome} />
+					</div>
 				</CardFooter>
 			</Card>
-			{/*  */}
 		</TabsContent>
 	);
 };

@@ -15,12 +15,12 @@ interface Props {
 }
 
 const TopActions: React.FC<Props> = ({ className }) => {
-	const { deleteProject, apiUrl, setProjects } = useAppContext();
+	const { deleteAllProjects, apiUrl, setProjects } = useAppContext();
 
 	return (
 		<div className={cn("ml-auto flex items-center gap-2", className)}>
 			<DeleteConfirm
-				actionCallback={(deleteKeyword) => deleteProject(deleteKeyword)}
+				actionCallback={deleteAllProjects}
 				keyword="Delete All Pr0j3ct$"
 				messages={{
 					defaultButtonText: "Delete all",

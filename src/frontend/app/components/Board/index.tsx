@@ -1,7 +1,5 @@
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
-import { useAppContext } from "@/contexts/AppContext";
-
 import Tab from "./Tab";
 import TopActions from "./TopActions";
 
@@ -9,8 +7,6 @@ interface Props {
 	className?: string;
 }
 const Board: React.FC<Props> = ({ className }) => {
-	const { projects } = useAppContext();
-
 	return (
 		<Tabs className={className} defaultValue="all">
 			<div className="flex items-center">
@@ -23,9 +19,9 @@ const Board: React.FC<Props> = ({ className }) => {
 				<TopActions />
 			</div>
 
-			<Tab framework="all" projects={projects} />
-			<Tab framework="react" projects={projects} />
-			<Tab framework="astro" projects={projects} />
+			<Tab framework="all" />
+			<Tab framework="react" />
+			<Tab framework="astro" />
 		</Tabs>
 	);
 };

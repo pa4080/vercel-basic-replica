@@ -1,12 +1,13 @@
 import cors from "cors";
 import express from "express";
 
-import { appUriProject } from "@/env";
+import { appUriProject, appUriProjects } from "@/env";
 
 import contentGet from "./endpoints/contentGet";
 import projectDelete from "./endpoints/projectDelete";
 import projectGet from "./endpoints/projectGet";
 import projectPost from "./endpoints/projectPost";
+import projectsDeleteAll from "./endpoints/projectsDeleteAll";
 import { redisPublisher } from "./redis";
 
 const port = process.env.UPLOAD_SERVICE_PORT || 3001;
@@ -24,6 +25,9 @@ app.get(`/${appUriProject}/:id`, projectGet);
 
 // Delete a single project
 app.delete(`/${appUriProject}/:id`, projectDelete);
+
+// Delete a single project
+app.delete(`/${appUriProjects}`, projectsDeleteAll);
 
 // Serve React app (our frontend), or a deployed projects
 app.get("/*", contentGet);
