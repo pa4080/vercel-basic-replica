@@ -203,7 +203,7 @@ const ProjectForm: React.FC<Props> = ({ className, dialogClose, project }) => {
 							Close
 						</Button>
 						<Button className="w-full" type="submit">
-							Deploy
+							{project ? "Update project" : "Deploy project"}
 						</Button>
 					</CardFooter>
 				</Card>

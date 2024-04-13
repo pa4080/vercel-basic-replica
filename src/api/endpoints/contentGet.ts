@@ -5,6 +5,7 @@ import { getObject } from "@/utils/aws";
 import { getCachedRepo } from "@/utils/cacheUtils";
 
 import path from "path";
+import { Readable } from "stream"; // https://stackoverflow.com/a/67373050/6543935
 
 /**
  * Serve React app (our frontend) or deployed projects
@@ -63,15 +64,19 @@ export default async function contentGet(req: express.Request, res: express.Resp
 
 			res.set("Content-Type", responseObject.ContentType);
 
-			if (responseObject.ContentType?.match(/(image|font|video|audio|media)/)) {
-				// res.set("Cache-Control", "public, max-age=31536000");
-				res.set("Cache-Control", "public, max-age=1");
+			const readStream = responseObject.Body as Readable;
 
-				return res.write(await responseObject.Body?.transformToByteArray(), "utf8");
-			}
+			return readStream.pipe(res);
+
+			// if (responseObject.ContentType?.match(/(font)/)) {
+			// 	// res.set("Cache-Control", "public, max-age=31536000");
+			// 	res.set("Cache-Control", "public, max-age=1");
+
+			// 	return res.write(await responseObject.Body?.transformToByteArray(), "utf8");
+			// }
 
 			// The following cause troubles wit binary files:
-			return res.send(await responseObject.Body?.transformToString("utf8"));
+			// return res.send(await responseObject.Body?.transformToString("utf8"));
 			// res.end();
 		})(filePath);
 	}

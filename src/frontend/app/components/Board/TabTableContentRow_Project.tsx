@@ -28,7 +28,7 @@ const ProjectRow: React.FC<Props> = ({ className, project }) => {
 	const { deleteProject } = useAppContext();
 
 	const dropdownMenuItemClassName =
-		"relative flex cursor-default select-none items-center rounded-sm px-2 py-1.5 text-sm outline-none transition-colors focus:bg-accent focus:text-accent-foreground data-[disabled]:pointer-events-none data-[disabled]:opacity-50 hover:bg-slate-100";
+		"relative flex cursor-default select-none items-center rounded-sm px-4 py-1.5 text-sm outline-none transition-colors focus:bg-accent focus:text-accent-foreground data-[disabled]:pointer-events-none data-[disabled]:opacity-50 hover:bg-slate-100";
 
 	return (
 		<TableRow key={_id} className={className}>
@@ -45,18 +45,24 @@ const ProjectRow: React.FC<Props> = ({ className, project }) => {
 			</TableCell>
 			<TableCell className="font-medium">{projectName}</TableCell>
 			<TableCell>
-				<Badge variant="outline">{status}</Badge>
-			</TableCell>
-			<TableCell className="hidden lg:table-cell">
-				<UrlToAnchor className="text-blue-500 line-clamp-1" label={repoUrl} url={repoUrl} />
+				<Badge
+					className={`${status !== "deployed" ? "animate-pulse" : "border-blue-400"} w-24 justify-center`}
+					variant="outline"
+				>
+					{status}
+				</Badge>
 			</TableCell>
 			<TableCell className="hidden md:table-cell">
 				<UrlToAnchor
-					className="text-purple-500 line-clamp-1"
+					className="text-blue-500 line-clamp-1"
 					label={deployUrl.replace(new RegExp(_id), "..")}
 					url={deployUrl}
 				/>
 			</TableCell>
+			<TableCell className="hidden lg:table-cell">
+				<UrlToAnchor className="text-purple-500 line-clamp-1" label={repoUrl} url={repoUrl} />
+			</TableCell>
+
 			<TableCell className="text-right">
 				<DropdownMenu>
 					<DropdownMenuTrigger asChild>
@@ -65,8 +71,8 @@ const ProjectRow: React.FC<Props> = ({ className, project }) => {
 							<span className="sr-only">Toggle menu</span>
 						</Button>
 					</DropdownMenuTrigger>
-					<DropdownMenuContent align="end" className="w-fit min-w-fit p-1">
-						<DropdownMenuLabel>Actions</DropdownMenuLabel>
+					<DropdownMenuContent align="end" className="w-fit min-w-fit py-1 px-1">
+						<DropdownMenuLabel className="px-4">Actions</DropdownMenuLabel>
 
 						<ProjectAddDialog project={project}>
 							<div className={dropdownMenuItemClassName}>Edit</div>

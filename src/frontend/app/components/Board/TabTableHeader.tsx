@@ -18,8 +18,8 @@ const TabTableHeader: React.FC<Props> = ({ className, orderDirection, setOrderDi
 				</TableHead>
 				<TableHead>Name</TableHead>
 				<TableHead>Status</TableHead>
-				<TableHead className="hidden md:table-cell">Repo</TableHead>
 				<TableHead className="hidden md:table-cell">URL</TableHead>
+				<TableHead className="hidden md:table-cell">Repo</TableHead>
 
 				<TableHead className="flex flex-row items-center justify-end">
 					<Button

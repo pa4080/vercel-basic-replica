@@ -38,7 +38,7 @@ async function main() {
 			await getObjectListAndDownload({ repoId }); // Download objects from R2/S3
 			await repoBuild({ repoId }); // Build the project
 			await mongoProjectUpdateStatus(repoId, "deploying"); // Update the status of the repo
-			await repoBuildUpload({ repoId }); // Upload objects to R2/S3
+			await repoBuildUpload({ projectId: repoId }); // Upload objects to R2/S3
 
 			// Clean up
 			await fs.promises.rm(getRepoTmpDir(repoId), { recursive: true, force: true });

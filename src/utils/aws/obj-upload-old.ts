@@ -1,4 +1,4 @@
-import { PutObjectCommand } from "@aws-sdk/client-s3";
+import { Upload } from "@aws-sdk/lib-storage";
 import mime from "mime-types";
 
 import { bucketName, uploadDirR2 } from "@/env";
@@ -26,19 +26,19 @@ export const uploadObject = async ({
 		const fileContent = fs.readFileSync(localFsFilePath);
 		const contentType = mime.lookup(localFsFilePath) || "application/octet-stream";
 
-		const command = new PutObjectCommand({
-			Body: fileContent,
-			Bucket: bucket || bucketName,
-			Key: fileName,
-			ContentType: contentType,
-		});
+		const response = await new Upload({
+			client: s3client,
 
-		const responseObject = await s3client.send(command);
+			params: {
+				Body: fileContent,
+				Bucket: bucket || bucketName,
+				Key: fileName,
+				ContentType: contentType,
+			},
+		}).done();
 
 		if (log) {
-			process.stdout.write(`🗂️  File uploaded to: ${fileName}`);
-			// eslint-disable-next-line no-console
-			console.log(responseObject);
+			process.stdout.write(`🗂️  File uploaded to: ${response.Key}`);
 		}
 	} catch (error) {
 		console.error(error);
@@ -60,12 +60,11 @@ export const uploadObjectList = async ({
 
 	try {
 		await Promise.all(
-			fileList.map(
-				async (localFsFilePath) =>
-					await uploadObject({
-						fileName: `${uploadDirInUse}/${repoId}/${localFsFilePath.slice(repoTmpDir.length + 1)}`,
-						localFsFilePath,
-					})
+			fileList.map((localFsFilePath) =>
+				uploadObject({
+					fileName: `${uploadDirInUse}/${repoId}/${localFsFilePath.slice(repoTmpDir.length + 1)}`,
+					localFsFilePath,
+				})
 			)
 		);
 	} catch (err) {

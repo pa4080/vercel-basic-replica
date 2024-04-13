@@ -22,12 +22,12 @@ export const getObject = async ({
 	bucket?: string;
 	log?: boolean;
 }) => {
-	const command = new GetObjectCommand({
-		Bucket: bucket || bucketName,
-		Key: objectKey,
-	});
-
 	try {
+		const command = new GetObjectCommand({
+			Bucket: bucket || bucketName,
+			Key: objectKey,
+		});
+
 		const responseObject = await s3client.send(command);
 
 		if (log) {

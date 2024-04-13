@@ -11,6 +11,8 @@ import { GetObjectCommand, _Object } from "@aws-sdk/client-s3";
 
 import { baseDir, bucketName, uploadDirFs, uploadDirR2 } from "@/env";
 
+import { Readable } from "stream"; // https://stackoverflow.com/a/67373050/6543935
+
 import fs from "fs";
 import path from "path";
 
@@ -31,12 +33,12 @@ export const downloadObject = async ({
 		return;
 	}
 
-	const command = new GetObjectCommand({
-		Bucket: bucket || bucketName,
-		Key: object.Key,
-	});
-
 	try {
+		const command = new GetObjectCommand({
+			Bucket: bucket || bucketName,
+			Key: object.Key,
+		});
+
 		const responseObject = await s3client.send(command);
 
 		const repoFilename = object.Key.replace(new RegExp(`^.*(${repoId}/)`), "$1");
@@ -48,12 +50,9 @@ export const downloadObject = async ({
 		}
 
 		const writeStream = fs.createWriteStream(fileTmpPath).on("error", (err) => console.error(err));
+		const readStream = responseObject.Body as Readable;
 
-		if (responseObject.ContentType?.match(/(font|video|audio|media)/)) {
-			writeStream.write(await responseObject.Body?.transformToByteArray(), "utf8");
-		} else {
-			writeStream.write(await responseObject.Body?.transformToByteArray());
-		}
+		readStream.pipe(writeStream);
 
 		if (log) {
 			process.stdout.write(`🗂️  Saved object: ${fileTmpPath}\n`);
