@@ -35,7 +35,7 @@
 		"paths": {
 			"@/*": ["./src/*"]
 		},
-		// "rootDirs": ["src/api", "src/processor"],
+		// "rootDirs": ["src/router", "src/worker"],
 		/* Allow multiple folders to be treated as one when resolving modules. */
 		// "typeRoots": [],                                  /* Specify multiple folders that act like './node_modules/@types'. */
 		// "types": [] /* Specify type package names to be included without being referenced in a source file. */,
