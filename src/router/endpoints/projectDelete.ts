@@ -3,7 +3,7 @@ import express from "express";
 import { uploadDirR2, uploadDirR2Build } from "@/env.js";
 import { ProjectApiResponse } from "@/types.js";
 import { getObjectListAndDelete } from "@/utils/aws/index.js";
-import { mongoProjectDeleteById } from "@/utils/mongodb.js";
+import { mongoProjectDeleteById, mongoProjectGetById } from "@/utils/mongodb.js";
 
 /**
  * Get all projects or a single project
@@ -15,19 +15,28 @@ export default async function projectDelete(req: express.Request, res: express.R
 		return res.status(401).end();
 	}
 
-	const id = req.query.id || req.params.id;
+	const projectId = req.query.id || req.params.id;
 	let response: ProjectApiResponse;
 
 	try {
-		await getObjectListAndDelete({ prefix: `${uploadDirR2}/${id}` });
-		await getObjectListAndDelete({ prefix: `${uploadDirR2Build}/${id}` });
-		await mongoProjectDeleteById(id as string);
+		const project = await mongoProjectGetById(projectId as string);
+
+		const isAdmin = session?.user?.isAdmin ?? false;
+		const isOwner = session?.user?.id === project?.creator;
+
+		if (!isAdmin && !isOwner) {
+			return res.status(401).end();
+		}
+
+		await getObjectListAndDelete({ prefix: `${uploadDirR2}/${projectId}` });
+		await getObjectListAndDelete({ prefix: `${uploadDirR2Build}/${projectId}` });
+		await mongoProjectDeleteById(projectId as string);
 
 		response = {
 			data: null,
 			ok: true,
 			statusCode: 204,
-			statusMessage: `Project found, id: ${id}`,
+			statusMessage: `Project found, id: ${projectId}`,
 		};
 	} catch (error) {
 		console.error(error);
@@ -36,7 +45,7 @@ export default async function projectDelete(req: express.Request, res: express.R
 			data: null,
 			ok: false,
 			statusCode: 404,
-			statusMessage: `Something went wrong, id: ${id}`,
+			statusMessage: `Something went wrong, id: ${projectId}`,
 		};
 	}
 

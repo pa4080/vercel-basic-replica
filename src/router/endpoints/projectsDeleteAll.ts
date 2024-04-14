@@ -11,7 +11,7 @@ import { mongoProjectDeleteById, mongoProjectGetAll } from "@/utils/mongodb.js";
 export default async function projectsDeleteAll(req: express.Request, res: express.Response) {
 	const { session } = res.locals;
 
-	if (!session) {
+	if (!session || !session.user.isAdmin) {
 		return res.status(401).end();
 	}
 

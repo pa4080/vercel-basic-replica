@@ -33,6 +33,15 @@ export default async function projectPut(req: express.Request, res: express.Resp
 			throw new Error("Something went wrong, the project could not be created.");
 		}
 
+		let project = await mongoProjectGetById(projectId as string);
+
+		const isAdmin = session?.user?.isAdmin ?? false;
+		const isOwner = session?.user?.id === project?.creator;
+
+		if (!isAdmin && !isOwner) {
+			return res.status(401).end();
+		}
+
 		await getObjectListAndDelete({ prefix: `${uploadDirR2}/${projectId}` });
 		await getObjectListAndDelete({ prefix: `${uploadDirR2Build}/${projectId}` });
 
@@ -46,7 +55,7 @@ export default async function projectPut(req: express.Request, res: express.Resp
 			buildOutDir,
 		});
 
-		const project = await mongoProjectGetById(projectId as string);
+		project = await mongoProjectGetById(projectId as string);
 
 		if (!update_ok || !project) {
 			throw new Error(`Something went wrong while getting a project, id: ${projectId}`);

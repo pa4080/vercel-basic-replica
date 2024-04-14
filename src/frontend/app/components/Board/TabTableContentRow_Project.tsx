@@ -88,7 +88,9 @@ const ProjectRow: React.FC<Props> = ({ className, project }) => {
 
 						<DeleteConfirm
 							actionCallback={deleteProject}
-							disabled={(session && session.user?.id !== project.creator) || undefined}
+							disabled={
+								(session?.user?.id !== project?.creator && !session?.user?.isAdmin) || undefined
+							}
 							keyword={_id}
 							messages={{
 								title: "Delete all projects",

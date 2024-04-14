@@ -215,12 +215,7 @@ const ProjectForm: React.FC<Props> = ({ className, dialogClose, project }) => {
 							className="w-full"
 							disabled={
 								!session ||
-								(project &&
-									project?.creator &&
-									!session.user?.isAdmin &&
-									session &&
-									session.user?.id !== project?.creator) ||
-								undefined ||
+								(project && session?.user?.id !== project?.creator && !session?.user?.isAdmin) ||
 								form.formState.isSubmitting ||
 								submitting
 							}
