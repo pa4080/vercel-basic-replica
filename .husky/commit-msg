@@ -5,4 +5,4 @@
 # npx --no -- commitlint --edit ${1}
 
 # Ref.: https://github.com/pnpm/pnpm/blob/main/.husky/commit-msg
-pnpm commitlint --config=commitlint.config.js --edit ${1}
+pnpm commitlint --config=commitlint.config.cjs --edit ${1}

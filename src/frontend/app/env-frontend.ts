@@ -47,5 +47,5 @@ export const appSubdomain = import.meta.env.VITE_APP_SUBDOMAIN;
 export const appDeploySubdomainPrefix = import.meta.env.VITE_APP_SUBDOMAIN_PROJECT;
 export const appUriProject = import.meta.env.VITE_APP_URI_PROJECT;
 export const appUriProjects = `${appUriProject}s`;
-export const appBaseURL = `//${appSubdomain}.${appBaseDomain}`;
+export const appBaseURL = `https://${appSubdomain}.${appBaseDomain}`;
 export const appProjectHome = import.meta.env.VITE_PROJECT_HOME;

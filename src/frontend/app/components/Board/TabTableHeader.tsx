@@ -13,13 +13,13 @@ const TabTableHeader: React.FC<Props> = ({ className, orderDirection, setOrderDi
 	return (
 		<TableHeader className={className}>
 			<TableRow>
-				<TableHead className="hidden w-[100px] sm:table-cell">
+				<TableHead className="hidden w-[100px] md:table-cell">
 					<span className="sr-only">Image</span>
 				</TableHead>
 				<TableHead>Name</TableHead>
 				<TableHead>Status</TableHead>
 				<TableHead className="hidden md:table-cell">URL</TableHead>
-				<TableHead className="hidden md:table-cell">Repo</TableHead>
+				<TableHead className="hidden lg:table-cell">Repo</TableHead>
 
 				<TableHead className="flex flex-row items-center justify-end">
 					<Button

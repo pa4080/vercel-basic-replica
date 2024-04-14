@@ -11,7 +11,7 @@ export function UrlToAnchor({
 }) {
 	return (
 		<a
-			className={cn("text-gray-500 underline-offset-3 hover:underline", className)}
+			className={cn("text-gray-500 hover:underline", className)}
 			href={url}
 			rel="noreferrer"
 			target="_blank"

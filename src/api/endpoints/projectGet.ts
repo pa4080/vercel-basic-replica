@@ -1,7 +1,7 @@
 import express from "express";
 
-import { ProjectApiResponse } from "@/types";
-import { mongoProjectGetAll, mongoProjectGetById } from "@/utils/mongodb";
+import { ProjectApiResponse } from "@/types.js";
+import { mongoProjectGetAll, mongoProjectGetById } from "@/utils/mongodb.js";
 
 /**
  * Get all projects or a single project

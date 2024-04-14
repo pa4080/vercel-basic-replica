@@ -1,17 +1,23 @@
 import express from "express";
 
-import { FrameworkType, ProjectApiResponse } from "@/types";
-import { mongoProjectGetById, mongoProjectUpdate } from "@/utils/mongodb";
-import { isValidGitHttpsUrl } from "@/utils/urlMatch";
+import { FrameworkType, ProjectApiResponse } from "@/types.js";
+import { mongoProjectGetById, mongoProjectUpdate } from "@/utils/mongodb.js";
+import { isValidGitHttpsUrl } from "@/utils/urlMatch.js";
 
-import { simpleGitCloneRepo } from "@/utils/simpleGitCloneRepo";
+import { simpleGitCloneRepo } from "@/utils/simpleGitCloneRepo.js";
 
-import { uploadDirR2, uploadDirR2Build } from "@/env";
-import { getObjectListAndDelete } from "@/utils/aws";
+import { uploadDirR2, uploadDirR2Build } from "@/env.js";
+import { getObjectListAndDelete } from "@/utils/aws/index.js";
 
-import { redisPublisher } from "../redis";
+import { redisPublisher } from "../redis.js";
 
 export default async function projectPut(req: express.Request, res: express.Response) {
+	const { session } = res.locals;
+
+	if (!session) {
+		return res.status(401).end();
+	}
+
 	const projectId = req.query.id || req.params.id;
 	const repoUrl: string = req.body.repoUrl;
 	const targetBranch: string = req.body.targetBranch;

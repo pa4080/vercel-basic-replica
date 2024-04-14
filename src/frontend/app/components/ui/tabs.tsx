@@ -3,7 +3,16 @@ import * as React from "react";
 
 import { cn } from "@/lib/cn-utils";
 
-const Tabs = TabsPrimitive.Root;
+// const Tabs = TabsPrimitive.Root;
+
+const Tabs = React.forwardRef<
+	React.ElementRef<typeof TabsPrimitive.Root>,
+	React.ComponentPropsWithoutRef<typeof TabsPrimitive.Root>
+>(({ className, ...props }, ref) => (
+	<TabsPrimitive.Root ref={ref} className={cn("min-w-[300px]", className)} {...props} />
+));
+
+Tabs.displayName = TabsPrimitive.Root.displayName;
 
 const TabsList = React.forwardRef<
 	React.ElementRef<typeof TabsPrimitive.List>,

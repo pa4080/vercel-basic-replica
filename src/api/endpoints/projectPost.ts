@@ -1,14 +1,20 @@
 import express from "express";
 
-import { FrameworkType, ProjectApiResponse } from "@/types";
-import { mongoProjectGetById, mongoProjectInsert } from "@/utils/mongodb";
-import { isValidGitHttpsUrl } from "@/utils/urlMatch";
+import { FrameworkType, ProjectApiResponse } from "@/types.js";
+import { mongoProjectGetById, mongoProjectInsert } from "@/utils/mongodb.js";
+import { isValidGitHttpsUrl } from "@/utils/urlMatch.js";
 
-import { simpleGitCloneRepo } from "@/utils/simpleGitCloneRepo";
+import { simpleGitCloneRepo } from "@/utils/simpleGitCloneRepo.js";
 
-import { redisPublisher } from "../redis";
+import { redisPublisher } from "../redis.js";
 
 export default async function projectPost(req: express.Request, res: express.Response) {
+	const { session } = res.locals;
+
+	if (!session) {
+		return res.status(401).end();
+	}
+
 	const repoUrl: string = req.body.repoUrl;
 	const targetBranch: string = req.body.targetBranch;
 	const framework: FrameworkType = req.body.framework;
@@ -27,6 +33,7 @@ export default async function projectPost(req: express.Request, res: express.Res
 			targetBranch,
 			framework,
 			buildOutDir,
+			creator: session.user.id,
 		});
 
 		if (!projectId) {

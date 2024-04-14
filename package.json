@@ -2,7 +2,8 @@
 	"name": "vercel-basic-replica",
 	"version": "1.0.0",
 	"description": "",
-	"main": "index.js",
+	"main": "index.cjs",
+	"type": "module",
 	"scripts": {
 		"inject-env": "dotenv -e .env.override -- doppler run --preserve-env=true --",
 		"install-all": "pnpm inject-env sh -c 'echo; echo \"🚀  backend...\" && pnpm i && echo; echo \"🚀  frontend...\" && cd src/frontend && pnpm i'",
@@ -11,12 +12,12 @@
 		"build:frontend": "pnpm inject-env sh -c 'cd src/frontend && pnpm build'",
 		"build:static": "cp -r public/ dist/",
 		"start": "concurrently -k 'pnpm:start:api' 'pnpm:start:worker'",
-		"start:api": "pnpm inject-env node ./dist/api/index.js",
-		"start:worker": "pnpm inject-env node ./dist/worker/index.js",
+		"start:api": "pnpm inject-env node --es-module-specifier-resolution=node ./dist/api/index.js",
+		"start:worker": "pnpm inject-env node --es-module-specifier-resolution=node ./dist/worker/index.js",
 		"dev": "nodemon",
 		"dev:concurrently": "concurrently -c bgBlue,bgGreen,bgMagenta 'pnpm:dev:api' 'pnpm:dev:worker' 'pnpm:dev:frontend'",
-		"dev:api": "pnpm inject-env ts-node ./src/api/index.ts",
-		"dev:worker": "pnpm inject-env ts-node ./src/worker/index.ts",
+		"dev:api": "pnpm inject-env tsx ./src/api/index.ts",
+		"dev:worker": "pnpm inject-env tsx ./src/worker/index.ts",
 		"dev:frontend": "pnpm inject-env sh -c 'cd src/frontend && pnpm dev'",
 		"preinstall": "npx only-allow pnpm",
 		"prepare": "husky",
@@ -28,6 +29,8 @@
 	"author": "",
 	"license": "ISC",
 	"dependencies": {
+		"@auth/express": "^0.5.2",
+		"@auth/mongodb-adapter": "^2.6.0",
 		"@aws-sdk/client-s3": "^3.535.0",
 		"@aws-sdk/lib-storage": "^3.535.0",
 		"@upstash/redis": "^1.29.0",
@@ -64,6 +67,7 @@
 		"@typescript-eslint/eslint-plugin": "^7.2.0",
 		"@typescript-eslint/parser": "^7.2.0",
 		"autoprefixer": "^10.4.18",
+		"cjs-to-es6": "^2.0.1",
 		"concurrently": "^8.2.2",
 		"dotenv-cli": "^7.4.1",
 		"eslint": "^8.57.0",
@@ -80,6 +84,7 @@
 		"tsc-alias": "^1.8.8",
 		"tsconfig-paths": "^4.2.0",
 		"tscpaths": "^0.0.9",
+		"tsx": "^4.7.2",
 		"typescript": "^5.4.2"
 	}
 }

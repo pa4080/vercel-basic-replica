@@ -1,8 +1,9 @@
-import { ProjectData } from "@project/types";
+import { ProjectData, UserSessionData } from "@project/types";
 import React, { createContext, useContext, useEffect, useState } from "react";
 
-import { ProjectSchemaType } from "@/components/ProjectAdd/Form";
+import { ProjectSchemaType } from "@/components/ProjectDialog/Form";
 import { appBaseURL, appUriProject, appUriProjects } from "@/env-frontend";
+import { GetSession } from "@/lib/authUtils.ts";
 
 const headers = {
 	"Content-Type": "application/json",
@@ -19,6 +20,8 @@ interface ContextProps {
 	deleteAllProjects: () => void;
 	createProject: (data: ProjectSchemaType) => Promise<boolean | null>;
 	updateProject: (id: string, data: ProjectSchemaType) => Promise<boolean | null>;
+	session: UserSessionData | null;
+	setUserSession: () => Promise<void>;
 }
 
 const AppContext = createContext<ContextProps>({} as ContextProps);
@@ -30,6 +33,7 @@ interface ContextProviderProps {
 export const AppContextProvider: React.FC<ContextProviderProps> = ({ children }) => {
 	const apiUrl = `${appBaseURL}/${appUriProject}`;
 	const [projects, setProjects] = useState<ProjectData[]>([]);
+	const [session, setSession] = useState<UserSessionData | null>(null);
 
 	const createProject = async (data: ProjectSchemaType) => {
 		try {
@@ -102,11 +106,14 @@ export const AppContextProvider: React.FC<ContextProviderProps> = ({ children })
 		}
 	};
 
-	useEffect(() => {
-		const setProjectsData = async () => setProjects(await getAllProjects());
+	const setProjectsData = async () => setProjects(await getAllProjects());
+	const setUserSession = async () => setSession(await GetSession());
 
+	useEffect(() => {
 		setProjectsData();
 		setInterval(setProjectsData, 1000 * 5);
+
+		setUserSession();
 
 		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, []);
@@ -126,6 +133,8 @@ export const AppContextProvider: React.FC<ContextProviderProps> = ({ children })
 				deleteAllProjects,
 				createProject,
 				updateProject,
+				session,
+				setUserSession,
 			}}
 		>
 			{children}

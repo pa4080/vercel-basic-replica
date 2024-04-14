@@ -2,11 +2,11 @@ import simpleGit from "simple-git";
 
 import { RedisClientType } from "redis";
 
-import { ProjectData } from "@/types";
-import { uploadObjectList } from "@/utils/aws";
-import { getRepoTmpDir } from "@/utils/getDirectory";
-import { getFileList } from "@/utils/getFileListRecursively";
-import { mongoProjectUpdateStatus } from "@/utils/mongodb";
+import { ProjectData } from "@/types.js";
+import { uploadObjectList } from "@/utils/aws/index.js";
+import { getRepoTmpDir } from "@/utils/getDirectory.js";
+import { getFileList } from "@/utils/getFileListRecursively.js";
+import { mongoProjectUpdateStatus } from "@/utils/mongodb.js";
 
 import fs from "fs";
 

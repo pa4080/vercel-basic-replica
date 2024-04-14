@@ -36,6 +36,10 @@ const envSchema = z.object({
 	VITE_APP_SUBDOMAIN_PROJECT: zStringReq(),
 	VITE_APP_URI_PROJECT: zStringReq(),
 	VITE_PROJECT_HOME: zStringReq(),
+	AUTH_SECRET: zStringReq(),
+	VITE_APP_SUBDOMAIN_DEV: zStringReq(),
+	AUTH_GITHUB_ID: zStringReq(),
+	AUTH_GITHUB_SECRET: zStringReq(),
 });
 
 const {
@@ -63,6 +67,10 @@ const {
 	VITE_APP_SUBDOMAIN_PROJECT,
 	VITE_APP_URI_PROJECT,
 	VITE_PROJECT_HOME,
+	AUTH_SECRET,
+	VITE_APP_SUBDOMAIN_DEV,
+	AUTH_GITHUB_ID,
+	AUTH_GITHUB_SECRET,
 } = process.env;
 
 const parsedResults = envSchema.safeParse({
@@ -90,6 +98,10 @@ const parsedResults = envSchema.safeParse({
 	VITE_APP_SUBDOMAIN_PROJECT,
 	VITE_APP_URI_PROJECT,
 	VITE_PROJECT_HOME,
+	AUTH_SECRET,
+	VITE_APP_SUBDOMAIN_DEV,
+	AUTH_GITHUB_ID,
+	AUTH_GITHUB_SECRET,
 });
 
 if (!parsedResults.success) {
@@ -117,6 +129,10 @@ export const mongoDbName = process.env.MONGODB_DB_NAME;
 export const mongoCollectionProjects = process.env.MONGODB_COLLECTION_PROJECTS;
 export const appBaseDomain = process.env.VITE_APP_BASE_DOMAIN;
 export const appSubdomain = process.env.VITE_APP_SUBDOMAIN;
+export const appSubdomainDev = process.env.VITE_APP_SUBDOMAIN_DEV;
 export const appDeploySubdomainPrefix = process.env.VITE_APP_SUBDOMAIN_PROJECT;
 export const appUriProject = process.env.VITE_APP_URI_PROJECT;
 export const appUriProjects = `${appUriProject}s`;
+export const authSecret = process.env.AUTH_SECRET;
+export const authGithubId = process.env.AUTH_GITHUB_ID;
+export const authGithubSecret = process.env.AUTH_GITHUB_SECRET;

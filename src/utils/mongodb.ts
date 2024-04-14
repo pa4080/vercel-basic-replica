@@ -1,12 +1,12 @@
 import { MongoClient, ObjectId, ServerApiVersion } from "mongodb";
 
-import { mongoCollectionProjects, mongoDbName, mongoUrl } from "@/env";
-import { ProjectDocument } from "@/types";
+import { mongoCollectionProjects, mongoDbName, mongoUrl } from "@/env.js";
+import { ProjectDocument } from "@/types.js";
 
-import { projectDocumentToData } from "./projectDocToRepoData";
+import { projectDocumentToData } from "./projectDocToRepoData.js";
 
 // Create a MongoClient with a MongoClientOptions object to set the Stable API version
-const clientSettings = {
+export const clientOptions = {
 	serverApi: {
 		version: ServerApiVersion.v1,
 		strict: true,
@@ -23,13 +23,16 @@ const clientSettings = {
  * }
  */
 export const mongoProjectInsert = async (repoData: Omit<ProjectDocument, "_id">) => {
-	const client = new MongoClient(mongoUrl, clientSettings);
+	const client = new MongoClient(mongoUrl, clientOptions);
 
 	try {
 		await client.connect();
 		const db = client.db(mongoDbName);
 		const collection = db.collection(mongoCollectionProjects);
-		const result = await collection.insertOne(repoData);
+		const result = await collection.insertOne({
+			...repoData,
+			creator: new ObjectId(repoData.creator),
+		});
 
 		return result.insertedId;
 	} catch (error) {
@@ -40,7 +43,7 @@ export const mongoProjectInsert = async (repoData: Omit<ProjectDocument, "_id">)
 };
 
 export const mongoProjectUpdateStatus = async (id: string, status: ProjectDocument["status"]) => {
-	const client = new MongoClient(mongoUrl, clientSettings);
+	const client = new MongoClient(mongoUrl, clientOptions);
 
 	try {
 		await client.connect();
@@ -57,7 +60,7 @@ export const mongoProjectUpdateStatus = async (id: string, status: ProjectDocume
 };
 
 export const mongoProjectUpdate = async (id: string, update: Partial<ProjectDocument>) => {
-	const client = new MongoClient(mongoUrl, clientSettings);
+	const client = new MongoClient(mongoUrl, clientOptions);
 
 	try {
 		await client.connect();
@@ -73,9 +76,9 @@ export const mongoProjectUpdate = async (id: string, update: Partial<ProjectDocu
 	}
 };
 
-export const mongoProjectGetById = async (objectId: string | ObjectId) => {
+export const mongoProjectGetById = async (objectId: string | ObjectId, populate?: boolean) => {
 	const _id = objectId instanceof ObjectId ? objectId : new ObjectId(objectId);
-	const client = new MongoClient(mongoUrl, clientSettings);
+	const client = new MongoClient(mongoUrl, clientOptions);
 
 	try {
 		await client.connect();
@@ -87,6 +90,28 @@ export const mongoProjectGetById = async (objectId: string | ObjectId) => {
 			throw new Error(`Project not found, id: ${_id.toString()}`);
 		}
 
+		if (populate) {
+			// https://stackoverflow.com/a/50825751/6543935
+			const pipeline = [
+				{ $match: { _id } },
+				{
+					$lookup: {
+						from: "users",
+						localField: "creator",
+						foreignField: "_id",
+						as: "creator",
+					},
+				},
+				{ $unwind: "$creator" },
+			];
+
+			const resultWithUser = (await collection.aggregate(pipeline).toArray())[0] as ProjectDocument;
+
+			if (resultWithUser) {
+				return projectDocumentToData(resultWithUser);
+			}
+		}
+
 		return projectDocumentToData(result);
 	} catch (error) {
 		console.error((error as Error).message);
@@ -95,14 +120,40 @@ export const mongoProjectGetById = async (objectId: string | ObjectId) => {
 	}
 };
 
-export const mongoProjectGetAll = async () => {
-	const client = new MongoClient(mongoUrl, clientSettings);
+export const mongoProjectGetAll = async (populate?: boolean) => {
+	const client = new MongoClient(mongoUrl, clientOptions);
 
 	try {
 		await client.connect();
 		const db = client.db(mongoDbName);
 		const collection = db.collection(mongoCollectionProjects);
 		const result = (await collection.find({}).toArray()) as ProjectDocument[];
+
+		if (populate) {
+			// https://stackoverflow.com/a/50825751/6543935
+			const pipeline = [
+				{ $match: {} },
+				{
+					$lookup: {
+						from: "users",
+						localField: "creator",
+						foreignField: "_id",
+						as: "creator",
+					},
+				},
+				{ $unwind: "$creator" },
+			];
+
+			const resultWithUser = (await collection.aggregate(pipeline).toArray()) as ProjectDocument[];
+
+			result.forEach((doc) => {
+				const foundDoc = resultWithUser.find((resultDoc) => resultDoc._id.equals(doc._id));
+
+				if (foundDoc) {
+					doc.creator = foundDoc.creator;
+				}
+			});
+		}
 
 		return result.map((doc) => projectDocumentToData(doc));
 	} catch (error) {
@@ -114,7 +165,7 @@ export const mongoProjectGetAll = async () => {
 
 export const mongoProjectDeleteById = async (objectId: string | ObjectId) => {
 	const _id = objectId instanceof ObjectId ? objectId : new ObjectId(objectId);
-	const client = new MongoClient(mongoUrl, clientSettings);
+	const client = new MongoClient(mongoUrl, clientOptions);
 
 	try {
 		await client.connect();
@@ -134,7 +185,7 @@ export const mongoProjectDeleteById = async (objectId: string | ObjectId) => {
  * CLI: doppler run -- pnpm exec ts-node -e 'require("./src/utils/mongodb.ts").run().catch()'
  */
 export async function run() {
-	const client = new MongoClient(mongoUrl, clientSettings);
+	const client = new MongoClient(mongoUrl, clientOptions);
 
 	try {
 		// Connect the client to the server	(optional starting in v4.7)

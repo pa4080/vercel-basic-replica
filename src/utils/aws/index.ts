@@ -11,8 +11,8 @@ export const config: S3ClientConfig = {
 
 export const s3client = new S3(config) || new S3Client(config);
 
-export * from "./obj-delete";
-export * from "./obj-download";
-export * from "./obj-get";
-export * from "./obj-list";
-export * from "./obj-upload";
+export * from "./obj-delete.js";
+export * from "./obj-download.js";
+export * from "./obj-get.js";
+export * from "./obj-list.js";
+export * from "./obj-upload.js";

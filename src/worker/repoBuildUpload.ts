@@ -1,8 +1,8 @@
-import { uploadDirR2Build } from "@/env";
-import { uploadObjectList } from "@/utils/aws";
-import { findRepoBuildDir } from "@/utils/findRepoBuildDir";
-import { getFileList } from "@/utils/getFileListRecursively";
-import { mongoProjectGetById, mongoProjectUpdateStatus } from "@/utils/mongodb";
+import { uploadDirR2Build } from "@/env.js";
+import { uploadObjectList } from "@/utils/aws/index.js";
+import { findRepoBuildDir } from "@/utils/findRepoBuildDir.js";
+import { getFileList } from "@/utils/getFileListRecursively.js";
+import { mongoProjectGetById, mongoProjectUpdateStatus } from "@/utils/mongodb.js";
 
 export const repoBuildUpload = async ({ projectId }: { projectId: string | undefined }) => {
 	try {

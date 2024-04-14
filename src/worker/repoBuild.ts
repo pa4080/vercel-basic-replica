@@ -1,4 +1,4 @@
-import { getRepoTmpDir } from "@/utils/getDirectory";
+import { getRepoTmpDir } from "@/utils/getDirectory.js";
 
 import { exec } from "child_process";
 

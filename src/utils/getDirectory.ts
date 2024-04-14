@@ -1,4 +1,4 @@
-import { baseDir, uploadDirFs } from "@/env";
+import { baseDir, uploadDirFs } from "@/env.js";
 
 import path from "path";
 

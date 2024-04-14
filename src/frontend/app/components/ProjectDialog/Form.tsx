@@ -46,8 +46,8 @@ interface Props {
 }
 
 const ProjectForm: React.FC<Props> = ({ className, dialogClose, project }) => {
-	const { createProject, updateProject } = useAppContext();
-	const [submit, setSubmit] = React.useState(false);
+	const { createProject, updateProject, session } = useAppContext();
+	const [submitting, setSubmitting] = React.useState(false);
 
 	const form = useForm<ProjectSchemaType>({
 		resolver: zodResolver(ProjectSchema),
@@ -63,7 +63,7 @@ const ProjectForm: React.FC<Props> = ({ className, dialogClose, project }) => {
 
 	const onSubmit = async (data: ProjectSchemaType) => {
 		try {
-			setSubmit(true);
+			setSubmitting(true);
 
 			if (project) {
 				await updateProject(project._id, data);
@@ -75,7 +75,7 @@ const ProjectForm: React.FC<Props> = ({ className, dialogClose, project }) => {
 		} catch (error) {
 			console.error(error);
 		} finally {
-			setSubmit(false);
+			setSubmitting(false);
 		}
 	};
 
@@ -213,10 +213,20 @@ const ProjectForm: React.FC<Props> = ({ className, dialogClose, project }) => {
 						</Button>
 						<Button
 							className="w-full"
-							disabled={form.formState.isSubmitting || submit}
+							disabled={
+								!session ||
+								(project &&
+									project?.creator &&
+									!session.user?.isAdmin &&
+									session &&
+									session.user?.id !== project?.creator) ||
+								undefined ||
+								form.formState.isSubmitting ||
+								submitting
+							}
 							type="submit"
 						>
-							{project ? "Update project" : "Deploy project"}
+							{project ? "Update and deploy project" : "Deploy project"}
 						</Button>
 					</CardFooter>
 				</Card>

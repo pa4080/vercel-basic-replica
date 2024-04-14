@@ -9,9 +9,9 @@
 
 import { GetObjectCommand } from "@aws-sdk/client-s3";
 
-import { bucketName } from "@/env";
+import { bucketName } from "@/env.js";
 
-import { s3client } from ".";
+import { s3client } from "./index.js";
 
 export const getObject = async ({
 	objectKey,

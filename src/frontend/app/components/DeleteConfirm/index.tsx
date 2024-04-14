@@ -29,6 +29,7 @@ import {
 	FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
+import { useAppContext } from "@/contexts/AppContext.tsx";
 import { cn } from "@/lib/cn-utils";
 
 const FormSchemaGenerator = (keyword: string, errorMsg: string) =>
@@ -55,6 +56,7 @@ interface Props {
 	};
 	children?: React.ReactNode;
 	executionDelaySeconds?: number;
+	disabled?: boolean;
 }
 
 const DeleteConfirm: React.FC<Props> = ({
@@ -71,7 +73,10 @@ const DeleteConfirm: React.FC<Props> = ({
 	},
 	children,
 	executionDelaySeconds = 5,
+	disabled,
 }) => {
+	const { session } = useAppContext();
+
 	const [open, setOpen] = React.useState(false);
 	let actionPerform = true;
 
@@ -111,7 +116,7 @@ const DeleteConfirm: React.FC<Props> = ({
 
 	return (
 		<Dialog open={open} onOpenChange={setOpen}>
-			<DialogTrigger asChild>
+			<DialogTrigger asChild disabled={disabled || !session}>
 				{children ? (
 					children
 				) : (

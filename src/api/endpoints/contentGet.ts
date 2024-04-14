@@ -1,8 +1,14 @@
 import express from "express";
 
-import { appDeploySubdomainPrefix, appSubdomain, baseDir, uploadDirR2Build } from "@/env";
-import { getObject } from "@/utils/aws";
-import { getCachedRepo } from "@/utils/cacheUtils";
+import {
+	appDeploySubdomainPrefix,
+	appSubdomain,
+	appSubdomainDev,
+	baseDir,
+	uploadDirR2Build,
+} from "@/env.js";
+import { getObject } from "@/utils/aws/index.js";
+import { getCachedRepo } from "@/utils/cacheUtils.js";
 
 import path from "path";
 import { Readable } from "stream"; // https://stackoverflow.com/a/67373050/6543935
@@ -11,6 +17,11 @@ import { Readable } from "stream"; // https://stackoverflow.com/a/67373050/65439
  * Serve React app (our frontend) or deployed projects
  */
 export default async function contentGet(req: express.Request, res: express.Response) {
+	const { session } = res.locals;
+
+	// eslint-disable-next-line no-console
+	console.log("session", session);
+
 	const host = req.hostname;
 	const subDomain = host.split(".")[0];
 	const uri = req.path;
@@ -18,7 +29,11 @@ export default async function contentGet(req: express.Request, res: express.Resp
 	/**
 	 * Serve React app (our frontend)
 	 */
-	if (subDomain.match(`${appSubdomain}`)) {
+	if (subDomain.match(appSubdomain) || subDomain.match(appSubdomainDev)) {
+		if (uri.match(/^\/auth\//)) {
+			return;
+		}
+
 		const docRoot = path.join(baseDir, "frontend");
 		const filePath = uri === "/" ? "index.html" : uri.slice(1);
 
@@ -36,7 +51,7 @@ export default async function contentGet(req: express.Request, res: express.Resp
 		/**
 		 * Check if the repo exists
 		 */
-		const repoExists = await getCachedRepo(repoId);
+		const repoExists = await getCachedRepo(repoId!);
 
 		if (!repoExists) {
 			return res.status(404).json({ message: `Something went wrong, id: ${repoId}`, ok: false });

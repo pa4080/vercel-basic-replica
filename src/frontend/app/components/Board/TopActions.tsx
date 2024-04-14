@@ -7,7 +7,7 @@ import { cn } from "@/lib/cn-utils";
 import { useAppContext } from "@/contexts/AppContext";
 
 import DeleteConfirm from "../DeleteConfirm";
-import ProjectAddDialog from "../ProjectAdd";
+import ProjectDialog from "../ProjectDialog";
 import { Button } from "../ui/button";
 
 interface Props {
@@ -15,12 +15,13 @@ interface Props {
 }
 
 const TopActions: React.FC<Props> = ({ className }) => {
-	const { deleteAllProjects } = useAppContext();
+	const { deleteAllProjects, session } = useAppContext();
 
 	return (
 		<div className={cn("ml-auto flex items-center gap-2", className)}>
 			<DeleteConfirm
 				actionCallback={deleteAllProjects}
+				disabled={!session || (session && !session.user.isAdmin)}
 				keyword="Delete All Pr0j3ct$"
 				messages={{
 					defaultButtonText: "Delete all",
@@ -31,14 +32,14 @@ const TopActions: React.FC<Props> = ({ className }) => {
 				}}
 			/>
 
-			<ProjectAddDialog>
+			<ProjectDialog>
 				<Button asChild size="sm">
 					<div className="h-8 gap-1 cursor-pointer">
 						<PlusCircle className="h-3.5 w-3.5" />
 						<span className="sr-only sm:not-sr-only sm:whitespace-nowrap">Add a project</span>
 					</div>
 				</Button>
-			</ProjectAddDialog>
+			</ProjectDialog>
 		</div>
 	);
 };

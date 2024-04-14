@@ -9,14 +9,14 @@
 
 import { GetObjectCommand, _Object } from "@aws-sdk/client-s3";
 
-import { baseDir, bucketName, uploadDirFs, uploadDirR2 } from "@/env";
+import { baseDir, bucketName, uploadDirFs, uploadDirR2 } from "@/env.js";
 
 import { Readable } from "stream"; // https://stackoverflow.com/a/67373050/6543935
 
 import fs from "fs";
 import path from "path";
 
-import { listObjects, s3client } from ".";
+import { listObjects, s3client } from "./index.js";
 
 export const downloadObject = async ({
 	object,

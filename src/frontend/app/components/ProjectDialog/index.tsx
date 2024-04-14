@@ -11,7 +11,7 @@ interface Props {
 	project?: ProjectData;
 }
 
-const ProjectAddDialog: React.FC<Props> = ({ children, project }) => {
+const ProjectDialog: React.FC<Props> = ({ children, project }) => {
 	const [isDialogOpen, setIsDialogOpen] = React.useState(false);
 
 	return (
@@ -31,4 +31,4 @@ const ProjectAddDialog: React.FC<Props> = ({ children, project }) => {
 	);
 };
 
-export default ProjectAddDialog;
+export default ProjectDialog;

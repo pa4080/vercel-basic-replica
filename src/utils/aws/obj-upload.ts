@@ -1,11 +1,11 @@
 import { PutObjectCommand } from "@aws-sdk/client-s3";
 import mime from "mime-types";
 
-import { bucketName, uploadDirR2 } from "@/env";
+import { bucketName, uploadDirR2 } from "@/env.js";
 
 import fs from "fs";
 
-import { s3client } from ".";
+import { s3client } from "./index.js";
 
 /**
  * @param fileName The name of the file incl. the relative path: tmp/prjId/subPath/file.name

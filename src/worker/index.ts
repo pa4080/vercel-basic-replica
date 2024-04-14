@@ -1,13 +1,13 @@
-import { uploadDirR2 } from "@/env";
-import { getObjectListAndDelete, getObjectListAndDownload } from "@/utils/aws";
+import { uploadDirR2 } from "@/env.js";
+import { getObjectListAndDelete, getObjectListAndDownload } from "@/utils/aws/index.js";
 
-import { mongoProjectUpdateStatus } from "@/utils/mongodb";
+import { mongoProjectUpdateStatus } from "@/utils/mongodb.js";
 
-import { getRepoTmpDir } from "@/utils/getDirectory";
+import { getRepoTmpDir } from "@/utils/getDirectory.js";
 
-import { commandOptions, redisSubscriber } from "./redis";
-import { repoBuild } from "./repoBuild";
-import { repoBuildUpload } from "./repoBuildUpload";
+import { commandOptions, redisSubscriber } from "./redis.js";
+import { repoBuild } from "./repoBuild.js";
+import { repoBuildUpload } from "./repoBuildUpload.js";
 
 import fs from "fs";
 

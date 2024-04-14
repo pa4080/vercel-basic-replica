@@ -1,6 +1,6 @@
-import { baseDir, possibleBuildDirs, uploadDirFs } from "@/env";
+import { baseDir, possibleBuildDirs, uploadDirFs } from "@/env.js";
 
-import { mongoProjectUpdateStatus } from "./mongodb";
+import { mongoProjectUpdateStatus } from "./mongodb.js";
 
 import fs from "fs";
 import path from "path";

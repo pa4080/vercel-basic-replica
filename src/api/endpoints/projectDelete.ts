@@ -1,14 +1,20 @@
 import express from "express";
 
-import { uploadDirR2, uploadDirR2Build } from "@/env";
-import { ProjectApiResponse } from "@/types";
-import { getObjectListAndDelete } from "@/utils/aws";
-import { mongoProjectDeleteById } from "@/utils/mongodb";
+import { uploadDirR2, uploadDirR2Build } from "@/env.js";
+import { ProjectApiResponse } from "@/types.js";
+import { getObjectListAndDelete } from "@/utils/aws/index.js";
+import { mongoProjectDeleteById } from "@/utils/mongodb.js";
 
 /**
  * Get all projects or a single project
  */
 export default async function projectDelete(req: express.Request, res: express.Response) {
+	const { session } = res.locals;
+
+	if (!session) {
+		return res.status(401).end();
+	}
+
 	const id = req.query.id || req.params.id;
 	let response: ProjectApiResponse;
 

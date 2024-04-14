@@ -16,7 +16,7 @@ import { useAppContext } from "@/contexts/AppContext";
 
 import { UrlToAnchor } from "../atoms/UrlToAnchor";
 import DeleteConfirm from "../DeleteConfirm";
-import ProjectAddDialog from "../ProjectAdd";
+import ProjectDialog from "../ProjectDialog";
 
 interface Props {
 	className?: string;
@@ -25,14 +25,14 @@ interface Props {
 
 const ProjectRow: React.FC<Props> = ({ className, project }) => {
 	const { _id, projectName, status, repoUrl, deployUrl } = project;
-	const { deleteProject } = useAppContext();
+	const { deleteProject, session } = useAppContext();
 
 	const dropdownMenuItemClassName =
-		"relative flex cursor-default select-none items-center rounded-sm px-4 py-1.5 text-sm outline-none transition-colors focus:bg-accent focus:text-accent-foreground data-[disabled]:pointer-events-none data-[disabled]:opacity-50 hover:bg-slate-100";
+		"w-full relative flex cursor-default select-none items-center rounded-sm px-4 py-1.5 text-sm outline-none transition-colors focus:bg-accent focus:text-accent-foreground data-[disabled]:pointer-events-none data-[disabled]:opacity-50 hover:bg-slate-100 disabled:hover:bg-transparent disabled:opacity-50";
 
 	return (
 		<TableRow key={_id} className={className}>
-			<TableCell className="hidden sm:table-cell">
+			<TableCell className="hidden md:table-cell">
 				<div className="min-w-16 w-16">
 					<img
 						alt="Product image"
@@ -46,10 +46,18 @@ const ProjectRow: React.FC<Props> = ({ className, project }) => {
 			<TableCell className="font-medium">{projectName}</TableCell>
 			<TableCell>
 				<Badge
-					className={`${status !== "deployed" ? "animate-pulse" : "border-blue-400"} w-28 justify-center`}
+					className={`${status !== "deployed" ? "animate-pulse" : "border-blue-400 hover:bg-blue-200 cursor-pointer"} w-28 justify-center`}
 					variant="outline"
 				>
-					{status}
+					{status === "deployed" ? (
+						<UrlToAnchor
+							className="text-blue-500 hover:no-underline line-clamp-1"
+							label={status}
+							url={deployUrl}
+						/>
+					) : (
+						status
+					)}
 				</Badge>
 			</TableCell>
 			<TableCell className="hidden md:table-cell">
@@ -74,12 +82,13 @@ const ProjectRow: React.FC<Props> = ({ className, project }) => {
 					<DropdownMenuContent align="end" className="w-fit min-w-fit py-1 px-1">
 						<DropdownMenuLabel className="px-4">Actions</DropdownMenuLabel>
 
-						<ProjectAddDialog project={project}>
+						<ProjectDialog project={project}>
 							<div className={dropdownMenuItemClassName}>Edit</div>
-						</ProjectAddDialog>
+						</ProjectDialog>
 
 						<DeleteConfirm
 							actionCallback={deleteProject}
+							disabled={(session && session.user?.id !== project.creator) || undefined}
 							keyword={_id}
 							messages={{
 								title: "Delete all projects",
@@ -88,7 +97,7 @@ const ProjectRow: React.FC<Props> = ({ className, project }) => {
 								inputDescription: "This action is irreversible!",
 							}}
 						>
-							<div className={dropdownMenuItemClassName}>Delete</div>
+							<button className={dropdownMenuItemClassName}>Delete</button>
 						</DeleteConfirm>
 					</DropdownMenuContent>
 				</DropdownMenu>

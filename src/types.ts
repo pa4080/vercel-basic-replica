@@ -31,9 +31,22 @@ export interface ProjectDocument {
 	framework: FrameworkType;
 	buildOutDir: string;
 	date: Date;
+	creator: ObjectId | string;
 }
 
-export interface ProjectData extends Omit<ProjectDocument, "_id"> {
+export interface ProjectData extends Omit<ProjectDocument, "_id" | "creator"> {
 	_id: string;
 	deployUrl: string;
+	creator: ObjectId | string;
+}
+
+export interface UserSessionData {
+	user: {
+		name: string;
+		email: string;
+		image: string;
+		id: string;
+		isAdmin?: boolean;
+	};
+	expires: string;
 }

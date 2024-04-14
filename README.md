@@ -14,14 +14,16 @@ This is an TypeScript/Node exercise. The goal of the project is to reproduce the
 - Express
 - Redis | Upstash Redis <https://console.upstash.com>, <https://developers.cloudflare.com/workers/databases/native-integrations/upstash>
 - CloudFlare R2, workers, DNS, Tunnels. <https://developers.cloudflare.com>
-- `@aws-sdk` as client for CloudFlare R2.
+- `@aws-sdk` v3 as client for CloudFlare R2.
 - Doppler <https://doppler.com>
 - AuthJS:
+  - <https://authjs.dev/getting-started/installation?framework=express>
   - <https://authjs.dev/reference/express>
   - <https://authjs.dev/reference/adapter/upstash-redis>
 - React/Vite
 - Tailwind CSS
 - Shadcn/UI
+- MongoDB
 
 ## References
 
@@ -148,3 +150,10 @@ In contrast to the main tutorial, here all services are within the same TS proje
 - [Code along Vercel steps - Upload service](https://projects.100xdevs.com/tracks/ZSQI8YNE0iL6sT1hJpts/vercel-3)
 - [Build the request handler at YouTube](https://youtu.be/c8_tafixiAs?si=DbNfFxzdd646XHE2&t=7212s)
 - [Step-by-Step Guide: Uploading and Downloading Binary Files to AWS S3 v3 using serverless JavaScript](https://dev.to/restdbjones/step-by-step-guide-uploading-and-downloading-binary-files-to-aws-s3-v3-using-nodejs-and-codehooksio-4olh)
+
+### Auth.js
+
+There are few things to do:
+
+1) Add `"type": "module"` into the `package.json` file of your express project. Reference: [@auth/express No "exports" main defined #9987](https://github.com/nextauthjs/next-auth/issues/9987)
+2) If you are using `ts-node` it will throw `TypeError: Unknown file extension ".ts"` with the above setup, so the easiest way is to switch to `tsx`. Reference: [An answer from StackOverflow](https://stackoverflow.com/a/76343394/6543935)
