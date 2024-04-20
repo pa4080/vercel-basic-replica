@@ -37,7 +37,7 @@ export const listObjects = async (
 
 		if (log) {
 			// eslint-disable-next-line no-console
-			console.log(`\nThe bucket "${bucketName} contains the following objects:\n`);
+			console.log(`\nThe bucket "${bucketName}" contains the following objects:\n`);
 			// eslint-disable-next-line no-console
 			console.log(contents.map((c) => ` • ${c.Key}`).join("\n"));
 		}
