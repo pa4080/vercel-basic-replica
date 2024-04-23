@@ -1,11 +1,11 @@
-import { PutObjectCommand } from "@aws-sdk/client-s3";
+import { PutObjectCommand, S3, S3Client } from "@aws-sdk/client-s3";
 import mime from "mime-types";
 
 import { bucketName, uploadDirR2 } from "@/env.js";
 
 import fs from "fs";
 
-import { s3client } from "./index.js";
+import { config } from "./index.js";
 
 /**
  * @param fileName The name of the file incl. the relative path: tmp/prjId/subPath/file.name
@@ -25,6 +25,8 @@ export const uploadObject = async ({
 	try {
 		const fileContent = fs.readFileSync(localFsFilePath);
 		const contentType = mime.lookup(localFsFilePath) || "application/octet-stream";
+
+		const s3client = new S3(config) || new S3Client(config);
 
 		const command = new PutObjectCommand({
 			Body: fileContent,

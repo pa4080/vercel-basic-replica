@@ -6,8 +6,7 @@
  * > https://github.com/awsdocs/aws-doc-sdk-examples/tree/main/javascriptv3/example_code/s3#code-examples
  * > https://github.com/awsdocs/aws-doc-sdk-examples/blob/main/javascriptv3/example_code/s3/actions/delete-objects.js
  */
-
-import { GetObjectCommand, _Object } from "@aws-sdk/client-s3";
+import { GetObjectCommand, S3, S3Client, _Object } from "@aws-sdk/client-s3";
 
 import { baseDir, bucketName, uploadDirFs, uploadDirR2 } from "@/env.js";
 
@@ -16,7 +15,7 @@ import { Readable } from "stream"; // https://stackoverflow.com/a/67373050/65439
 import fs from "fs";
 import path from "path";
 
-import { listObjects, s3client } from "./index.js";
+import { config, listObjects } from "./index.js";
 
 export const downloadObject = async ({
 	object,
@@ -34,6 +33,8 @@ export const downloadObject = async ({
 	}
 
 	try {
+		const s3client = new S3(config) || new S3Client(config);
+
 		const command = new GetObjectCommand({
 			Bucket: bucket || bucketName,
 			Key: object.Key,
