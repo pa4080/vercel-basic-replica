@@ -6,12 +6,11 @@
  * > https://github.com/awsdocs/aws-doc-sdk-examples/tree/main/javascriptv3/example_code/s3#code-examples
  * > https://github.com/awsdocs/aws-doc-sdk-examples/blob/main/javascriptv3/example_code/s3/actions/delete-objects.js
  */
-
-import { GetObjectCommand } from "@aws-sdk/client-s3";
+import { GetObjectCommand, S3, S3Client } from "@aws-sdk/client-s3";
 
 import { bucketName } from "@/env.js";
 
-import { s3client } from "./index.js";
+import { config } from "./index.js";
 
 export const getObject = async ({
 	objectKey,
@@ -23,6 +22,8 @@ export const getObject = async ({
 	log?: boolean;
 }) => {
 	try {
+		const s3client = new S3(config) || new S3Client(config);
+
 		const command = new GetObjectCommand({
 			Bucket: bucket || bucketName,
 			Key: objectKey,

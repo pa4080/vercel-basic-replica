@@ -1,16 +1,14 @@
 import { Upload } from "@aws-sdk/lib-storage";
 import mime from "mime-types";
 
+import { S3, S3Client } from "@aws-sdk/client-s3";
+
 import { bucketName, uploadDirR2 } from "@/env.js";
 
 import fs from "fs";
 
-import { s3client } from "./index.js";
+import { config } from "./index.js";
 
-/**
- * @param fileName The name of the file incl. the relative path: tmp/prjId/subPath/file.name
- * @param localFsFilePath The absolute path to the file: /home/user/workDir/tmp/prjId/subPath/file.name
- */
 export const uploadObject = async ({
 	bucket,
 	fileName,
@@ -25,6 +23,8 @@ export const uploadObject = async ({
 	try {
 		const fileContent = fs.readFileSync(localFsFilePath);
 		const contentType = mime.lookup(localFsFilePath) || "application/octet-stream";
+
+		const s3client = new S3(config) || new S3Client(config);
 
 		const response = await new Upload({
 			client: s3client,
