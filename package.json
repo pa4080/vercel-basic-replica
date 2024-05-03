@@ -5,6 +5,12 @@
 	"main": "index.cjs",
 	"type": "module",
 	"scripts": {
+		"docker:run": "pnpm docker:install && pnpm docker:build && pnpm docker:start",
+		"docker:install": "pnpm i && cd src/frontend && pnpm i",
+		"docker:build": "tsc -b && tsc-alias && cd src/frontend && pnpm docker:build",
+		"docker:start": "concurrently -k 'pnpm:docker:start:router' 'pnpm:docker:start:worker'",
+		"docker:start:router": "node --es-module-specifier-resolution=node ./dist/router/index.js",
+		"docker:start:worker": "node --es-module-specifier-resolution=node ./dist/worker/index.js",
 		"inject-env": "dotenv -e .env.override -- doppler run --preserve-env=true --",
 		"install-all": "pnpm inject-env sh -c 'echo; echo \"🚀  backend...\" && pnpm i && echo; echo \"🚀  frontend...\" && cd src/frontend && pnpm i'",
 		"build": "concurrently -c bgCyan,bgMagenta,bgBlue 'pnpm:build:backend' 'pnpm:build:frontend' 'pnpm:build:static'",

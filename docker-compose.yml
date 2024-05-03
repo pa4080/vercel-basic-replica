@@ -1,0 +1,13 @@
+services:
+  app:
+    build: .
+    container_name: vercel-basic-replica
+    ports:
+      - "43001:3001"
+    environment:
+      - DOPPLER_TOKEN=${DOPPLER_TOKEN}
+  redis:
+    image: redis:latest
+    container_name: vercel-basic-replica-redis
+    command: redis-server
+    restart: unless-stopped

@@ -8,7 +8,8 @@
 		"dev": "pnpm inject-env vite --host",
 		"build": "pnpm inject-env tsc && vite build --emptyOutDir",
 		"lint": "pnpm inject-env eslint . --ext ts,tsx --report-unused-disable-directives --max-warnings 0",
-		"preview": "pnpm inject-env vite preview"
+		"preview": "pnpm inject-env vite preview",
+		"docker:build": "vite build --emptyOutDir"
 	},
 	"dependencies": {
 		"@hookform/resolvers": "^3.3.4",
