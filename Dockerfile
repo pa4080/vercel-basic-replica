@@ -5,17 +5,25 @@
 
 FROM node:20-alpine
 
+EXPOSE 3001
+
 # Install Doppler CLI
-RUN wget -q -t3 'https://packages.doppler.com/public/cli/rsa.8004D9FF50437357.key' -O /etc/apk/keys/cli@doppler-8004D9FF50437357.rsa.pub &&
-	echo 'https://packages.doppler.com/public/cli/alpine/any-version/main' | tee -a /etc/apk/repositories &&
+RUN wget -q -t3 'https://packages.doppler.com/public/cli/rsa.8004D9FF50437357.key' -O /etc/apk/keys/cli@doppler-8004D9FF50437357.rsa.pub && \
+	echo 'https://packages.doppler.com/public/cli/alpine/any-version/main' | tee -a /etc/apk/repositories && \
 	apk add doppler
 
 # Install pnpm
 RUN npm install -g pnpm
 
-# Insatll redis
+# Insatll Redis, for manual test the connection
 RUN apk add --update redis
+
+# Copy the application code and install the dependencies
+WORKDIR /app
+COPY . .
 
 # Fetch and view secrets using "printenv". Testing purposes only!
 # Replace "printenv" with the command used to start your app, e.g. "npm", "start"
-CMD ["doppler", "run", "--", "printenv"]
+CMD ["doppler", "run", "--", "pnpm", "docker:run"]
+
+
