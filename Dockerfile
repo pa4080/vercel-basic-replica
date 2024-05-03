@@ -21,6 +21,8 @@ RUN npm install -g pnpm
 # Copy the application code and install the dependencies
 WORKDIR /app
 COPY . .
+RUN pnpm install husky -g
+RUN pnpm install --production
 
 # Fetch and view secrets using "printenv". Testing purposes only!
 # Replace "printenv" with the command used to start your app, e.g. "npm", "start"
