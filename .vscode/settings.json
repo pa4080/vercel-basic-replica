@@ -98,5 +98,8 @@
 	},
 	"typescript.tsdk": "node_modules/typescript/lib",
 	"javascript.preferences.importModuleSpecifierEnding": "js",
-	"typescript.preferences.importModuleSpecifierEnding": "js"
+	"typescript.preferences.importModuleSpecifierEnding": "js",
+	"[dockerfile]": {
+		"editor.defaultFormatter": "foxundermoon.shell-format"
+	}
 }
