@@ -35,9 +35,12 @@ export async function simpleGitCloneRepo({
 		 *
 		 * > https://www.npmjs.com/package/simple-git
 		 */
+
+		// Clone the repo
 		await simpleGit().clone(repoUrl, repoTmpDir);
 
-		if (targetBranch && !targetBranch.match(/(default|)/)) {
+		// Checkout the branch
+		if (targetBranch && targetBranch !== "default") {
 			await simpleGit(repoTmpDir).checkout(targetBranch);
 		}
 
@@ -55,6 +58,8 @@ export async function simpleGitCloneRepo({
 		await redisPublisher.lPush("build-queue", repoId); // Add the repo to the build-queue
 	} catch (error) {
 		console.error(error);
+		// Remove the old repo if it exists
+		await fs.promises.rm(repoTmpDir, { recursive: true, force: true });
 		await mongoProjectUpdateStatus(repoId, "clone error");
 	}
 }
