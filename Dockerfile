@@ -16,7 +16,7 @@ RUN wget -q -t3 'https://packages.doppler.com/public/cli/rsa.8004D9FF50437357.ke
 RUN npm install -g pnpm
 
 # Insatll Redis, for manual test the connection
-RUN apk add --update redis
+#RUN apk add --update redis
 
 # Insatll Git
 RUN apk add git
