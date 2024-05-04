@@ -39,7 +39,10 @@ export const SinOut = async () => {
 	const csrfRes = await fetch(`${appBaseURL}/auth/csrf`, { method: "GET" });
 	const { csrfToken } = await csrfRes.json();
 
-	await fetch(`${appBaseURL}/auth/signout`, {
+	// eslint-disable-next-line no-console
+	console.log(csrfToken);
+
+	const res = await fetch(`${appBaseURL}/auth/signout`, {
 		method: "post",
 		headers: {
 			"Content-Type": "application/x-www-form-urlencoded",
@@ -50,4 +53,7 @@ export const SinOut = async () => {
 			json: true,
 		}),
 	});
+
+	// eslint-disable-next-line no-console
+	console.log(res);
 };

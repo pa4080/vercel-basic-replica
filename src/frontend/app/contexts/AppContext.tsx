@@ -118,11 +118,6 @@ export const AppContextProvider: React.FC<ContextProviderProps> = ({ children })
 		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, []);
 
-	useEffect(() => {
-		// eslint-disable-next-line no-console
-		console.log(projects);
-	}, [projects]);
-
 	return (
 		<AppContext.Provider
 			value={{

@@ -1,3 +1,4 @@
+# https://authjs.dev/getting-started/deployment
 services:
   app:
     build: .
@@ -7,6 +8,7 @@ services:
       - "43001:3001"
     environment:
       - DOPPLER_TOKEN=${DOPPLER_TOKEN}
+      - AUTH_TRUST_HOST="true"
   redis:
     image: redis:latest
     container_name: vercel-basic-replica-redis
