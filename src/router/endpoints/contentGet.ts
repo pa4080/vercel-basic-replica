@@ -20,10 +20,10 @@ export default async function contentGet(req: express.Request, res: express.Resp
 	const { session } = res.locals;
 
 	// eslint-disable-next-line no-console
-	console.log("session", session);
+	console.log("session: ", session);
 
 	// eslint-disable-next-line no-console
-	console.log("session", req);
+	// console.log("request: ", req);
 
 	const host = req.hostname;
 	const subDomain = host.split(".")[0];

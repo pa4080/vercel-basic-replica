@@ -1,6 +1,6 @@
 import { MoreHorizontal } from "lucide-react";
 
-import { ProjectData } from "@project/types";
+import { ProjectData, User } from "@project/types";
 
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -24,8 +24,10 @@ interface Props {
 }
 
 const ProjectRow: React.FC<Props> = ({ className, project }) => {
-	const { _id, projectName, status, repoUrl, deployUrl } = project;
+	const { _id, projectName, status, repoUrl, deployUrl, creator } = project;
 	const { deleteProject, session } = useAppContext();
+
+	const image = (creator as User)?.image || "/image-placeholder.webp";
 
 	const dropdownMenuItemClassName =
 		"w-full relative flex cursor-default select-none items-center rounded-sm px-4 py-1.5 text-sm outline-none transition-colors focus:bg-accent focus:text-accent-foreground data-[disabled]:pointer-events-none data-[disabled]:opacity-50 hover:bg-slate-100 disabled:hover:bg-transparent disabled:opacity-50";
@@ -38,7 +40,7 @@ const ProjectRow: React.FC<Props> = ({ className, project }) => {
 						alt="Product image"
 						className="aspect-square rounded-md object-cover"
 						height="64"
-						src="/image-placeholder.webp"
+						src={image}
 						width="64"
 					/>
 				</div>

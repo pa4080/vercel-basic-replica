@@ -12,7 +12,7 @@
 		"docker:start:router": "node --es-module-specifier-resolution=node ./dist/router/index.js",
 		"docker:start:worker": "node --es-module-specifier-resolution=node ./dist/worker/index.js",
 		"inject-env": "dotenv -e .env.override -- doppler run --preserve-env=true --",
-		"install-all": "pnpm inject-env sh -c 'echo; echo \"🚀  backend...\" && pnpm i && echo; echo \"🚀  frontend...\" && cd src/frontend && pnpm i'",
+		"install-all": "pnpm i dotenv-cli && pnpm inject-env sh -c 'echo; echo \"🚀  backend...\" && pnpm i && echo; echo \"🚀  frontend...\" && cd src/frontend && pnpm i'",
 		"build": "concurrently -c bgCyan,bgMagenta,bgBlue 'pnpm:build:backend' 'pnpm:build:frontend' 'pnpm:build:static'",
 		"build:backend": "pnpm inject-env tsc -b && tsc-alias",
 		"build:frontend": "pnpm inject-env sh -c 'cd src/frontend && pnpm build'",
