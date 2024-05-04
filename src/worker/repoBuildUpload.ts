@@ -1,10 +1,17 @@
 import { uploadDirR2Build } from "@/env.js";
+import { ProjectData } from "@/types.js";
 import { uploadObjectList } from "@/utils/aws/index.js";
 import { findRepoBuildDir } from "@/utils/findRepoBuildDir.js";
 import { getFileList } from "@/utils/getFileListRecursively.js";
 import { mongoProjectGetById, mongoProjectUpdateStatus } from "@/utils/mongodb.js";
 
-export const repoBuildUpload = async ({ projectId }: { projectId: string | undefined }) => {
+export const repoBuildUpload = async ({
+	projectId,
+	projectData,
+}: {
+	projectId: string | undefined;
+	projectData?: ProjectData;
+}) => {
 	try {
 		process.stdout.write(`📤  Start build upload, repoId: ${projectId}\n`);
 
@@ -12,7 +19,7 @@ export const repoBuildUpload = async ({ projectId }: { projectId: string | undef
 			throw new Error("🔥  Build project: repoId is required!");
 		}
 
-		const project = await mongoProjectGetById(projectId);
+		const project = projectData ?? (await mongoProjectGetById(projectId));
 
 		const repoBuildDir =
 			project?.buildOutDir && project?.buildOutDir !== "default"
@@ -20,7 +27,7 @@ export const repoBuildUpload = async ({ projectId }: { projectId: string | undef
 				: await findRepoBuildDir({ projectId });
 
 		if (!repoBuildDir) {
-			mongoProjectUpdateStatus(projectId, "error");
+			mongoProjectUpdateStatus(projectId, "upload error");
 			throw new Error(`🔥  Build project: build dir not found, repoId: ${projectId}`);
 		}
 

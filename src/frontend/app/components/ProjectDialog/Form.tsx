@@ -32,7 +32,7 @@ import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "
 export const ProjectSchema = z.object({
 	repoUrl: z.string().url().regex(gitHttpsUrlRegex),
 	projectName: z.string(),
-	framework: z.union([z.literal("react"), z.literal("astro")]),
+	framework: z.union([z.literal("react"), z.literal("astro"), z.literal("html")]),
 	targetBranch: z.string().min(1, { message: "Required!" }),
 	buildOutDir: z.string().min(1, { message: "Required!" }),
 });
