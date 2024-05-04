@@ -56,7 +56,7 @@ const ProjectForm: React.FC<Props> = ({ className, dialogClose, project }) => {
 			projectName: "",
 			framework: "react",
 			targetBranch: "default",
-			buildOutDir: "default",
+			buildOutDir: "detect",
 		},
 		values: project,
 	});

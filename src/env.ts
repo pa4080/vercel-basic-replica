@@ -38,6 +38,7 @@ const envSchema = z.object({
 	VITE_PROJECT_HOME: zStringReq(),
 	AUTH_SECRET: zStringReq(),
 	VITE_APP_SUBDOMAIN_DEV: zStringReq(),
+	VITE_APP_URI_PROTO: z.enum(["http", "https"]),
 	AUTH_GITHUB_ID: zStringReq(),
 	AUTH_GITHUB_SECRET: zStringReq(),
 });
@@ -69,6 +70,7 @@ const {
 	VITE_PROJECT_HOME,
 	AUTH_SECRET,
 	VITE_APP_SUBDOMAIN_DEV,
+	VITE_APP_URI_PROTO,
 	AUTH_GITHUB_ID,
 	AUTH_GITHUB_SECRET,
 } = process.env;
@@ -100,6 +102,7 @@ const parsedResults = envSchema.safeParse({
 	VITE_PROJECT_HOME,
 	AUTH_SECRET,
 	VITE_APP_SUBDOMAIN_DEV,
+	VITE_APP_URI_PROTO,
 	AUTH_GITHUB_ID,
 	AUTH_GITHUB_SECRET,
 });
