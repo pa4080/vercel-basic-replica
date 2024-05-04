@@ -34,19 +34,21 @@ export interface ProjectDocument {
 	creator: ObjectId | string;
 }
 
-export interface ProjectData extends Omit<ProjectDocument, "_id" | "creator"> {
-	_id: string;
-	deployUrl: string;
-	creator: ObjectId | string;
+export interface User {
+	name: string;
+	email: string;
+	image: string;
+	id: string;
+	isAdmin?: boolean;
 }
 
 export interface UserSessionData {
-	user: {
-		name: string;
-		email: string;
-		image: string;
-		id: string;
-		isAdmin?: boolean;
-	};
+	user: User;
 	expires: string;
+}
+
+export interface ProjectData extends Omit<ProjectDocument, "_id" | "creator"> {
+	_id: string;
+	deployUrl: string;
+	creator: ObjectId | string | User;
 }
