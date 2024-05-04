@@ -4,14 +4,16 @@ import { MongoDBAdapter } from "@auth/mongodb-adapter";
 
 import express from "express";
 
-import clientPromise from "@/utils/mongodbAuth.js";
 import { mongoDbName } from "@/env.js";
+import clientPromise from "@/utils/mongodbAuth.js";
 
 type AuthConfig = Parameters<typeof getSession>[1];
 
 export const authConfig: AuthConfig = {
 	providers: [GitHub({ authorization: { params: { scope: "user:email login name avatar_url" } } })],
 	adapter: MongoDBAdapter(clientPromise, { databaseName: mongoDbName }),
+	useSecureCookies: true,
+	trustHost: true,
 	callbacks: {
 		// eslint-disable-next-line @typescript-eslint/no-unused-vars
 		async session({ session, user, token }) {
