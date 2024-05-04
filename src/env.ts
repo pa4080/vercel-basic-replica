@@ -118,21 +118,22 @@ declare global {
 	}
 }
 
-export const uploadDirFs = process.env.UPLOAD_DIR_FS;
-export const uploadDirR2 = process.env.UPLOAD_DIR_R2;
-export const uploadDirR2Build = process.env.UPLOAD_DIR_R2_BUILD;
-export const bucketName = process.env.CLOUDFLARE_R2_BUCKET_NAME;
-export const baseDir = "dist"; // process.env.NODE_ENV.match(/dev|development/) ? "dist" : __dirname;
+export const isProd = NODE_ENV === "production";
+export const uploadDirFs = UPLOAD_DIR_FS;
+export const uploadDirR2 = UPLOAD_DIR_R2;
+export const uploadDirR2Build = UPLOAD_DIR_R2_BUILD;
+export const bucketName = CLOUDFLARE_R2_BUCKET_NAME;
+export const baseDir = "dist"; // NODE_ENV.match(/dev|development/) ? "dist" : __dirname; --> ?.js/?.cjs
 export const possibleBuildDirs = ["dist", "build", "out", "builds", "output"];
-export const mongoUrl = process.env.MONGODB_URL;
-export const mongoDbName = process.env.MONGODB_DB_NAME;
-export const mongoCollectionProjects = process.env.MONGODB_COLLECTION_PROJECTS;
-export const appBaseDomain = process.env.VITE_APP_BASE_DOMAIN;
-export const appSubdomain = process.env.VITE_APP_SUBDOMAIN;
-export const appSubdomainDev = process.env.VITE_APP_SUBDOMAIN_DEV;
-export const appDeploySubdomainPrefix = process.env.VITE_APP_SUBDOMAIN_PROJECT;
-export const appUriProject = process.env.VITE_APP_URI_PROJECT;
+export const mongoUrl = MONGODB_URL;
+export const mongoDbName = MONGODB_DB_NAME;
+export const mongoCollectionProjects = MONGODB_COLLECTION_PROJECTS;
+export const appBaseDomain = VITE_APP_BASE_DOMAIN;
+export const appSubdomain = VITE_APP_SUBDOMAIN;
+export const appSubdomainDev = VITE_APP_SUBDOMAIN_DEV;
+export const appDeploySubdomainPrefix = VITE_APP_SUBDOMAIN_PROJECT;
+export const appUriProject = VITE_APP_URI_PROJECT;
 export const appUriProjects = `${appUriProject}s`;
-export const authSecret = process.env.AUTH_SECRET;
-export const authGithubId = process.env.AUTH_GITHUB_ID;
-export const authGithubSecret = process.env.AUTH_GITHUB_SECRET;
+export const authSecret = AUTH_SECRET;
+export const authGithubId = AUTH_GITHUB_ID;
+export const authGithubSecret = AUTH_GITHUB_SECRET;
