@@ -36,16 +36,18 @@
 		"sonner": "^1.4.41",
 		"tailwind-merge": "^2.2.2",
 		"tailwindcss-animate": "^1.0.7",
-		"zod": "^3.22.4"
-	},
-	"devDependencies": {
+		"zod": "^3.22.4",
+		"@vitejs/plugin-react-swc": "^3.5.0",
+		"typescript": "^5.2.2",
+		"vite": "^5.2.0",
 		"@types/node": "^20.11.30",
 		"@types/react": "^18.2.66",
 		"@types/react-dom": "^18.2.22",
+		"autoprefixer": "^10.4.19"
+	},
+	"devDependencies": {
 		"@typescript-eslint/eslint-plugin": "^7.2.0",
 		"@typescript-eslint/parser": "^7.3.1",
-		"@vitejs/plugin-react-swc": "^3.5.0",
-		"autoprefixer": "^10.4.19",
 		"eslint": "^8.57.0",
 		"eslint-config-next": "^14.1.3",
 		"eslint-config-prettier": "^9.1.0",
@@ -65,8 +67,6 @@
 		"stylelint-order": "^6.0.4",
 		"stylelint-scss": "^6.2.1",
 		"tailwindcss": "^3.4.1",
-		"typescript": "^5.2.2",
-		"vite": "^5.2.0",
 		"vite-plugin-mkcert": "^1.17.5"
 	}
 }
