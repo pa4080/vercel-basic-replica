@@ -1,6 +1,6 @@
 import { ObjectId } from "mongodb";
 
-import { appBaseDomain, appDeploySubdomainPrefix } from "@/env.js";
+import { appBaseDomain, appDeploySubdomainPrefix, appSubdomain, isProd } from "@/env.js";
 import { ProjectData, ProjectDocument } from "@/types.js";
 
 export function projectDocumentToData(projectDoc: ProjectDocument): ProjectData {
@@ -12,6 +12,8 @@ export function projectDocumentToData(projectDoc: ProjectDocument): ProjectData 
 		...projectDoc,
 		_id,
 		creator,
-		deployUrl: `https://${appDeploySubdomainPrefix}-${_id}.${appBaseDomain}`,
+		deployUrl: isProd
+			? `https://${appDeploySubdomainPrefix}-${_id}.${appSubdomain}.${appBaseDomain}`
+			: `https://${appDeploySubdomainPrefix}-${_id}.${appBaseDomain}`,
 	};
 }

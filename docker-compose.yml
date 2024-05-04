@@ -2,6 +2,7 @@ services:
   app:
     build: .
     container_name: vercel-basic-replica
+    restart: unless-stopped
     ports:
       - "43001:3001"
     environment:
