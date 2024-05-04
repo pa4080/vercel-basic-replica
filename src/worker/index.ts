@@ -1,9 +1,7 @@
 import { uploadDirR2 } from "@/env.js";
 import { getObjectListAndDelete, getObjectListAndDownload } from "@/utils/aws/index.js";
-
-import { mongoProjectGetById, mongoProjectUpdateStatus } from "@/utils/mongodb.js";
-
 import { getRepoTmpDir } from "@/utils/getDirectory.js";
+import { mongoProjectGetById, mongoProjectUpdateStatus } from "@/utils/mongodb.js";
 
 import { commandOptions, redisSubscriber } from "./redis.js";
 import { repoBuild } from "./repoBuild.js";

@@ -2,7 +2,7 @@ import { ProjectData, UserSessionData } from "@project/types";
 import React, { createContext, useContext, useEffect, useState } from "react";
 
 import { ProjectSchemaType } from "@/components/ProjectDialog/Form";
-import { appBaseURL, appUriProject, appUriProjects } from "@/env-frontend";
+import { apiUrl, appBaseURL, appUriProjects } from "@/env-frontend";
 import { GetSession } from "@/lib/authUtils.ts";
 
 const headers = {
@@ -13,7 +13,6 @@ const headers = {
 };
 
 interface ContextProps {
-	apiUrl: string;
 	projects: ProjectData[] | undefined;
 	setProjects: React.Dispatch<React.SetStateAction<ProjectData[]>>;
 	deleteProject: (id: string) => void;
@@ -31,7 +30,6 @@ interface ContextProviderProps {
 }
 
 export const AppContextProvider: React.FC<ContextProviderProps> = ({ children }) => {
-	const apiUrl = `${appBaseURL}/${appUriProject}`;
 	const [projects, setProjects] = useState<ProjectData[]>([]);
 	const [session, setSession] = useState<UserSessionData | null>(null);
 
@@ -121,7 +119,6 @@ export const AppContextProvider: React.FC<ContextProviderProps> = ({ children })
 	return (
 		<AppContext.Provider
 			value={{
-				apiUrl,
 				projects,
 				setProjects,
 				deleteProject,

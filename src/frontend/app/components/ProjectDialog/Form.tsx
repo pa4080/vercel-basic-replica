@@ -56,7 +56,7 @@ const ProjectForm: React.FC<Props> = ({ className, dialogClose, project }) => {
 			projectName: "",
 			framework: "react",
 			targetBranch: "default",
-			buildOutDir: "default",
+			buildOutDir: "detect",
 		},
 		values: project,
 	});
@@ -144,7 +144,10 @@ const ProjectForm: React.FC<Props> = ({ className, dialogClose, project }) => {
 							render={({ field }) => (
 								<FormItem>
 									<FormLabel>Framework</FormLabel>
-									<Select defaultValue={field.value} onValueChange={field.onChange}>
+									<Select
+										defaultValue={project?.framework ?? field.value}
+										onValueChange={field.onChange}
+									>
 										<FormControl>
 											<SelectTrigger>
 												<SelectValue placeholder="Select a verified email to display" />

@@ -1,9 +1,11 @@
-import { uploadDirR2Build } from "@/env.js";
+import { baseDir, uploadDirFs, uploadDirR2Build } from "@/env.js";
 import { ProjectData } from "@/types.js";
 import { uploadObjectList } from "@/utils/aws/index.js";
 import { findRepoBuildDir } from "@/utils/findRepoBuildDir.js";
 import { getFileList } from "@/utils/getFileListRecursively.js";
 import { mongoProjectGetById, mongoProjectUpdateStatus } from "@/utils/mongodb.js";
+
+import path from "path";
 
 export const repoBuildUpload = async ({
 	projectId,
@@ -22,8 +24,8 @@ export const repoBuildUpload = async ({
 		const project = projectData ?? (await mongoProjectGetById(projectId));
 
 		const repoBuildDir =
-			project?.buildOutDir && project?.buildOutDir !== "default"
-				? project?.buildOutDir
+			project?.buildOutDir && project?.buildOutDir !== "detect"
+				? path.join(baseDir, uploadDirFs, projectId, project?.buildOutDir)
 				: await findRepoBuildDir({ projectId });
 
 		if (!repoBuildDir) {
