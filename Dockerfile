@@ -21,6 +21,9 @@ RUN apk add --update redis
 # Insatll Git
 RUN apk add --update git
 
+# Insatll Git
+RUN apk add git
+
 # Copy the application code and install the dependencies
 WORKDIR /app
 COPY . .
