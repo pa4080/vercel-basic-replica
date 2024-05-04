@@ -13,7 +13,7 @@ export const authConfig: AuthConfig = {
 	providers: [GitHub({ authorization: { params: { scope: "user:email login name avatar_url" } } })],
 	adapter: MongoDBAdapter(clientPromise, { databaseName: mongoDbName }),
 	useSecureCookies: true,
-	trustHost: true,
+	// trustHost: true,
 	callbacks: {
 		// eslint-disable-next-line @typescript-eslint/no-unused-vars
 		async session({ session, user, token }) {
