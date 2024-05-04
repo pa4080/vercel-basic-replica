@@ -54,6 +54,7 @@ export async function simpleGitCloneRepo({
 
 		await redisPublisher.lPush("build-queue", repoId); // Add the repo to the build-queue
 	} catch (error) {
-		await mongoProjectUpdateStatus(repoId, "error");
+		console.error(error);
+		await mongoProjectUpdateStatus(repoId, "clone error");
 	}
 }

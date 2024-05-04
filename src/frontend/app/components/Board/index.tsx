@@ -14,6 +14,7 @@ const Board: React.FC<Props> = ({ className }) => {
 					<TabsTrigger value="all">All</TabsTrigger>
 					<TabsTrigger value="react">React</TabsTrigger>
 					<TabsTrigger value="astro">Astro</TabsTrigger>
+					<TabsTrigger value="html">Html</TabsTrigger>
 				</TabsList>
 
 				<TopActions />
@@ -22,6 +23,7 @@ const Board: React.FC<Props> = ({ className }) => {
 			<Tab framework="all" />
 			<Tab framework="react" />
 			<Tab framework="astro" />
+			<Tab framework="html" />
 		</Tabs>
 	);
 };

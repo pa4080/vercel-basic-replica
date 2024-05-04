@@ -7,7 +7,7 @@ export interface ProjectApiResponse {
 	ok: boolean;
 }
 
-const Framework = ["react", "astro"] as const;
+const Framework = ["react", "astro", "html"] as const;
 export type FrameworkType = (typeof Framework)[number];
 export type FrameworkTypeAll = FrameworkType | "all";
 
@@ -20,7 +20,10 @@ export type ProjectStatus =
 	| "built" // not used yet
 	| "deploying"
 	| "deployed"
-	| "error";
+	| "error"
+	| "clone error"
+	| "upload error"
+	| "build error";
 
 export interface ProjectDocument {
 	_id: ObjectId;
