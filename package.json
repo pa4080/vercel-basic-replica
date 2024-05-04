@@ -5,7 +5,7 @@
 	"main": "index.cjs",
 	"type": "module",
 	"scripts": {
-		"docker:run": "pnpm docker:install && pnpm docker:build && pnpm docker:start",
+		"docker:run": "pnpm docker:build && pnpm docker:start",
 		"docker:install": "pnpm i && cd src/frontend && pnpm i",
 		"docker:build": "tsc -b && tsc-alias && cd src/frontend && pnpm docker:build",
 		"docker:start": "concurrently -k 'pnpm:docker:start:router' 'pnpm:docker:start:worker'",

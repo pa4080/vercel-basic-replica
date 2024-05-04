@@ -21,12 +21,11 @@ RUN npm install -g pnpm
 # Copy the application code and install the dependencies
 WORKDIR /app
 COPY . .
+
 RUN pnpm docker:install
-RUN pnpm docker:build
 
 # Fetch and view secrets using "printenv". Testing purposes only!
 # Replace "printenv" with the command used to start your app, e.g. "npm", "start"
-# CMD ["doppler", "run", "--", "pnpm", "docker:run"]
-CMD ["doppler", "run", "--", "pnpm", "docker:start"]
+CMD ["doppler", "run", "--", "pnpm", "docker:run"]
 
 
