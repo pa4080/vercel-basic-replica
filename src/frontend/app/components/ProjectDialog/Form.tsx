@@ -154,6 +154,7 @@ const ProjectForm: React.FC<Props> = ({ className, dialogClose, project }) => {
 										<SelectContent>
 											<SelectItem value="react">React</SelectItem>
 											<SelectItem value="astro">Astro</SelectItem>
+											<SelectItem value="html">Html</SelectItem>
 										</SelectContent>
 									</Select>
 
