@@ -43,7 +43,11 @@
 		"@types/node": "^20.11.30",
 		"@types/react": "^18.2.66",
 		"@types/react-dom": "^18.2.22",
-		"autoprefixer": "^10.4.19"
+		"autoprefixer": "^10.4.19",
+		"postcss": "^8.4.38",
+		"sass": "^1.72.0",
+		"tailwindcss": "^3.4.1",
+		"postcss-import": "^16.0.1"
 	},
 	"devDependencies": {
 		"@typescript-eslint/eslint-plugin": "^7.2.0",
@@ -57,16 +61,12 @@
 		"eslint-plugin-react": "^7.34.1",
 		"eslint-plugin-react-hooks": "^4.6.0",
 		"eslint-plugin-react-refresh": "^0.4.6",
-		"postcss": "^8.4.38",
-		"postcss-import": "^16.0.1",
 		"prettier": "^3.2.5",
 		"prettier-plugin-tailwindcss": "^0.5.12",
-		"sass": "^1.72.0",
 		"stylelint": "^16.2.1",
 		"stylelint-config-standard": "^36.0.0",
 		"stylelint-order": "^6.0.4",
 		"stylelint-scss": "^6.2.1",
-		"tailwindcss": "^3.4.1",
 		"vite-plugin-mkcert": "^1.17.5"
 	}
 }
