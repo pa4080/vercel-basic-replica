@@ -193,7 +193,7 @@ const ProjectForm: React.FC<Props> = ({ className, dialogClose, project }) => {
 									<FormLabel>Build output directory</FormLabel>
 									<FormControl>
 										<Input
-											placeholder={`Use "default" for autodetect`}
+											placeholder={`Use "detect" for autodetect`}
 											{...field}
 											onBlur={autoGeneratePrjName}
 											onFocus={autoGeneratePrjName}
