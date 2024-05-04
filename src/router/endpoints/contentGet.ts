@@ -22,6 +22,9 @@ export default async function contentGet(req: express.Request, res: express.Resp
 	// eslint-disable-next-line no-console
 	console.log("session", session);
 
+	// eslint-disable-next-line no-console
+	console.log("session", req);
+
 	const host = req.hostname;
 	const subDomain = host.split(".")[0];
 	const uri = req.path;
