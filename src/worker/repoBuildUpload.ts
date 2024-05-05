@@ -44,6 +44,10 @@ export const repoBuildUpload = async ({
 
 		process.stdout.write(`📤  Finish build upload, repoId: ${projectId}\n`);
 	} catch (error) {
+		if (projectId) {
+			await mongoProjectUpdateStatus(projectId, "build upload error"); // Update the status of the repo
+		}
+
 		console.error((error as Error).message);
 	}
 };

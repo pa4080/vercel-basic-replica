@@ -36,7 +36,9 @@
 	"license": "ISC",
 	"lint-staged": {
 		"*.{ts,tsx}": "eslint --fix",
-		"*.{css,scss}": "prettier --write"
+		"*.{css,scss}": "prettier --write",
+		"*.css": "stylelint --fix",
+		"*.scss": "stylelint --fix"
 	},
 	"engines": {
 		"node": ">=18.0.0",

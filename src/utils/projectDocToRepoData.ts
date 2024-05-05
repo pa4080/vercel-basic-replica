@@ -1,12 +1,9 @@
-import { ObjectId } from "mongodb";
-
 import { appBaseDomain, appDeploySubdomainPrefix, appSubdomain, isProd } from "@/env.js";
-import { ProjectData, ProjectDocument } from "@/types.js";
+import { ProjectData, ProjectDocumentPopulated } from "@/types.js";
 
-export function projectDocumentToData(projectDoc: ProjectDocument): ProjectData {
+export function projectDocumentToData(projectDoc: ProjectDocumentPopulated): ProjectData {
 	const _id = projectDoc._id.toString();
-	const creator =
-		projectDoc.creator instanceof ObjectId ? projectDoc.creator.toString() : projectDoc.creator;
+	const creator = { ...projectDoc.creator, _id: projectDoc.creator._id.toString() };
 
 	return {
 		...projectDoc,

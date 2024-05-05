@@ -19,16 +19,16 @@ import { config, listObjects } from "./index.js";
 
 export const downloadObject = async ({
 	object,
-	repoId,
+	projectId,
 	bucket,
 	log = false,
 }: {
 	object: _Object;
-	repoId: string;
+	projectId: string;
 	bucket?: string;
 	log?: boolean;
 }) => {
-	if (!object.Key || !object.Key.includes(repoId)) {
+	if (!object.Key || !object.Key.includes(projectId)) {
 		return;
 	}
 
@@ -42,7 +42,7 @@ export const downloadObject = async ({
 
 		const responseObject = await s3client.send(command);
 
-		const repoFilename = object.Key.replace(new RegExp(`^.*(${repoId}/)`), "$1");
+		const repoFilename = object.Key.replace(new RegExp(`^.*(${projectId}/)`), "$1");
 		const fileTmpPath = path.join(baseDir, uploadDirFs, repoFilename);
 		const fileDir = path.dirname(fileTmpPath);
 
@@ -70,33 +70,35 @@ export const downloadObject = async ({
  * @param log If true, the function will print the object names to the console
  */
 export const getObjectListAndDownload = async ({
-	repoId,
+	projectId,
 	prefix,
 	bucket,
 	log = false,
 }: {
-	repoId: string | undefined;
+	projectId: string | undefined;
 	prefix?: string;
 	bucket?: string;
 	log?: boolean;
 }) => {
-	if (!repoId) {
+	if (!projectId) {
 		console.error("Download objects: repoId is required!");
 
 		return;
 	}
 
 	try {
-		process.stdout.write(`🗃️   Obtaining the file list, repoId: ${repoId}\n`);
+		process.stdout.write(`🗃️   Obtaining the file list, repoId: ${projectId}\n`);
 
-		const actualPrefix = prefix || `${uploadDirR2}/${repoId}`;
+		const actualPrefix = prefix || `${uploadDirR2}/${projectId}`;
 		const objectList = await listObjects({ bucket, prefix: actualPrefix, log });
 
-		process.stdout.write(`📥  Download started, repoId: ${repoId}\n`);
+		process.stdout.write(`📥  Download started, repoId: ${projectId}\n`);
 
-		await Promise.all(objectList.map((object) => downloadObject({ object, repoId, log })));
+		await Promise.all(
+			objectList.map((object) => downloadObject({ object, projectId: projectId, log }))
+		);
 
-		process.stdout.write(`📥  Download finished, repoId: ${repoId}\n`);
+		process.stdout.write(`📥  Download finished, repoId: ${projectId}\n`);
 	} catch (err) {
 		console.error("🔥  Download objects error: ", err);
 	}

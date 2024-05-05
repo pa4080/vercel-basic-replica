@@ -14,48 +14,48 @@ async function main() {
 
 	while (true) {
 		try {
-			const repoToDeploy = await redisSubscriber.brPop(
+			const projectToDeploy = await redisSubscriber.brPop(
 				commandOptions({ isolated: true }),
 				"build-queue",
 				0
 			);
 
-			if (!repoToDeploy) {
+			if (!projectToDeploy) {
 				continue;
 			}
 
-			const repoId = repoToDeploy?.element;
+			const projectId = projectToDeploy?.element;
 
-			if (repoId.match(/warm-up/)) {
-				process.stdout.write(`🔔  Warm up: ${repoId}...\n`);
+			if (projectId.match(/warm-up/)) {
+				process.stdout.write(`🔔  Warm up: ${projectId}...\n`);
 
 				continue;
 			}
 
-			process.stdout.write(`🚩  Deploying, repoId: ${repoId}\n`);
-			await mongoProjectUpdateStatus(repoId, "building"); // Update the status of the repo
-			await getObjectListAndDownload({ repoId }); // Download objects from R2/S3
+			process.stdout.write(`🚩  Deploying, repoId: ${projectId}\n`);
+			await mongoProjectUpdateStatus(projectId, "building"); // Update the status of the repo
+			await getObjectListAndDownload({ projectId: projectId }); // Download objects from R2/S3
 
-			const project = await mongoProjectGetById(repoId);
+			const project = await mongoProjectGetById(projectId);
 
 			if (project?.framework === "html") {
-				await mongoProjectUpdateStatus(repoId, "deploying"); // Update the status of the repo
-				await repoBuildUpload({ projectId: repoId, projectData: project }); // Upload objects to R2/S3
+				await mongoProjectUpdateStatus(projectId, "deploying"); // Update the status of the repo
+				await repoBuildUpload({ projectId: projectId, projectData: project }); // Upload objects to R2/S3
 			} else if (project?.framework === "react" || project?.framework === "astro") {
-				await repoBuild({ repoId }); // Build the project
-				await mongoProjectUpdateStatus(repoId, "deploying"); // Update the status of the repo
-				await repoBuildUpload({ projectId: repoId, projectData: project }); // Upload objects to R2/S3
+				await repoBuild({ repoId: projectId }); // Build the project
+				await mongoProjectUpdateStatus(projectId, "deploying"); // Update the status of the repo
+				await repoBuildUpload({ projectId: projectId, projectData: project }); // Upload objects to R2/S3
 			} else {
-				await mongoProjectUpdateStatus(repoId, "build error");
-				throw new Error(`🔥  Build project: framework not supported, repoId: ${repoId}`);
+				await mongoProjectUpdateStatus(projectId, "build error");
+				throw new Error(`🔥  Build project: framework not supported, repoId: ${projectId}`);
 			}
 
 			// Clean up
-			await fs.promises.rm(getRepoTmpDir(repoId), { recursive: true, force: true });
-			await getObjectListAndDelete({ prefix: `${uploadDirR2}/${repoId}` });
+			await fs.promises.rm(getRepoTmpDir(projectId), { recursive: true, force: true });
+			await getObjectListAndDelete({ prefix: `${uploadDirR2}/${projectId}` });
 
-			process.stdout.write(`✨  Deploying finished, repoId: ${repoId}\n`);
-			await mongoProjectUpdateStatus(repoId, "deployed");
+			process.stdout.write(`✨  Deploying finished, repoId: ${projectId}\n`);
+			await mongoProjectUpdateStatus(projectId, "deployed");
 		} catch (error) {
 			console.error("🔥  Something went wrong with the deploy service!");
 			console.error((error as Error).message);
