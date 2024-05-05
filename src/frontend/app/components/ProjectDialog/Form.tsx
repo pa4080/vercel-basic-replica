@@ -3,7 +3,7 @@ import React from "react";
 import { useForm } from "react-hook-form";
 import * as z from "zod";
 
-import { ProjectData } from "@project/types";
+import { ProjectData, User } from "@project/types";
 import { gitHttpsUrlRegex } from "@project/utils/urlMatch";
 
 import { Button } from "@/components/ui/button";
@@ -60,6 +60,11 @@ const ProjectForm: React.FC<Props> = ({ className, dialogClose, project }) => {
 		},
 		values: project,
 	});
+
+	const creatorId = (project?.creator as User)?._id || project?.creator;
+	const isSessionUserCreator = session?.user?.id === creatorId;
+	const isSessionUserAdmin = session?.user?.isAdmin || false;
+	const isActionDisabled = project && !isSessionUserCreator && !isSessionUserAdmin;
 
 	const onSubmit = async (data: ProjectSchemaType) => {
 		try {
@@ -217,12 +222,7 @@ const ProjectForm: React.FC<Props> = ({ className, dialogClose, project }) => {
 						</Button>
 						<Button
 							className="w-full"
-							disabled={
-								!session ||
-								(project && session?.user?.id !== project?.creator && !session?.user?.isAdmin) ||
-								form.formState.isSubmitting ||
-								submitting
-							}
+							disabled={!session || isActionDisabled || form.formState.isSubmitting || submitting}
 							type="submit"
 						>
 							{project ? "Update and deploy project" : "Deploy project"}

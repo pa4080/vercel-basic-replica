@@ -1,7 +1,7 @@
 import { MongoClient, ObjectId, ServerApiVersion } from "mongodb";
 
 import { mongoCollectionProjects, mongoDbName, mongoUrl } from "@/env.js";
-import { ProjectDocument } from "@/types.js";
+import { ProjectDocument, ProjectDocumentPopulated } from "@/types.js";
 
 import { projectDocumentToData } from "./projectDocToRepoData.js";
 
@@ -22,7 +22,9 @@ export const clientOptions = {
  * 	insertedId: new ObjectId('6616a9f66cdb002011b1b299')
  * }
  */
-export const mongoProjectInsert = async (repoData: Omit<ProjectDocument, "_id">) => {
+export const mongoProjectInsert = async (
+	repoData: Omit<ProjectDocument, "_id" | "creator"> & { creator: string | ObjectId }
+) => {
 	const client = new MongoClient(mongoUrl, clientOptions);
 
 	try {
@@ -76,7 +78,7 @@ export const mongoProjectUpdate = async (id: string, update: Partial<ProjectDocu
 	}
 };
 
-export const mongoProjectGetById = async (objectId: string | ObjectId, populate?: boolean) => {
+export const mongoProjectGetById = async (objectId: string | ObjectId) => {
 	const _id = objectId instanceof ObjectId ? objectId : new ObjectId(objectId);
 	const client = new MongoClient(mongoUrl, clientOptions);
 
@@ -84,35 +86,27 @@ export const mongoProjectGetById = async (objectId: string | ObjectId, populate?
 		await client.connect();
 		const db = client.db(mongoDbName);
 		const collection = db.collection(mongoCollectionProjects);
-		const result = (await collection.findOne({ _id })) as ProjectDocument;
+		// const project = (await collection.findOne({ _id })) as ProjectDocument;
 
-		if (!result) {
-			throw new Error(`Project not found, id: ${_id.toString()}`);
-		}
-
-		if (populate) {
-			// https://stackoverflow.com/a/50825751/6543935
-			const pipeline = [
-				{ $match: { _id } },
-				{
-					$lookup: {
-						from: "users",
-						localField: "creator",
-						foreignField: "_id",
-						as: "creator",
-					},
+		// https://stackoverflow.com/a/50825751/6543935
+		const pipeline = [
+			{ $match: { _id } },
+			{
+				$lookup: {
+					from: "users",
+					localField: "creator",
+					foreignField: "_id",
+					as: "creator",
 				},
-				{ $unwind: "$creator" },
-			];
+			},
+			{ $unwind: "$creator" },
+		];
 
-			const resultWithUser = (await collection.aggregate(pipeline).toArray())[0] as ProjectDocument;
+		const projectPopulated = (
+			await collection.aggregate(pipeline).toArray()
+		)[0] as ProjectDocumentPopulated;
 
-			if (resultWithUser) {
-				return projectDocumentToData(resultWithUser);
-			}
-		}
-
-		return projectDocumentToData(result);
+		return projectDocumentToData(projectPopulated);
 	} catch (error) {
 		console.error((error as Error).message);
 	} finally {
@@ -120,42 +114,36 @@ export const mongoProjectGetById = async (objectId: string | ObjectId, populate?
 	}
 };
 
-export const mongoProjectGetAll = async (populate?: boolean) => {
+export const mongoProjectGetAll = async () => {
 	const client = new MongoClient(mongoUrl, clientOptions);
 
 	try {
 		await client.connect();
 		const db = client.db(mongoDbName);
 		const collection = db.collection(mongoCollectionProjects);
-		const result = (await collection.find({}).toArray()) as ProjectDocument[];
 
-		if (populate) {
-			// https://stackoverflow.com/a/50825751/6543935
-			const pipeline = [
-				{ $match: {} },
-				{
-					$lookup: {
-						from: "users",
-						localField: "creator",
-						foreignField: "_id",
-						as: "creator",
-					},
+		// https://stackoverflow.com/a/50825751/6543935
+		const pipeline = [
+			{ $match: {} },
+			{
+				$lookup: {
+					from: "users",
+					localField: "creator",
+					foreignField: "_id",
+					as: "creator",
 				},
-				{ $unwind: "$creator" },
-			];
+			},
+			{ $unwind: "$creator" },
+		];
 
-			const resultWithUser = (await collection.aggregate(pipeline).toArray()) as ProjectDocument[];
+		const projectsPopulated = (await collection
+			.aggregate(pipeline)
+			.toArray()) as ProjectDocumentPopulated[];
 
-			result.forEach((doc) => {
-				const foundDoc = resultWithUser.find((resultDoc) => resultDoc._id.equals(doc._id));
+		// const allProjects = (await collection.find({}).toArray()) as ProjectDocument[];
+		// const projectsWithNoOwner = allProjects.filter(({ creator }) => !creator);
 
-				if (foundDoc) {
-					doc.creator = foundDoc.creator;
-				}
-			});
-		}
-
-		return result.map((doc) => projectDocumentToData(doc));
+		return projectsPopulated.map((doc) => projectDocumentToData(doc));
 	} catch (error) {
 		console.error((error as Error).message);
 	} finally {

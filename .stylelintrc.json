@@ -1,7 +1,7 @@
 {
 	"extends": ["stylelint-config-standard"],
 	"plugins": ["stylelint-order", "stylelint-scss"],
-	"ignoreFiles": ["public/css/**/*"],
+	"ignoreFiles": ["public/css/**/*", "src/frontend/app/index.css"],
 	"rules": {
 		"import-notation": "string",
 		"selector-class-pattern": "^[a-z][a-zA-Z0-9_-]+$",

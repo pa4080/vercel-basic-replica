@@ -14,7 +14,7 @@ export default async function projectGet(req: express.Request, res: express.Resp
 	 * Get all projects if no Id is provided
 	 */
 	if (!projectId) {
-		const projects = await mongoProjectGetAll(true);
+		const projects = await mongoProjectGetAll();
 
 		if (projects) {
 			response = {

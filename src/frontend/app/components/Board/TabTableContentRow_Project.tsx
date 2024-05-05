@@ -32,6 +32,11 @@ const ProjectRow: React.FC<Props> = ({ className, project }) => {
 	const dropdownMenuItemClassName =
 		"w-full relative flex cursor-default select-none items-center rounded-sm px-4 py-1.5 text-sm outline-none transition-colors focus:bg-accent focus:text-accent-foreground data-[disabled]:pointer-events-none data-[disabled]:opacity-50 hover:bg-slate-100 disabled:hover:bg-transparent disabled:opacity-50";
 
+	const creatorId = (project?.creator as User)?._id || project?.creator;
+	const isSessionUserCreator = session?.user?.id === creatorId;
+	const isSessionUserAdmin = session?.user?.isAdmin || false;
+	const isActionDisabled = !isSessionUserCreator && !isSessionUserAdmin;
+
 	return (
 		<TableRow key={_id} className={className}>
 			<TableCell className="hidden md:table-cell">
@@ -90,9 +95,7 @@ const ProjectRow: React.FC<Props> = ({ className, project }) => {
 
 						<DeleteConfirm
 							actionCallback={deleteProject}
-							disabled={
-								(session?.user?.id !== project?.creator && !session?.user?.isAdmin) || undefined
-							}
+							disabled={isActionDisabled ?? undefined}
 							keyword={_id}
 							messages={{
 								title: "Delete all projects",
