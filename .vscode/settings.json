@@ -5,6 +5,7 @@
 		"clsx",
 		"codemod",
 		"codepaths",
+		"commitlint",
 		"Harkirat",
 		"LPOP",
 		"LPUSH",
@@ -16,6 +17,7 @@
 		"signin",
 		"signout",
 		"sonner",
+		"stylelint",
 		"tsbuildinfo",
 		"tscpaths",
 		"Upstash"

@@ -23,6 +23,7 @@ export type ProjectStatus =
 	| "error"
 	| "clone error"
 	| "upload error"
+	| "build upload error"
 	| "build error";
 
 export interface ProjectDocument {
@@ -34,24 +35,33 @@ export interface ProjectDocument {
 	framework: FrameworkType;
 	buildOutDir: string;
 	date: Date;
-	creator: ObjectId | string;
+	creator: ObjectId | string | User;
+}
+
+export interface ProjectDocumentPopulated extends Omit<ProjectDocument, "creator"> {
+	creator: User;
 }
 
 export interface User {
-	name: string;
+	_id: string;
 	email: string;
+	emailVerified?: boolean | null;
+	name: string;
 	image: string;
-	id: string;
 	isAdmin?: boolean;
-}
-
-export interface UserSessionData {
-	user: User;
-	expires: string;
 }
 
 export interface ProjectData extends Omit<ProjectDocument, "_id" | "creator"> {
 	_id: string;
 	deployUrl: string;
-	creator: ObjectId | string | User;
+	creator: User;
+}
+
+export interface SessionUser extends Omit<User, "_id"> {
+	id: string;
+}
+
+export interface UserSessionData {
+	user: SessionUser;
+	expires: string;
 }

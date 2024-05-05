@@ -22,7 +22,7 @@ export default async function projectDelete(req: express.Request, res: express.R
 		const project = await mongoProjectGetById(projectId as string);
 
 		const isAdmin = session?.user?.isAdmin ?? false;
-		const isOwner = session?.user?.id === project?.creator;
+		const isOwner = session?.user?.id === project?.creator?._id;
 
 		if (!isAdmin && !isOwner) {
 			return res.status(401).end();
