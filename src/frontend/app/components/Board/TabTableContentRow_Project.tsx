@@ -98,8 +98,8 @@ const ProjectRow: React.FC<Props> = ({ className, project }) => {
 							disabled={isActionDisabled ?? undefined}
 							keyword={_id}
 							messages={{
-								title: "Delete all projects",
-								description: "Are you sure you want to delete all projects? Then enter:",
+								title: "Delete a project",
+								description: "If you are sure you want to delete this project, then enter:",
 								errorMsg: "Invalid keyword",
 								inputDescription: "This action is irreversible!",
 							}}
