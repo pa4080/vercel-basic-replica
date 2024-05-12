@@ -102,8 +102,10 @@ const ProjectForm: React.FC<Props> = ({ className, dialogClose, project }) => {
 			<form onSubmit={form.handleSubmit(onSubmit)}>
 				<Card className={cn("w-full", className)}>
 					<CardHeader className="pb-3">
-						<CardTitle>Create a project</CardTitle>
-						<CardDescription>Deploy your new project in one-click.</CardDescription>
+						<CardTitle>{project ? "Update project" : "Create a project"}</CardTitle>
+						<CardDescription>
+							{project ? `Id: ${project._id}` : "Deploy your new project in one-click"}
+						</CardDescription>
 					</CardHeader>
 					<CardContent className="space-y-4">
 						<FormField
