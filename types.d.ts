@@ -1,9 +1,7 @@
 import { DefaultSession, User as DefaultUser } from "@auth/express";
 
 declare module "@auth/express" {
-	/**
-	 * Adding custom properties to the session object
-	 */
+	// Adding custom properties to the session object
 	interface Session {
 		user: {
 			isAdmin?: string;
